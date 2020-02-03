@@ -1,14 +1,29 @@
 ﻿using GameOverlay.Drawing;
 using GameOverlay.Windows;
 using System;
-using System.Diagnostics;
 using System.Linq;
 using YARDT.Properties;
 
 namespace YARDT.Overlay
 {
+
+    public struct WINDOWPLACEMENT
+    {
+        public int length;
+        public int flags;
+        public int showCmd;
+        public System.Drawing.Point ptMinPosition;
+        public System.Drawing.Point ptMaxPosition;
+        public System.Drawing.Rectangle rcNormalPosition;
+    }
+
     class StickyOverlay : IExample
     {
+
+       // [DllImport("user32.dll")]
+       // [return: MarshalAs(UnmanagedType.Bool)]
+       // static extern bool GetWindowPlacement(IntPtr hWnd, ref WINDOWPLACEMENT lpwndpl);
+
         private readonly GraphicsWindow _window;
 
         private Font _font;
@@ -36,9 +51,12 @@ namespace YARDT.Overlay
                 WindowHandle = IntPtr.Zero
             };
 
+            //WINDOWPLACEMENT placement = new WINDOWPLACEMENT();
+           // placement.length = Marshal.SizeOf(placement);
+           // GetWindowPlacement(GetConsoleWindowHandle(), ref placement);
 
             // it is important to set the window to visible (and topmost) if you want to see it!
-            _window = new StickyWindow(GetConsoleWindowHandle(), graphics)
+            _window = new StickyWindow(GetWindowHandle(), graphics)
             {
                 IsTopmost = true,
                 IsVisible = true,
@@ -95,7 +113,7 @@ namespace YARDT.Overlay
             // you do not need to call BeginScene() or EndScene()
             var gfx = e.Graphics;
 
-            gfx.ClearScene(_gray); // set the background of the scene (can be transparent)
+            gfx.ClearScene(); // set the background of the scene (can be transparent)
 
             gfx.DrawTextWithBackground(_font, _red, _black, 10, 10, "FPS: " + gfx.FPS);
 
@@ -129,16 +147,16 @@ namespace YARDT.Overlay
             // you may want to dispose any brushes, fonts or images
         }
 
-        private static IntPtr GetConsoleWindowHandle()
+        private static IntPtr GetWindowHandle()
         {
 
             Console.WriteLine(@"Please type the process name of the window you want to attach to, e.g 'notepad.");
             Console.WriteLine("Note: If there is more than one process found, the first will be used.");
 
-
+            
             var processName = Console.ReadLine();
 
-            var process = Process.GetProcessesByName(processName).FirstOrDefault();
+            var process = System.Diagnostics.Process.GetProcessesByName(processName).FirstOrDefault();
 
             if (process == null)
             {
