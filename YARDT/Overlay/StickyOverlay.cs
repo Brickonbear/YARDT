@@ -140,6 +140,13 @@ namespace YARDT.Overlay
 
             var process = Process.GetProcessesByName(processName).FirstOrDefault();
 
+            if (process == null)
+            {
+                Console.WriteLine($"No process by the name of {processName} was found.");
+                Console.WriteLine("Please open one or use a different name and restart the demo.");
+                Console.ReadLine();
+            }
+
             return process.MainWindowHandle;
         }
     }
