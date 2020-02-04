@@ -29,7 +29,7 @@ namespace YARDT
             dynamic cardsInPlay = new JArray();
             dynamic cardsInPlayCopy = new JArray();
             dynamic playerCards = new JArray();
-            dynamic purgatory = new JArray();
+            Dictionary<int,JObject> purgatory = new Dictionary<int, JObject>();
             var overlay = new StickyOverlay();
 
             Timer aTimer = new Timer();
@@ -127,27 +127,26 @@ namespace YARDT
 
                     foreach (var card in playerCards)
                     {
-                        if (!purgatory.Contains(card))
+                        if (!purgatory.ContainsKey((int)card.CardID))
                         {
-                            purgatory.Add(card);
+                            purgatory.Add((int)card.CardID, card);
                             foreach (var item in deck.CardsInDeck)
                             {
-                                if (item.Name.ToString() == (string)card.CardCode)
+                                if (item.Name.ToString() == (string)card.CardCode && item.Value > 0)
                                 {
                                     toDelete.Add(item.Name);
-                                    //deck.CardsInDeck.Remove(item.Name);
-                                    Console.Write("Deleted item: ");
-                                    Console.WriteLine(item);
                                 }
                             }
-
-                            foreach (var name in toDelete)
-                            {
-                                deck.CardsInDeck.Remove(name);
-                            }
                         }
-
                     }
+                    foreach (var name in toDelete)
+                    {
+                        deck.CardsInDeck[name] = (int)deck.CardsInDeck.GetValue(name) - 1;
+                        //deck.CardsInDeck.Remove(name);
+                        Console.Write("Decremented item: ");
+                        Console.WriteLine(name);
+                    }
+                    toDelete.Clear();
                 }
                 if (cardsInPlay is JArray)
                 {
