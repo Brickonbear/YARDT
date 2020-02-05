@@ -23,13 +23,14 @@ namespace YARDT
             bool inGame = false;
             bool setLoaded = false;
             bool test = true;
-            dynamic deck = new JArray();
+            bool mulligan = true;
+            JObject deck = new JObject();
             List<string> toDelete = new List<string>();
-            dynamic set = new JArray();
-            dynamic cardsInPlay = new JArray();
-            dynamic cardsInPlayCopy = new JArray();
-            dynamic playerCards = new JArray();
-            Dictionary<int,JObject> purgatory = new Dictionary<int, JObject>();
+            JArray set = new JArray();
+            JArray cardsInPlay = new JArray();
+            JArray cardsInPlayCopy = new JArray();
+            Dictionary<string, JObject> playerCards = new Dictionary<string, JObject>();
+            Dictionary<string, JObject> purgatory = new Dictionary<string, JObject>();
             var overlay = new StickyOverlay();
 
             Timer aTimer = new Timer();
@@ -40,16 +41,22 @@ namespace YARDT
             {
                 try
                 {
-                    dynamic responseString = JsonConvert.DeserializeObject(await client.GetStringAsync($"http://localhost:{port}/positional-rectangles"));
+                    JObject responseString = JsonConvert.DeserializeObject<JObject>(await client.GetStringAsync($"http://localhost:{port}/positional-rectangles"));
                     if (responseString["GameState"].ToString() == "Menus")
                     {
+
+                        toDelete.Clear();
+                        deck = new JObject();
+                        cardsInPlay.Clear();
+                        cardsInPlayCopy.Clear();
+                        playerCards.Clear();
                         Console.WriteLine("Not in game, stopping timer");
                         aTimer.Enabled = false;
                         inGame = false;
                     }
                     else
                     {
-                        cardsInPlay = responseString.Rectangles;
+                        cardsInPlay = responseString["Rectangles"].ToObject<JArray>();
                     }
                 }
                 catch
@@ -61,7 +68,7 @@ namespace YARDT
             }
 
             aTimer.Elapsed += new ElapsedEventHandler(UpdateCardsInPlay);
-            
+
 
 
             Console.WriteLine("Heyo fuckface its ya boi LEGIIIIIIIIIIIT FOOD REVIEWS");
@@ -78,14 +85,15 @@ namespace YARDT
                 {
                     try
                     {
-                        dynamic responseString = JsonConvert.DeserializeObject(await client.GetStringAsync($"http://localhost:{port}/positional-rectangles"));
+                        JObject responseString = JsonConvert.DeserializeObject<JObject>(await client.GetStringAsync($"http://localhost:{port}/positional-rectangles"));
+
                         gameIsRunning = true;
                         if (responseString["GameState"].ToString() == "InProgress")
                         {
                             inGame = true;
                             Console.WriteLine("Starting timer");
                             aTimer.Enabled = true;
-                            deck = JsonConvert.DeserializeObject(await client.GetStringAsync($"http://localhost:{port}/static-decklist"));
+                            deck = JsonConvert.DeserializeObject<JObject>(await client.GetStringAsync($"http://localhost:{port}/static-decklist"));
                         }
                         else
                         {
@@ -101,7 +109,7 @@ namespace YARDT
                         gameIsRunning = false;
                     }
                 }
-                
+
 
                 //Load set from json
                 if (!setLoaded)
@@ -112,41 +120,60 @@ namespace YARDT
 
                 if (cardsInPlay is JArray && cardsInPlay != cardsInPlayCopy)
                 {
-                    Console.WriteLine("Cards are diffrent");
+                    //Console.WriteLine("Cards are diffrent");
                     cardsInPlayCopy = cardsInPlay;
                     foreach (var card in cardsInPlayCopy)
                     {
-                        if (card.LocalPlayer == true)
+                        if (!playerCards.ContainsKey(card.Value<string>("CardID")))
                         {
-                            if (card.CardCode != "face")
+                            if (card.Value<bool>("LocalPlayer") == true)
                             {
-                                playerCards.Add(card);
-                            }
-                        }
-                    }
-
-                    foreach (var card in playerCards)
-                    {
-                        if (!purgatory.ContainsKey((int)card.CardID))
-                        {
-                            purgatory.Add((int)card.CardID, card);
-                            foreach (var item in deck.CardsInDeck)
-                            {
-                                if (item.Name.ToString() == (string)card.CardCode && item.Value > 0)
+                                if (card.Value<string>("CardCode") != "face")
                                 {
-                                    toDelete.Add(item.Name);
+                                    playerCards.Add(card.Value<string>("CardID"), card.ToObject<JObject>());
                                 }
                             }
                         }
                     }
-                    foreach (var name in toDelete)
+
+                    if (mulligan && playerCards.Count > 4)
                     {
-                        deck.CardsInDeck[name] = (int)deck.CardsInDeck.GetValue(name) - 1;
-                        //deck.CardsInDeck.Remove(name);
-                        Console.Write("Decremented item: ");
-                        Console.WriteLine(name);
+                        playerCards.Clear();
+                        mulligan = false;
                     }
-                    toDelete.Clear();
+
+                    if (!mulligan)
+                    {
+                        foreach (var card in playerCards.Keys)
+                        {
+                            if (!purgatory.ContainsKey(card))
+                            {
+                                purgatory.Add(card, playerCards[card]);
+                                foreach (var item in deck["CardsInDeck"])
+                                {
+                                    JProperty itemProperty = item.ToObject<JProperty>();
+
+                                    if (itemProperty.Name == (string)playerCards[card]["CardCode"] && (int)itemProperty.Value > 0)
+                                    {
+                                        toDelete.Add(itemProperty.Name);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        if (toDelete.Count > 0)
+                        {
+                            foreach (var name in toDelete)
+                            {
+                                deck["CardsInDeck"][name] = deck["CardsInDeck"].Value<int>(name) - 1;
+                                //deck.CardsInDeck.Remove(name);
+                                Console.Write("Decremented item: ");
+                                Console.WriteLine(name);
+                            }
+                            toDelete.Clear();
+                            printDeckList(deck, set);
+                        }
+                    }
                 }
                 if (cardsInPlay is JArray)
                 {
@@ -159,27 +186,32 @@ namespace YARDT
                         }
                     }
                 }
-
-
-
-               /* foreach (JProperty property in deck.CardsInDeck.Properties())
-                {
-                    foreach (var item in set)
-                    {
-                        if (item.cardCode == property.Name)
-                        {
-                            Console.WriteLine(item.name + "\t\t" + property.Value);
-                        }
-                    }
-                }*/
             }
 
         }
 
-        public static dynamic LoadJson()
+        public static JArray LoadJson()
         {
             string json = Resources.set1_en_us;
-            return JsonConvert.DeserializeObject(json);
+            return JsonConvert.DeserializeObject<JArray>(json);
+        }
+
+        public static void printDeckList(JObject deck, JArray set)
+        {
+            foreach (JToken card in deck["CardsInDeck"])
+            {
+                JProperty cardProperty = card.ToObject<JProperty>();
+
+                foreach (var item in set)
+                {
+
+                    if (item.Value<string>("cardCode") == cardProperty.Name)
+                    {
+                        Console.WriteLine(string.Format("{0,-25}{1}", item.Value<string>("name"), cardProperty.Value));
+                        break;
+                    }
+                }
+            }
         }
     }
 }
