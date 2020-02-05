@@ -23,9 +23,11 @@ namespace YARDT
             bool inGame = false;
             bool setLoaded = false;
             bool test = true;
+            bool sorted = false;
             bool mulligan = true;
             JObject deck = new JObject();
             List<string> toDelete = new List<string>();
+            List<string> manaCostOrder = new List<string>();
             JArray set = new JArray();
             JArray cardsInPlay = new JArray();
             JArray cardsInPlayCopy = new JArray();
@@ -94,6 +96,12 @@ namespace YARDT
                             Console.WriteLine("Starting timer");
                             aTimer.Enabled = true;
                             deck = JsonConvert.DeserializeObject<JObject>(await client.GetStringAsync($"http://localhost:{port}/static-decklist"));
+                            
+                            foreach(JToken card in deck["CardsInDeck"])
+                            {
+                                JProperty cardProperty = card.ToObject<JProperty>();
+                                manaCostOrder.Add(cardProperty.Name);
+                            }
                         }
                         else
                         {
@@ -116,6 +124,29 @@ namespace YARDT
                 {
                     set = LoadJson();
                     setLoaded = true;
+                }
+
+                if (!sorted && setLoaded)
+                {
+                    manaCostOrder.Sort((x, y) => {
+                        int xManaCost=-1, yManaCost=-1;
+                        foreach (var item in set) 
+                        {
+                            if (item.Value<string>("cardCode") == x)
+                            {
+                                xManaCost =  item.Value<int>("cost");
+                            }
+                            else if(item.Value<string>("cardCode") == y)
+                            {
+                                yManaCost = item.Value<int>("cost");
+                            }
+                            if (xManaCost >= 0 && yManaCost >= 0) break;
+
+                        }
+                        return xManaCost.CompareTo(yManaCost);
+                    });
+
+                    sorted = true;
                 }
 
                 if (cardsInPlay is JArray && cardsInPlay != cardsInPlayCopy)
@@ -171,7 +202,7 @@ namespace YARDT
                                 Console.WriteLine(name);
                             }
                             toDelete.Clear();
-                            printDeckList(deck, set);
+                            printDeckList(deck, set, manaCostOrder);
                         }
                     }
                 }
@@ -196,8 +227,21 @@ namespace YARDT
             return JsonConvert.DeserializeObject<JArray>(json);
         }
 
-        public static void printDeckList(JObject deck, JArray set)
+        public static void printDeckList(JObject deck, JArray set, List<string> order)
         {
+            foreach (string cardCode in order)
+            {
+                string amount = deck["CardsInDeck"].Value<string>(cardCode);
+                foreach (var item in set)
+                {
+                    if (item.Value<string>("cardCode") == cardCode)
+                    {
+                        Console.WriteLine(string.Format("{0,-3}{1,-25}{2}", item.Value<string>("cost"), item.Value<string>("name"), amount));
+                        break;
+                    }
+                }
+            }
+            /*
             foreach (JToken card in deck["CardsInDeck"])
             {
                 JProperty cardProperty = card.ToObject<JProperty>();
@@ -211,7 +255,7 @@ namespace YARDT
                         break;
                     }
                 }
-            }
+            }*/
         }
     }
 }
