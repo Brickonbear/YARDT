@@ -241,7 +241,7 @@ namespace YARDT
                         button.HorizontalAlignment = HorizontalAlignment.Left;
                         button.Margin = new Thickness(0,3,0,0);
                         button.FontFamily = new FontFamily(new Uri("pack://application:,,,/"), "./Resources/#RomanSerif");
-                        button.Width = this.Width - 40;
+                        button.Width = this.Width - 25;
                         button.Height = 30;
                         button.Content = string.Format("{0,-3}{1,-25}{2}", item.Value<string>("cost"), item.Value<string>("name"), amount);
                         CreateButton(button);
@@ -329,5 +329,46 @@ namespace YARDT
             purgatory = new Dictionary<string, JObject>();
             aTimer.IsEnabled = false;
         }
+
+        /// <summary>
+        /// Minimized Button_Clicked
+        /// </summary>
+        private void MinimizeButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.WindowState = WindowState.Minimized;
+        }
+
+        /// <summary>
+        /// MaximizedButton_Clicked
+        /// </summary>
+        private void MaximizeButton_Click(object sender, RoutedEventArgs e)
+        {
+            AdjustWindowSize();
+        }
+
+        /// <summary>
+        /// CloseButton_Clicked
+        /// </summary>
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
+        /// <summary>
+        /// Adjusts the WindowSize to correct parameters when Maximize button is clicked
+        /// </summary>
+        private void AdjustWindowSize()
+        {
+            if (this.WindowState == WindowState.Maximized)
+            {
+                this.WindowState = WindowState.Normal;
+            }
+            else
+            {
+                this.WindowState = WindowState.Maximized;
+            }
+
+        }
     }
+
 }
