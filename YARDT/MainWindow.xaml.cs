@@ -16,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace YARDT
 {
@@ -44,16 +45,16 @@ namespace YARDT
 
 
 
-        System.Timers.Timer aTimer = new System.Timers.Timer();
-        System.Timers.Timer bTimer = new System.Timers.Timer();
+        DispatcherTimer aTimer = new DispatcherTimer();
+        DispatcherTimer bTimer = new DispatcherTimer();
         public MainWindow()
         {
             InitializeComponent();
 
-            aTimer.Interval = 2000;
-            bTimer.Interval = 1000;
+            aTimer.Interval = TimeSpan.FromMilliseconds(2000);
+            bTimer.Interval = TimeSpan.FromMilliseconds(1000);
 
-            async void UpdateCardsInPlay(object source, ElapsedEventArgs e)
+            async void UpdateCardsInPlay(object source, EventArgs e)
             {
                 try
                 {
@@ -72,11 +73,11 @@ namespace YARDT
                 catch
                 {
                     Console.WriteLine("Game closed, stopping timer");
-                    aTimer.Enabled = false;
+                    aTimer.IsEnabled = false;
                     gameIsRunning = false;
                 }
             }
-            void runChecks(object source, ElapsedEventArgs e)
+            void runChecks(object source, EventArgs e)
             {
 
                 while (!inGame || !gameIsRunning)
@@ -85,12 +86,14 @@ namespace YARDT
                     {
                         JObject responseString = JsonConvert.DeserializeObject<JObject>(httpReq($"http://localhost:{port}/positional-rectangles"));
 
+                        Console.WriteLine(responseString);
+
                         gameIsRunning = true;
                         if (responseString["GameState"].ToString() == "InProgress")
                         {
                             inGame = true;
                             Console.WriteLine("Starting timer");
-                            aTimer.Enabled = true;
+                            aTimer.IsEnabled = true;
                             if (!gotDeck)
                             {
                                 gotDeck = true;
@@ -107,11 +110,11 @@ namespace YARDT
                         else
                         {
                             Console.WriteLine("\nNot currently in game, stopping timer");
-                            aTimer.Enabled = false;
+                            aTimer.IsEnabled = false;
                             inGame = false;
                         }
                     }
-                    catch (HttpRequestException err)
+                    catch (Exception err)
                     {
                         Console.WriteLine("\nCould not connect to game!");
                         Console.WriteLine("Message :{0} ", err.Message);
@@ -209,16 +212,16 @@ namespace YARDT
                 }
             }
 
-            aTimer.Elapsed += new ElapsedEventHandler(UpdateCardsInPlay);
-            bTimer.Elapsed += new ElapsedEventHandler(runChecks);
+            aTimer.Tick += new EventHandler(UpdateCardsInPlay);
+            bTimer.Tick += new EventHandler(runChecks);
 
             Console.WriteLine("Heyo fuckface its ya boi LEGIIIIIIIIIIIT FOOD REVIEWS");
-            bTimer.Enabled = true;
+            bTimer.IsEnabled = true;
         }
 
         public static JArray LoadJson()
         {
-            string json = Resources.set1_en_us;
+            string json = Properties.Resources.set1_en_us;
             return JsonConvert.DeserializeObject<JArray>(json);
         }
 
@@ -236,9 +239,10 @@ namespace YARDT
                         // create button
                         Button button = new Button();
                         button.HorizontalAlignment = HorizontalAlignment.Left;
-                        button.Margin = new Thickness(5, top,5,2);
+                        button.Margin = new Thickness(0,3,0,0);
+                        button.FontFamily = new FontFamily(new Uri("pack://application:,,,/"), "./Resources/#RomanSerif");
                         button.Width = this.Width - 40;
-                        button.Height = 36;
+                        button.Height = 30;
                         button.Content = string.Format("{0,-3}{1,-25}{2}", item.Value<string>("cost"), item.Value<string>("name"), amount);
                         CreateButton(button);
                         top += button.Height + 2;
@@ -323,7 +327,7 @@ namespace YARDT
             cardsInPlayCopy = new JArray();
             playerCards = new Dictionary<string, JObject>();
             purgatory = new Dictionary<string, JObject>();
-            aTimer.Enabled = false;
+            aTimer.IsEnabled = false;
         }
     }
 }

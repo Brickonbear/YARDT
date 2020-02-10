@@ -61,6 +61,16 @@ namespace YARDT.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] RomanSerif {
+            get {
+                object obj = ResourceManager.GetObject("RomanSerif", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to [
         ///  {
         ///    &quot;associatedCards&quot;: [],
