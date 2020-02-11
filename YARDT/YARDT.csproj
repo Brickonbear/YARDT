@@ -43,6 +43,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -104,6 +105,18 @@
   <ItemGroup>
     <Resource Include="Resources\RomanSerif.ttf" />
     <None Include="Resources\set1_en_us.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\CloseButton.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\CollapseButton.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\OptionsButton.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\RuneterraManaBackground.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -61,12 +61,52 @@ namespace YARDT.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap CloseButton {
+            get {
+                object obj = ResourceManager.GetObject("CloseButton", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap CollapseButton {
+            get {
+                object obj = ResourceManager.GetObject("CollapseButton", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap OptionsButton {
+            get {
+                object obj = ResourceManager.GetObject("OptionsButton", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
         internal static byte[] RomanSerif {
             get {
                 object obj = ResourceManager.GetObject("RomanSerif", resourceCulture);
                 return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap RuneterraManaBackground {
+            get {
+                object obj = ResourceManager.GetObject("RuneterraManaBackground", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

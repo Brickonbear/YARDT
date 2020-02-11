@@ -330,44 +330,14 @@ namespace YARDT
             aTimer.IsEnabled = false;
         }
 
-        /// <summary>
-        /// Minimized Button_Clicked
-        /// </summary>
-        private void MinimizeButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.WindowState = WindowState.Minimized;
-        }
-
-        /// <summary>
-        /// MaximizedButton_Clicked
-        /// </summary>
-        private void MaximizeButton_Click(object sender, RoutedEventArgs e)
-        {
-            AdjustWindowSize();
-        }
-
-        /// <summary>
-        /// CloseButton_Clicked
-        /// </summary>
-        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        private void CloseButton_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             Application.Current.Shutdown();
         }
 
-        /// <summary>
-        /// Adjusts the WindowSize to correct parameters when Maximize button is clicked
-        /// </summary>
-        private void AdjustWindowSize()
+        private void CollapseButton_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (this.WindowState == WindowState.Maximized)
-            {
-                this.WindowState = WindowState.Normal;
-            }
-            else
-            {
-                this.WindowState = WindowState.Maximized;
-            }
-
+            this.WindowState = WindowState.Minimized;
         }
     }
 
