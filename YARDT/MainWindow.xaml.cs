@@ -311,11 +311,13 @@ namespace YARDT
             aTimer.IsEnabled = false;
         }
 
-        private void CloseButton_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        //Main window functions
+        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            Application.Current.Shutdown();
+            DragMove();
         }
 
+        //CollapseButton Functions
         private void CollapseButton_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             CollapseButton.Source = new BitmapImage(new Uri(@"/Resources/CollapseButtonClick.bmp", UriKind.Relative));
@@ -333,11 +335,6 @@ namespace YARDT
             }
         }
 
-        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            DragMove();
-        }
-
         private void CollapseButton_MouseEnter(object sender, MouseEventArgs e)
         {
             CollapseButton.Source = new BitmapImage(new Uri(@"/Resources/CollapseButtonHover.bmp", UriKind.Relative));
@@ -346,6 +343,12 @@ namespace YARDT
         private void CollapseButton_MouseLeave(object sender, MouseEventArgs e)
         {
             CollapseButton.Source = new BitmapImage(new Uri(@"/Resources/CollapseButton.bmp", UriKind.Relative));
+        }
+
+        //CloseButton Functions
+        private void CloseButton_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Application.Current.Shutdown();
         }
 
         private void CloseButton_MouseEnter(object sender, MouseEventArgs e)
@@ -358,6 +361,7 @@ namespace YARDT
             CloseButton.Source = new BitmapImage(new Uri(@"/Resources/CloseButton.bmp", UriKind.Relative));
         }
 
+        //OptionsButton Functions
         private void OptionsButton_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             OptionsButton.Source = new BitmapImage(new Uri(@"/Resources/OptionsButtonClick.bmp", UriKind.Relative));
