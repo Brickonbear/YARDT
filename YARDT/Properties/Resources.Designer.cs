@@ -73,6 +73,26 @@ namespace YARDT.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap CloseButtonClick {
+            get {
+                object obj = ResourceManager.GetObject("CloseButtonClick", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap CloseButtonHover {
+            get {
+                object obj = ResourceManager.GetObject("CloseButtonHover", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap CollapseButton {
             get {
                 object obj = ResourceManager.GetObject("CollapseButton", resourceCulture);
@@ -83,9 +103,49 @@ namespace YARDT.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap CollapseButtonClick {
+            get {
+                object obj = ResourceManager.GetObject("CollapseButtonClick", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap CollapseButtonHover {
+            get {
+                object obj = ResourceManager.GetObject("CollapseButtonHover", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap OptionsButton {
             get {
                 object obj = ResourceManager.GetObject("OptionsButton", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap OptionsButtonClick {
+            get {
+                object obj = ResourceManager.GetObject("OptionsButtonClick", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap OptionsButtonHover {
+            get {
+                object obj = ResourceManager.GetObject("OptionsButtonHover", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -103,17 +103,37 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\RomanSerif.ttf" />
+    <Resource Include="Resources\RomanSerif.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <None Include="Resources\set1_en_us.json" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\CloseButton.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\CloseButtonClick.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\CloseButtonHover.bmp" />
+  </ItemGroup>
+  <ItemGroup>
     <Resource Include="Resources\CollapseButton.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\CollapseButtonClick.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\CollapseButtonHover.bmp" />
+  </ItemGroup>
+  <ItemGroup>
     <Resource Include="Resources\OptionsButton.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\OptionsButtonClick.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\OptionsButtonHover.bmp" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\RuneterraManaBackground.bmp" />

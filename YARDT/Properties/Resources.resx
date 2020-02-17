@@ -121,11 +121,29 @@
   <data name="CloseButton" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\CloseButton.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="CloseButtonClick" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CloseButtonClick.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CloseButtonHover" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CloseButtonHover.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="CollapseButton" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\CollapseButton.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="CollapseButtonClick" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CollapseButtonClick.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CollapseButtonHover" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CollapseButtonHover.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="OptionsButton" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\OptionsButton.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="OptionsButtonClick" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\OptionsButtonClick.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="OptionsButtonHover" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\OptionsButtonHover.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="RomanSerif" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\RomanSerif.ttf;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
