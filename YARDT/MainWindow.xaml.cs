@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -86,7 +87,6 @@ namespace YARDT
                     {
                         JObject responseString = JsonConvert.DeserializeObject<JObject>(httpReq($"http://localhost:{port}/positional-rectangles"));
 
-                        Console.WriteLine(responseString);
 
                         gameIsRunning = true;
                         if (responseString["GameState"].ToString() == "InProgress")
@@ -108,7 +108,7 @@ namespace YARDT
                                 Console.WriteLine("Got deck");
                             }
                         }
-                        else
+                        else if(inGame || aTimer.IsEnabled)
                         {
                             Console.WriteLine("\nNot currently in game, stopping timer");
                             aTimer.IsEnabled = false;
@@ -118,8 +118,10 @@ namespace YARDT
                     catch (Exception err)
                     {
                         Console.WriteLine("\nCould not connect to game!");
-                        Console.WriteLine("Message :{0} ", err.Message);
+                        Console.WriteLine("Trying again in 5 sec");
+                        //Console.WriteLine("Message :{0} ", err.Message);
                         gameIsRunning = false;
+                        Thread.Sleep(5000);
                     }
                 }
 
@@ -159,7 +161,7 @@ namespace YARDT
 
                 if (cardsInPlay is JArray && !JToken.DeepEquals(cardsInPlay, cardsInPlayCopy))
                 {
-                    Console.WriteLine("Cards are diffrent");
+                    Console.WriteLine("Cards are different");
                     cardsInPlayCopy = cardsInPlay;
                     foreach (var card in cardsInPlayCopy)
                     {
@@ -208,7 +210,6 @@ namespace YARDT
                             foreach (var name in toDelete)
                             {
                                 deck["CardsInDeck"][name] = deck["CardsInDeck"].Value<int>(name) - 1;
-                                //deck.CardsInDeck.Remove(name);
                                 Console.Write("Decremented item: ");
                                 Console.WriteLine(name);
                             }
@@ -237,8 +238,7 @@ namespace YARDT
                 {
                     if (item.Value<string>("cardCode") == cardCode)
                     {
-                        // create button
-
+                        //Create button
                         CreateButton(item, amount);
                         //top += button.Height + 2;
                         Console.WriteLine(string.Format("{0,-3}{1,-25}{2}", item.Value<string>("cost"), item.Value<string>("name"), amount));
