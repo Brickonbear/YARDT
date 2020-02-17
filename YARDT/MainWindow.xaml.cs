@@ -38,16 +38,13 @@ namespace YARDT
         Dictionary<string, JObject> playerCards = new Dictionary<string, JObject>();
         Dictionary<string, JObject> purgatory = new Dictionary<string, JObject>();
 
-
-
         DispatcherTimer aTimer = new DispatcherTimer();
-        DispatcherTimer bTimer = new DispatcherTimer();
+
         public MainWindow()
         {
             InitializeComponent();
 
             aTimer.Interval = TimeSpan.FromMilliseconds(2000);
-            bTimer.Interval = TimeSpan.FromMilliseconds(1000);
 
             async void UpdateCardsInPlay(object source, EventArgs e)
             {
@@ -72,9 +69,17 @@ namespace YARDT
                     gameIsRunning = false;
                 }
             }
-            void runChecks(object source, EventArgs e)
-            {
+            
+            aTimer.Tick += new EventHandler(UpdateCardsInPlay);
 
+            Console.WriteLine("Heyo fuckface its ya boi LEGIIIIIIIIIIIT FOOD REVIEWS");
+            System.Threading.Tasks.Task.Delay(1000).ContinueWith(t => Main());
+        }
+
+        public void Main()
+        {
+            while (true)
+            {
                 while (!inGame || !gameIsRunning)
                 {
                     try
@@ -152,9 +157,9 @@ namespace YARDT
                     Console.WriteLine("Sorted deck");
                 }
 
-                if (cardsInPlay is JArray && cardsInPlay != cardsInPlayCopy)
+                if (cardsInPlay is JArray && !JToken.DeepEquals(cardsInPlay, cardsInPlayCopy))
                 {
-                    //Console.WriteLine("Cards are diffrent");
+                    Console.WriteLine("Cards are diffrent");
                     cardsInPlayCopy = cardsInPlay;
                     foreach (var card in cardsInPlayCopy)
                     {
@@ -164,7 +169,7 @@ namespace YARDT
                             {
                                 if (card.Value<string>("CardCode") != "face")
                                 {
-                                    Console.WriteLine("Adding card: " + card.Value<string>("CardID") + "to playerCards");
+                                    Console.WriteLine("Adding card: " + card.Value<string>("CardID") + " to playerCards");
                                     playerCards.Add(card.Value<string>("CardID"), card.ToObject<JObject>());
                                 }
                             }
@@ -213,12 +218,6 @@ namespace YARDT
                     }
                 }
             }
-
-            aTimer.Tick += new EventHandler(UpdateCardsInPlay);
-            bTimer.Tick += new EventHandler(runChecks);
-
-            Console.WriteLine("Heyo fuckface its ya boi LEGIIIIIIIIIIIT FOOD REVIEWS");
-            bTimer.IsEnabled = true;
         }
 
         public static JArray LoadJson()
@@ -239,15 +238,9 @@ namespace YARDT
                     if (item.Value<string>("cardCode") == cardCode)
                     {
                         // create button
-                        Button button = new Button();
-                        button.HorizontalAlignment = HorizontalAlignment.Left;
-                        button.Margin = new Thickness(0,3,0,0);
-                        button.FontFamily = new FontFamily(new Uri("pack://application:,,,/"), "./Resources/#RomanSerif");
-                        button.Width = this.Width - 5;
-                        button.Height = 30;
-                        button.Content = string.Format("{0,-3}{1,-25}{2}", item.Value<string>("cost"), item.Value<string>("name"), amount);
-                        CreateButton(button);
-                        top += button.Height + 2;
+
+                        CreateButton(item, amount);
+                        //top += button.Height + 2;
                         Console.WriteLine(string.Format("{0,-3}{1,-25}{2}", item.Value<string>("cost"), item.Value<string>("name"), amount));
                         break;
                     }
@@ -273,23 +266,36 @@ namespace YARDT
                         return responseString;
                     }
 
-                    return string.Empty;
+                    return null;
                 }
                 catch
                 {
-                    return string.Empty;
+                    return null;
                 }
             }
         }
 
-        private void CreateButton(Button button) //Create button
+        private void CreateButton(JToken item, string amount) //Create button
         {
-            sp.Children.Add(button);
+            Dispatcher.Invoke(() =>
+            {
+                Button button = new Button();
+                button.HorizontalAlignment = HorizontalAlignment.Left;
+                button.Margin = new Thickness(0, 3, 0, 0);
+                button.FontFamily = new FontFamily(new Uri("pack://application:,,,/"), "./Resources/#RomanSerif");
+                button.Width = this.Width - 5;
+                button.Height = 30;
+                button.Content = string.Format("{0,-3}{1,-25}{2}", item.Value<string>("cost"), item.Value<string>("name"), amount);
+                sp.Children.Add(button);
+            });
         }
 
         private void ClearControls() //Clear buttons
         {
-            sp.Children.Clear();
+            Dispatcher.Invoke(() =>
+            {
+                sp.Children.Clear();
+            });
         }
 
         private void ResetVars()
@@ -310,6 +316,7 @@ namespace YARDT
             purgatory = new Dictionary<string, JObject>();
             aTimer.IsEnabled = false;
         }
+
 
         //Main window functions
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
