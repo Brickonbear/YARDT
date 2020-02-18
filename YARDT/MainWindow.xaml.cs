@@ -2,7 +2,12 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -10,6 +15,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using System.IO.Compression;
+using System.Drawing;
+using System.Windows.Interop;
 
 namespace YARDT
 {
@@ -29,6 +37,7 @@ namespace YARDT
         bool sorted = false;
         bool mulligan = true;
         bool isMinimized = false;
+        bool verified = false;
         double prevHeight = 0;
         JObject deck = new JObject();
         List<string> toDelete = new List<string>();
@@ -45,6 +54,26 @@ namespace YARDT
         {
             InitializeComponent();
 
+            if (!Directory.Exists("YARDTData"))
+            {
+                Directory.CreateDirectory("YARDTData");
+                Console.WriteLine("created folder");
+            }
+            else
+            {
+                Console.WriteLine("folder exists");
+            }
+
+            Console.WriteLine("Verifying Data");
+            for(int i = 5; i > 0; i--)
+            {
+                Console.WriteLine("Attempting to verify " + i + " tries left");
+                verified = VerifyData(false);
+                if (verified) break;
+
+            }
+            Console.WriteLine("Succesfully verified Data");
+            
             aTimer.Interval = TimeSpan.FromMilliseconds(2000);
 
             async void UpdateCardsInPlay(object source, EventArgs e)
@@ -221,6 +250,88 @@ namespace YARDT
             }
         }
 
+        public bool VerifyData(bool downloaded)
+        {
+            string correctHash = "afa4738aa5e7a4c027566066834c9c47";
+
+            string dataHash = CreateDirectoryMd5("YARDTData");
+            Console.Write("Hash of YARDTData is: ");
+            Console.WriteLine(dataHash);
+
+            if (!downloaded)
+            {
+                if (dataHash != correctHash)
+                {
+                    Console.WriteLine("Hashes don't match, deleting content of YARDTData");
+
+                    deleteFromDir("YARDTData");
+
+                    downloadToDir("YARDTData");
+
+                    //Unzip File
+                    ZipFile.ExtractToDirectory("YARDTData/datadragon-set1-en_us.zip", "YARDTData/datadragon-set1-en_us");
+
+                    bool verified = VerifyData(true);
+                    if (verified)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+            return dataHash == correctHash;
+        }
+
+        public void downloadToDir(string directory)
+        {
+            Console.WriteLine("Begining Data Dragon download");
+            using (var client = new WebClient())
+            {
+                client.DownloadFile("https://dd.b.pvp.net/datadragon-set1-en_us.zip", "YARDTData/datadragon-set1-en_us.zip");
+            }
+            Console.WriteLine("Finished download");
+        }
+        public void deleteFromDir(string directory)
+        {
+            DirectoryInfo di = new DirectoryInfo(directory);
+
+            foreach (FileInfo file in di.GetFiles())
+            {
+                file.Delete();
+            }
+            foreach (DirectoryInfo dir in di.GetDirectories())
+            {
+                dir.Delete(true);
+            }
+        }
+        public static string CreateDirectoryMd5(string srcPath)
+        {
+            var filePaths = Directory.GetFiles(srcPath, "*", SearchOption.AllDirectories).OrderBy(p => p).ToArray();
+
+            using (var md5 = MD5.Create())
+            {
+                foreach (var filePath in filePaths)
+                {
+                    // hash path
+                    byte[] pathBytes = Encoding.UTF8.GetBytes(filePath);
+                    md5.TransformBlock(pathBytes, 0, pathBytes.Length, pathBytes, 0);
+
+                    // hash contents
+                    byte[] contentBytes = File.ReadAllBytes(filePath);
+
+                    md5.TransformBlock(contentBytes, 0, contentBytes.Length, contentBytes, 0);
+                }
+
+                //Handles empty filePaths case
+                md5.TransformFinalBlock(new byte[0], 0, 0);
+
+                return BitConverter.ToString(md5.Hash).Replace("-", "").ToLower();
+            }
+        }
+
         public static JArray LoadJson()
         {
             string json = Properties.Resources.set1_en_us;
@@ -282,14 +393,62 @@ namespace YARDT
                 Button button = new Button();
                 button.HorizontalAlignment = HorizontalAlignment.Left;
                 button.Margin = new Thickness(0, 3, 0, 0);
-                button.FontFamily = new FontFamily(new Uri("pack://application:,,,/"), "./Resources/#RomanSerif");
+                button.FontFamily = new System.Windows.Media.FontFamily(new Uri("pack://application:,,,/"), "./Resources/#RomanSerif");
                 button.Width = this.Width - 5;
                 button.Height = 30;
                 button.Content = string.Format("{0,-3}{1,-25}{2}", item.Value<string>("cost"), item.Value<string>("name"), amount);
+                string[] fileName = { "YARDTData/datadragon-set1-en_us/en_us/img/cards/", item.Value<string>("cardCode"), "-full.png" };
+                //Console.WriteLine(string.Join("", fileName));
+                //var img = CropAtRect(new BitmapImage(new Uri(string.Join("", fileName), UriKind.Relative)), new Rectangle(500, 250, 250, 30))
+                button.Background = CreateImage(string.Join("", fileName), new Rectangle(500, 250, 250, 30));
                 sp.Children.Add(button);
             });
         }
+        public ImageBrush CreateImage(string filename, Rectangle r)
+        {
+            ImageBrush myBrush = new ImageBrush();
+            var image = System.Drawing.Image.FromFile(filename);
+            Bitmap bitmap = new Bitmap(image); //it is in the memory now
 
+            Bitmap nb = bitmap.Clone(r, bitmap.PixelFormat);
+
+            var bitmapSource = Imaging.CreateBitmapSourceFromHBitmap(nb.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+            myBrush.ImageSource = bitmapSource;
+            bitmap.Dispose();
+            return myBrush;
+
+        }
+        /*
+        public static BitmapImage CropAtRect(this BitmapImage src, Rectangle r)
+        {
+
+            Bitmap b = new Bitmap(src.StreamSource);
+
+            Bitmap nb = new Bitmap(r.Width, r.Height);
+            Graphics g = Graphics.FromImage(nb);
+            g.DrawImage(b, -r.X, -r.Y);
+
+
+            return ToBitmapImage(nb);
+        }
+        public static BitmapImage ToBitmapImage(this Bitmap bitmap)
+        {
+            using (var memory = new MemoryStream())
+            {
+                bitmap.Save(memory, ImageFormat.Png);
+                memory.Position = 0;
+
+                var bitmapImage = new BitmapImage();
+                bitmapImage.BeginInit();
+                bitmapImage.StreamSource = memory;
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.EndInit();
+                bitmapImage.Freeze();
+
+                return bitmapImage;
+            }
+        }
+        */
         private void ClearControls() //Clear buttons
         {
             Dispatcher.Invoke(() =>
