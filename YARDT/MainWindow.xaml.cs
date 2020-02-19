@@ -18,6 +18,9 @@ using System.Windows.Threading;
 using System.IO.Compression;
 using System.Drawing;
 using System.Windows.Interop;
+using System.Threading.Tasks;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 
 namespace YARDT
 {
@@ -57,7 +60,7 @@ namespace YARDT
             if (!Directory.Exists("YARDTData"))
             {
                 Directory.CreateDirectory("YARDTData");
-                Console.WriteLine("created folder");
+                Console.WriteLine("created folder YARDTData");
             }
             else
             {
@@ -144,7 +147,7 @@ namespace YARDT
                             inGame = false;
                         }
                     }
-                    catch (Exception err)
+                    catch (Exception)
                     {
                         Console.WriteLine("\nCould not connect to game!");
                         Console.WriteLine("Trying again in 5 sec");
@@ -252,10 +255,10 @@ namespace YARDT
 
         public bool VerifyData(bool downloaded)
         {
-            string correctHash = "afa4738aa5e7a4c027566066834c9c47";
+            string correctHash = ""; //904e7678a42f5893424534df9941b96b
 
-            string dataHash = CreateDirectoryMd5("YARDTData");
-            Console.Write("Hash of YARDTData is: ");
+            string dataHash = "fg";// CalculateMD5("YARDTData/datadragon-set1-en_us/en_us/data/set1-en_us.json");
+            Console.Write("Hash of Dataset is: ");
             Console.WriteLine(dataHash);
 
             if (!downloaded)
@@ -264,13 +267,55 @@ namespace YARDT
                 {
                     Console.WriteLine("Hashes don't match, deleting content of YARDTData");
 
-                    deleteFromDir("YARDTData");
+                    //DeleteFromDir("YARDTData");
 
-                    downloadToDir("YARDTData");
+                    //DownloadToDir("YARDTData");
 
                     //Unzip File
-                    ZipFile.ExtractToDirectory("YARDTData/datadragon-set1-en_us.zip", "YARDTData/datadragon-set1-en_us");
+                    //ZipFile.ExtractToDirectory("YARDTData/datadragon-set1-en_us.zip", "YARDTData/datadragon-set1-en_us");
 
+                    var dir = new DirectoryInfo("YARDTData/datadragon-set1-en_us/en_us/img/cards");
+
+                    foreach (var file in dir.EnumerateFiles("*-alt*.png"))
+                    {
+                        file.Delete();
+                    }
+
+                    Directory.CreateDirectory("CardImg/full");
+                    Directory.CreateDirectory("CardImg/cards");
+                    Console.WriteLine("created folder CardImg and full");
+
+                    foreach (var file in dir.EnumerateFiles("*-full.png"))
+                    {
+                        string[] filename = { "CardImg/full/", file.Name , "_"};
+                        file.MoveTo(string.Join("", filename));
+                    }
+
+                    foreach (var file in dir.EnumerateFiles())
+                    {
+                        string[] filename = { "CardImg/cards/", file.Name };
+                        file.MoveTo(string.Join("", filename));
+                    }
+
+                    dir = new DirectoryInfo("CardImg/full");
+
+                    foreach (var file in dir.EnumerateFiles("*.png_"))
+                    {
+                        Bitmap image;
+                        Bitmap img = new Bitmap(file.FullName);
+                        if (img.Width == 1024)
+                        {
+                            image = ResizeImage(img, 250, 250);
+                            CropImage(image, file.FullName, 25, 110, 200, 30);
+                        }
+                        else
+                        {
+                            image = ResizeImage(img, 200, 100);
+                            CropImage(image, file.FullName, 0, 30, 200, 30);
+                        }
+                        img.Dispose();
+                        file.Delete();
+                    }
                     bool verified = VerifyData(true);
                     if (verified)
                     {
@@ -285,7 +330,53 @@ namespace YARDT
             return dataHash == correctHash;
         }
 
-        public void downloadToDir(string directory)
+        public void CropImage(Bitmap image, string name, int x, int y, int width, int height)
+        {
+            Bitmap croppedImage;
+
+            // Here we capture the resource - image file.
+            using (image)
+            {
+                Rectangle crop = new Rectangle(x, y, width, height);
+
+                // Here we capture another resource.
+                croppedImage = image.Clone(crop, image.PixelFormat);
+
+            } // Here we release the original resource - bitmap in memory and file on disk.
+
+            // At this point the file on disk already free - you can record to the same path.
+            croppedImage.Save(name.TrimEnd('_'), ImageFormat.Png);
+
+            // It is desirable release this resource too.
+            croppedImage.Dispose();
+        }
+
+        public static Bitmap ResizeImage(System.Drawing.Image image, int width, int height)
+        {
+            var destRect = new Rectangle(0, 0, width, height);
+            var destImage = new Bitmap(width, height);
+
+            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+
+            using (var graphics = Graphics.FromImage(destImage))
+            {
+                graphics.CompositingMode = CompositingMode.SourceCopy;
+                graphics.CompositingQuality = CompositingQuality.HighQuality;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.SmoothingMode = SmoothingMode.HighQuality;
+                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+                using (var wrapMode = new ImageAttributes())
+                {
+                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
+                }
+            }
+
+            return destImage;
+        }
+
+        public void DownloadToDir(string directory)
         {
             Console.WriteLine("Begining Data Dragon download");
             using (var client = new WebClient())
@@ -294,7 +385,8 @@ namespace YARDT
             }
             Console.WriteLine("Finished download");
         }
-        public void deleteFromDir(string directory)
+        
+        public void DeleteFromDir(string directory)
         {
             DirectoryInfo di = new DirectoryInfo(directory);
 
@@ -307,28 +399,15 @@ namespace YARDT
                 dir.Delete(true);
             }
         }
-        public static string CreateDirectoryMd5(string srcPath)
+        static string CalculateMD5(string filename)
         {
-            var filePaths = Directory.GetFiles(srcPath, "*", SearchOption.AllDirectories).OrderBy(p => p).ToArray();
-
             using (var md5 = MD5.Create())
             {
-                foreach (var filePath in filePaths)
+                using (var stream = File.OpenRead(filename))
                 {
-                    // hash path
-                    byte[] pathBytes = Encoding.UTF8.GetBytes(filePath);
-                    md5.TransformBlock(pathBytes, 0, pathBytes.Length, pathBytes, 0);
-
-                    // hash contents
-                    byte[] contentBytes = File.ReadAllBytes(filePath);
-
-                    md5.TransformBlock(contentBytes, 0, contentBytes.Length, contentBytes, 0);
+                    var hash = md5.ComputeHash(stream);
+                    return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
                 }
-
-                //Handles empty filePaths case
-                md5.TransformFinalBlock(new byte[0], 0, 0);
-
-                return BitConverter.ToString(md5.Hash).Replace("-", "").ToLower();
             }
         }
 
@@ -340,7 +419,6 @@ namespace YARDT
 
         public void printDeckList(JObject deck, JArray set, List<string> order)
         {
-            double top = 5;
             ClearControls();
             foreach (string cardCode in order)
             {
@@ -400,55 +478,11 @@ namespace YARDT
                 string[] fileName = { "YARDTData/datadragon-set1-en_us/en_us/img/cards/", item.Value<string>("cardCode"), "-full.png" };
                 //Console.WriteLine(string.Join("", fileName));
                 //var img = CropAtRect(new BitmapImage(new Uri(string.Join("", fileName), UriKind.Relative)), new Rectangle(500, 250, 250, 30))
-                button.Background = CreateImage(string.Join("", fileName), new Rectangle(500, 250, 250, 30));
+                //button.Background = CreateImage(string.Join("", fileName));
                 sp.Children.Add(button);
             });
         }
-        public ImageBrush CreateImage(string filename, Rectangle r)
-        {
-            ImageBrush myBrush = new ImageBrush();
-            var image = System.Drawing.Image.FromFile(filename);
-            Bitmap bitmap = new Bitmap(image); //it is in the memory now
 
-            Bitmap nb = bitmap.Clone(r, bitmap.PixelFormat);
-
-            var bitmapSource = Imaging.CreateBitmapSourceFromHBitmap(nb.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
-            myBrush.ImageSource = bitmapSource;
-            bitmap.Dispose();
-            return myBrush;
-
-        }
-        /*
-        public static BitmapImage CropAtRect(this BitmapImage src, Rectangle r)
-        {
-
-            Bitmap b = new Bitmap(src.StreamSource);
-
-            Bitmap nb = new Bitmap(r.Width, r.Height);
-            Graphics g = Graphics.FromImage(nb);
-            g.DrawImage(b, -r.X, -r.Y);
-
-
-            return ToBitmapImage(nb);
-        }
-        public static BitmapImage ToBitmapImage(this Bitmap bitmap)
-        {
-            using (var memory = new MemoryStream())
-            {
-                bitmap.Save(memory, ImageFormat.Png);
-                memory.Position = 0;
-
-                var bitmapImage = new BitmapImage();
-                bitmapImage.BeginInit();
-                bitmapImage.StreamSource = memory;
-                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapImage.EndInit();
-                bitmapImage.Freeze();
-
-                return bitmapImage;
-            }
-        }
-        */
         private void ClearControls() //Clear buttons
         {
             Dispatcher.Invoke(() =>
@@ -553,5 +587,4 @@ namespace YARDT
             OptionsButton.Source = new BitmapImage(new Uri(@"/Resources/OptionsButton.bmp", UriKind.Relative));
         }
     }
-
 }
