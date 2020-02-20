@@ -6,8 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -17,10 +15,10 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using System.IO.Compression;
 using System.Drawing;
-using System.Windows.Interop;
-using System.Threading.Tasks;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.Windows.Documents;
+using System.Security.Cryptography;
 
 namespace YARDT
 {
@@ -41,6 +39,7 @@ namespace YARDT
         bool mulligan = true;
         bool isMinimized = false;
         bool verified = false;
+        bool labelsDrawn = false;
         double prevHeight = 0;
         JObject deck = new JObject();
         List<string> toDelete = new List<string>();
@@ -50,8 +49,9 @@ namespace YARDT
         JArray cardsInPlayCopy = new JArray();
         Dictionary<string, JObject> playerCards = new Dictionary<string, JObject>();
         Dictionary<string, JObject> purgatory = new Dictionary<string, JObject>();
-
-        DispatcherTimer aTimer = new DispatcherTimer();
+        readonly DispatcherTimer aTimer = new DispatcherTimer();
+        const string mainDirName = "YARDTData/";
+        const string tempDirName = "YARDTTempData/";
 
         public MainWindow()
         {
@@ -61,6 +61,15 @@ namespace YARDT
             {
                 Directory.CreateDirectory("YARDTData");
                 Console.WriteLine("created folder YARDTData");
+            }
+            else
+            {
+                Console.WriteLine("folder exists");
+            }
+            if (!Directory.Exists("YARDTTempData"))
+            {
+                Directory.CreateDirectory("YARDTTempData");
+                Console.WriteLine("created folder YARDTTempData");
             }
             else
             {
@@ -255,49 +264,56 @@ namespace YARDT
 
         public bool VerifyData(bool downloaded)
         {
-            string correctHash = ""; //904e7678a42f5893424534df9941b96b
+            string hash = "";
+            string correctHash = "904e7678a42f5893424534df9941b96b";
+            if(File.Exists(mainDirName + "set1-en_us.json"))
+            {
+                hash = CalculateMD5(mainDirName + "set1-en_us.json");         
+            }
 
-            string dataHash = "fg";// CalculateMD5("YARDTData/datadragon-set1-en_us/en_us/data/set1-en_us.json");
-            Console.Write("Hash of Dataset is: ");
-            Console.WriteLine(dataHash);
+            Console.WriteLine(hash);
 
             if (!downloaded)
             {
-                if (dataHash != correctHash)
+                if (hash != correctHash)
                 {
-                    Console.WriteLine("Hashes don't match, deleting content of YARDTData");
+                    Console.WriteLine("Hashes don't match, deleting content of " + mainDirName);
 
-                    //DeleteFromDir("YARDTData");
+                    DeleteFromDir(mainDirName);
 
-                    //DownloadToDir("YARDTData");
+                    DownloadToDir(tempDirName);
 
                     //Unzip File
-                    //ZipFile.ExtractToDirectory("YARDTData/datadragon-set1-en_us.zip", "YARDTData/datadragon-set1-en_us");
+                    ZipFile.ExtractToDirectory(tempDirName+"/datadragon-set1-en_us.zip", tempDirName+"/datadragon-set1-en_us");
 
-                    var dir = new DirectoryInfo("YARDTData/datadragon-set1-en_us/en_us/img/cards");
+                    var dir = new DirectoryInfo(tempDirName+"/datadragon-set1-en_us/en_us/img/cards");
+
+                    var data = new FileInfo(tempDirName+"/datadragon-set1-en_us/en_us/data/set1-en_us.json");
+
+                    data.MoveTo(mainDirName+ "/set1-en_us.json");
 
                     foreach (var file in dir.EnumerateFiles("*-alt*.png"))
                     {
                         file.Delete();
                     }
-
-                    Directory.CreateDirectory("CardImg/full");
-                    Directory.CreateDirectory("CardImg/cards");
-                    Console.WriteLine("created folder CardImg and full");
+                    
+                    Directory.CreateDirectory(mainDirName+"/full");
+                    Directory.CreateDirectory(mainDirName+"/cards");
+                    Console.WriteLine("created folder "+ mainDirName);
 
                     foreach (var file in dir.EnumerateFiles("*-full.png"))
                     {
-                        string[] filename = { "CardImg/full/", file.Name , "_"};
+                        string[] filename = { mainDirName+"/full/", file.Name , "_"};
                         file.MoveTo(string.Join("", filename));
                     }
 
                     foreach (var file in dir.EnumerateFiles())
                     {
-                        string[] filename = { "CardImg/cards/", file.Name };
+                        string[] filename = { mainDirName+"/cards/", file.Name };
                         file.MoveTo(string.Join("", filename));
                     }
 
-                    dir = new DirectoryInfo("CardImg/full");
+                    dir = new DirectoryInfo(mainDirName+"/full");
 
                     foreach (var file in dir.EnumerateFiles("*.png_"))
                     {
@@ -327,7 +343,19 @@ namespace YARDT
                     }
                 }
             }
-            return dataHash == correctHash;
+            return hash == correctHash;
+        }
+
+        static string CalculateMD5(string filename)
+        {
+            using (var md5 = MD5.Create())
+            {
+                using (var stream = File.OpenRead(filename))
+                {
+                    var hash = md5.ComputeHash(stream);
+                    return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+                }
+            }
         }
 
         public void CropImage(Bitmap image, string name, int x, int y, int width, int height)
@@ -344,13 +372,52 @@ namespace YARDT
 
             } // Here we release the original resource - bitmap in memory and file on disk.
 
+            croppedImage = AddGradient(croppedImage, name);
+
             // At this point the file on disk already free - you can record to the same path.
             croppedImage.Save(name.TrimEnd('_'), ImageFormat.Png);
 
             // It is desirable release this resource too.
             croppedImage.Dispose();
         }
+        public Bitmap AddGradient (Bitmap image, string name)
+        {
+            Bitmap gradient;
+            //Console.WriteLine(name.Split('\\').Last<string>().Substring(2, 2).ToLower());
+            switch (name.Split('\\').Last<string>().Substring(2,2).ToLower())
+            {
+                case "de":
+                    gradient = new Bitmap(Properties.Resources.GradientDemacia);
+                    break;
+                case "fr":
+                    gradient = new Bitmap(Properties.Resources.GradientFreljord);
+                    break;
+                case "io":
+                    gradient = new Bitmap(Properties.Resources.GradientIonia);
+                    break;
+                case "nx":
+                    gradient = new Bitmap(Properties.Resources.GradientNoxus);
+                    break;
+                case "pz":
+                    gradient = new Bitmap(Properties.Resources.GradientPiltoverZaun);
+                    break;
+                case "si":
+                    gradient = new Bitmap(Properties.Resources.GradientShadowIsles);
+                    break;
+                default:
+                    gradient = new Bitmap(250, 30);
+                    break;
+            }
 
+            var target = new Bitmap(250, 30, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            var graphics = Graphics.FromImage(target);
+            graphics.CompositingMode = CompositingMode.SourceOver; // this is the default, but just to be clear
+
+            graphics.DrawImage(image, 50, 0);
+            graphics.DrawImage(gradient, 0, 0);
+
+            return target;
+        }
         public static Bitmap ResizeImage(System.Drawing.Image image, int width, int height)
         {
             var destRect = new Rectangle(0, 0, width, height);
@@ -372,7 +439,6 @@ namespace YARDT
                     graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
                 }
             }
-
             return destImage;
         }
 
@@ -381,7 +447,7 @@ namespace YARDT
             Console.WriteLine("Begining Data Dragon download");
             using (var client = new WebClient())
             {
-                client.DownloadFile("https://dd.b.pvp.net/datadragon-set1-en_us.zip", "YARDTData/datadragon-set1-en_us.zip");
+                client.DownloadFile("https://dd.b.pvp.net/datadragon-set1-en_us.zip", directory + "/datadragon-set1-en_us.zip");
             }
             Console.WriteLine("Finished download");
         }
@@ -399,27 +465,19 @@ namespace YARDT
                 dir.Delete(true);
             }
         }
-        static string CalculateMD5(string filename)
-        {
-            using (var md5 = MD5.Create())
-            {
-                using (var stream = File.OpenRead(filename))
-                {
-                    var hash = md5.ComputeHash(stream);
-                    return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
-                }
-            }
-        }
 
         public static JArray LoadJson()
         {
-            string json = Properties.Resources.set1_en_us;
-            return JsonConvert.DeserializeObject<JArray>(json);
+            using (StreamReader r = new StreamReader(mainDirName + "set1-en_us.json"))
+            {
+                string json = r.ReadToEnd();
+                return JsonConvert.DeserializeObject<JArray>(json);
+            }
         }
 
         public void printDeckList(JObject deck, JArray set, List<string> order)
         {
-            ClearControls();
+            //ClearControls();
             foreach (string cardCode in order)
             {
                 string amount = deck["CardsInDeck"].Value<string>(cardCode);
@@ -428,13 +486,14 @@ namespace YARDT
                     if (item.Value<string>("cardCode") == cardCode)
                     {
                         //Create button
-                        CreateButton(item, amount);
+                        CreateButton(item, amount, !labelsDrawn);
                         //top += button.Height + 2;
                         Console.WriteLine(string.Format("{0,-3}{1,-25}{2}", item.Value<string>("cost"), item.Value<string>("name"), amount));
                         break;
                     }
                 }
             }
+            labelsDrawn = true;
         }
 
         public static string httpReq(string URL)
@@ -464,30 +523,109 @@ namespace YARDT
             }
         }
 
-        private void CreateButton(JToken item, string amount) //Create button
+        private void CreateButton(JToken item, string amount, bool reset) //Create button
         {
             Dispatcher.Invoke(() =>
             {
-                Button button = new Button();
-                button.HorizontalAlignment = HorizontalAlignment.Left;
-                button.Margin = new Thickness(0, 3, 0, 0);
-                button.FontFamily = new System.Windows.Media.FontFamily(new Uri("pack://application:,,,/"), "./Resources/#RomanSerif");
-                button.Width = this.Width - 5;
-                button.Height = 30;
-                button.Content = string.Format("{0,-3}{1,-25}{2}", item.Value<string>("cost"), item.Value<string>("name"), amount);
-                string[] fileName = { "YARDTData/datadragon-set1-en_us/en_us/img/cards/", item.Value<string>("cardCode"), "-full.png" };
-                //Console.WriteLine(string.Join("", fileName));
-                //var img = CropAtRect(new BitmapImage(new Uri(string.Join("", fileName), UriKind.Relative)), new Rectangle(500, 250, 250, 30))
-                //button.Background = CreateImage(string.Join("", fileName));
-                sp.Children.Add(button);
-            });
-        }
+                if (reset)
+                {
+                    Label label = new Label
+                    {
+                        Foreground = System.Windows.Media.Brushes.White,
+                        HorizontalAlignment = HorizontalAlignment.Left,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Margin = new Thickness(0, 3, 0, 0),
+                        FontFamily = new System.Windows.Media.FontFamily(new Uri("pack://application:,,,/"), "./Resources/#RomanSerif"),
+                        Width = Width - 5,
+                        Height = 30
+                    };
 
-        private void ClearControls() //Clear buttons
-        {
-            Dispatcher.Invoke(() =>
-            {
-                sp.Children.Clear();
+                    Console.WriteLine("This should only happen once");
+
+                    Grid grid = new Grid();
+
+                    ColumnDefinition col1 = new ColumnDefinition();
+                    ColumnDefinition col1_5 = new ColumnDefinition();
+                    ColumnDefinition col2 = new ColumnDefinition();
+                    ColumnDefinition col3 = new ColumnDefinition();
+
+                    col1.Width = new GridLength(16);
+                    col1_5.Width = new GridLength(14);
+                    col2.Width = new GridLength(180);
+                    col3.Width = new GridLength(40);
+
+                    grid.ColumnDefinitions.Add(col1);
+                    grid.ColumnDefinitions.Add(col1_5);
+                    grid.ColumnDefinitions.Add(col2);
+                    grid.ColumnDefinitions.Add(col3);
+
+                    TextBlock manaCost = new TextBlock(new Run(item.Value<string>("cost")));
+                    TextBlock name = new TextBlock(new Run(item.Value<string>("name")));
+                    TextBlock cardsLeft = new TextBlock(new Run("x" + amount))
+                    {
+                        Name = "cardAmount"
+                    };
+
+                    manaCost.FontSize = 22;
+                    name.FontSize = 16;
+                    cardsLeft.FontSize = 22;
+
+                    manaCost.FontWeight = FontWeights.Bold;
+                    name.FontWeight = FontWeights.Bold;
+                    cardsLeft.FontWeight = FontWeights.Bold;
+
+                    manaCost.VerticalAlignment = VerticalAlignment.Center;
+                    name.VerticalAlignment = VerticalAlignment.Center;
+                    cardsLeft.VerticalAlignment = VerticalAlignment.Center;
+
+                    manaCost.HorizontalAlignment = HorizontalAlignment.Center;
+
+                    Grid.SetColumn(manaCost, 0);
+                    Grid.SetColumn(name, 2);
+                    Grid.SetColumn(cardsLeft, 3);
+
+                    grid.Children.Add(manaCost);
+                    grid.Children.Add(name);
+                    grid.Children.Add(cardsLeft);
+
+                    label.Content = grid;//string.Format("{0,-3}{1,-25}{2}", item.Value<string>("cost"), item.Value<string>("name"), amount);
+                    string[] fileName = { mainDirName + "full/", item.Value<string>("cardCode"), "-full.png" };
+                    //Console.WriteLine(string.Join("", fileName));
+                    //var img = CropAtRect(new BitmapImage(new Uri(string.Join("", fileName), UriKind.Relative)), new Rectangle(500, 250, 250, 30))
+
+                    label.Background = new ImageBrush(new BitmapImage(new Uri(string.Join("", fileName), UriKind.Relative)));
+                    label.Name = item.Value<string>("name").Replace(" ", "");
+                    sp.Children.Add(label);
+                }
+                else
+                {
+                    TextBlock cardsLeft = new TextBlock(new Run("x" + amount))
+                    {
+                        Name = "cardAmount"
+                    };
+                    cardsLeft.FontSize = 22;
+                    cardsLeft.FontWeight = FontWeights.Bold;
+                    cardsLeft.VerticalAlignment = VerticalAlignment.Center;
+
+                    Grid grid = sp.Children.OfType<Label>().Where(label => label.Name == item.Value<string>("name").Replace(" ", "")).First<Label>().Content as Grid;
+                    TextBlock cardAmount = grid.Children.OfType<TextBlock>().Last();
+                    Console.WriteLine(cardAmount.Text);
+                    if (grid != null)
+                    {
+                        var column = Grid.GetColumn(cardAmount);
+                        var row = Grid.GetRow(cardAmount);
+                        var colSpan = Grid.GetColumnSpan(cardAmount);
+                        var rowSpan = Grid.GetRowSpan(cardAmount);
+                        grid.Children.Remove(cardAmount); //remove old canvas
+                        grid.Children.Add(cardsLeft);//add new canvas
+                        Grid.SetColumn(cardsLeft, column);
+                        Grid.SetRow(cardsLeft, row);
+                        Grid.SetColumnSpan(cardsLeft, colSpan);
+                        Grid.SetRowSpan(cardsLeft, rowSpan);
+                    }
+
+                    Console.WriteLine(item.Value<string>("name"));
+                }
             });
         }
 
