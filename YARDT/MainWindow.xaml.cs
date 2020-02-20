@@ -175,7 +175,7 @@ namespace YARDT
                 //Load set from json
                 if (!setLoaded)
                 {
-                    set = LoadJson();
+                    set = FileUtils.LoadJson(mainDirName);
                     setLoaded = true;
                     Console.WriteLine("Loaded set");
                 }
@@ -286,9 +286,9 @@ namespace YARDT
                 {
                     Console.WriteLine("Hashes don't match, deleting content of " + mainDirName);
 
-                    DeleteFromDir(mainDirName);
+                    FileUtils.DeleteFromDir(mainDirName);
 
-                    DownloadToDir(tempDirName);
+                    FileUtils.DownloadToDir(tempDirName);
 
                     //Unzip File
                     Console.WriteLine("Unziping DataDragon");
@@ -351,39 +351,6 @@ namespace YARDT
                 }
             }
             return hash == correctHash;
-        }
-
-        public void DownloadToDir(string directory)
-        {
-            Console.WriteLine("Begining Data Dragon download");
-            using (var client = new WebClient())
-            {
-                client.DownloadFile("https://dd.b.pvp.net/datadragon-set1-en_us.zip", directory + "/datadragon-set1-en_us.zip");
-            }
-            Console.WriteLine("Finished download");
-        }
-        
-        public void DeleteFromDir(string directory)
-        {
-            DirectoryInfo di = new DirectoryInfo(directory);
-
-            foreach (FileInfo file in di.GetFiles())
-            {
-                file.Delete();
-            }
-            foreach (DirectoryInfo dir in di.GetDirectories())
-            {
-                dir.Delete(true);
-            }
-        }
-
-        public static JArray LoadJson()
-        {
-            using (StreamReader r = new StreamReader(mainDirName + "set1-en_us.json"))
-            {
-                string json = r.ReadToEnd();
-                return JsonConvert.DeserializeObject<JArray>(json);
-            }
         }
 
         public void PrintDeckList(JObject deck, JArray set, List<string> order)
