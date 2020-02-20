@@ -3,22 +3,15 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using System.IO.Compression;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
-using System.Windows.Documents;
-using System.Security.Cryptography;
 
 namespace YARDT
 {
@@ -123,7 +116,7 @@ namespace YARDT
                 {
                     try
                     {
-                        JObject responseString = JsonConvert.DeserializeObject<JObject>(HttpReq($"http://localhost:{port}/positional-rectangles"));
+                        JObject responseString = JsonConvert.DeserializeObject<JObject>(Utils.HttpReq($"http://localhost:{port}/positional-rectangles"));
 
 
                         gameIsRunning = true;
@@ -135,7 +128,7 @@ namespace YARDT
                             if (!gotDeck)
                             {
                                 gotDeck = true;
-                                deck = JsonConvert.DeserializeObject<JObject>(HttpReq($"http://localhost:{port}/static-decklist"));
+                                deck = JsonConvert.DeserializeObject<JObject>(Utils.HttpReq($"http://localhost:{port}/static-decklist"));
                                 manaCostOrder.Clear();
                                 foreach (JToken card in deck["CardsInDeck"])
                                 {
@@ -230,7 +223,7 @@ namespace YARDT
                         playerCards.Clear();
                         mulligan = false;
                         Console.WriteLine("No longer in mulligan phase");
-                        PrintDeckList(deck, set, manaCostOrder, ref labelsDrawn);
+                        Utils.PrintDeckList(deck, set, manaCostOrder, sp, ref labelsDrawn, mainDirName);
                     }
 
                     if (!mulligan && deck.Count > 0)
@@ -262,7 +255,7 @@ namespace YARDT
                                 Console.WriteLine(name);
                             }
                             toDelete.Clear();
-                            PrintDeckList(deck, set, manaCostOrder, ref labelsDrawn);
+                            Utils.PrintDeckList(deck, set, manaCostOrder, sp, ref labelsDrawn, mainDirName);
                         }
                     }
                 }
@@ -329,12 +322,18 @@ namespace YARDT
                         if (img.Width == 1024)
                         {
                             image = ImageUtils.ResizeImage(img, 250, 250);
-                            ImageUtils.CropImage(image, file.FullName, 25, 110, 200, 30);
+                            image = ImageUtils.CropImage(image, file.FullName, 25, 110, 200, 30);
+                            image = ImageUtils.AddGradient(image, file.FullName);
+                            image.Save(file.FullName.TrimEnd('_'), ImageFormat.Png);
+
                         }
                         else
                         {
                             image = ImageUtils.ResizeImage(img, 200, 100);
-                            ImageUtils.CropImage(image, file.FullName, 0, 30, 200, 30);
+                            image = ImageUtils.CropImage(image, file.FullName, 0, 30, 200, 30);
+                            image = ImageUtils.AddGradient(image, file.FullName);
+                            image.Save(file.FullName.TrimEnd('_'), ImageFormat.Png);
+
                         }
                         img.Dispose();
                         file.Delete();
@@ -351,53 +350,6 @@ namespace YARDT
                 }
             }
             return hash == correctHash;
-        }
-
-        public void PrintDeckList(JObject deck, JArray set, List<string> order, ref bool labelsDrawn)
-        {
-            foreach (string cardCode in order)
-            {
-                string amount = deck["CardsInDeck"].Value<string>(cardCode);
-                foreach (var item in set)
-                {
-                    if (item.Value<string>("cardCode") == cardCode)
-                    {
-                        //Create button
-                        ControlUtils.CreateButton(sp, item, amount, !labelsDrawn, mainDirName);
-                        //top += button.Height + 2;
-                        Console.WriteLine(string.Format("{0,-3}{1,-25}{2}", item.Value<string>("cost"), item.Value<string>("name"), amount));
-                        break;
-                    }
-                }
-            }
-            labelsDrawn = true;
-        }
-
-        public static string HttpReq(string URL)
-        {
-            using (var client = new HttpClient())
-            {
-                try
-                {
-                    var response = client.GetAsync(URL).Result;
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var responseContent = response.Content;
-
-                        // by calling .Result you are synchronously reading the result
-                        string responseString = responseContent.ReadAsStringAsync().Result;
-
-                        return responseString;
-                    }
-
-                    return null;
-                }
-                catch
-                {
-                    return null;
-                }
-            }
         }
 
         private void ResetVars()
@@ -421,8 +373,6 @@ namespace YARDT
             printMenu = true;
             ControlUtils.ClearControls(Dispatcher.CurrentDispatcher, sp);
         }
-
-
 
         //Main window functions
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

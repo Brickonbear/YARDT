@@ -8,7 +8,7 @@ namespace YARDT
 {
     class ImageUtils
     {
-        public static void CropImage(Bitmap image, string name, int x, int y, int width, int height)
+        public static Bitmap CropImage(Bitmap image, string name, int x, int y, int width, int height)
         {
             Bitmap croppedImage;
 
@@ -21,14 +21,7 @@ namespace YARDT
                 croppedImage = image.Clone(crop, image.PixelFormat);
 
             } // Here we release the original resource - bitmap in memory and file on disk.
-
-            croppedImage = AddGradient(croppedImage, name);
-
-            // At this point the file on disk already free - you can record to the same path.
-            croppedImage.Save(name.TrimEnd('_'), ImageFormat.Png);
-
-            // It is desirable release this resource too.
-            croppedImage.Dispose();
+            return croppedImage;
         }
 
         public static Bitmap AddGradient(Bitmap image, string name)
