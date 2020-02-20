@@ -123,7 +123,7 @@ namespace YARDT
                 {
                     try
                     {
-                        JObject responseString = JsonConvert.DeserializeObject<JObject>(httpReq($"http://localhost:{port}/positional-rectangles"));
+                        JObject responseString = JsonConvert.DeserializeObject<JObject>(HttpReq($"http://localhost:{port}/positional-rectangles"));
 
 
                         gameIsRunning = true;
@@ -135,7 +135,7 @@ namespace YARDT
                             if (!gotDeck)
                             {
                                 gotDeck = true;
-                                deck = JsonConvert.DeserializeObject<JObject>(httpReq($"http://localhost:{port}/static-decklist"));
+                                deck = JsonConvert.DeserializeObject<JObject>(HttpReq($"http://localhost:{port}/static-decklist"));
                                 manaCostOrder.Clear();
                                 foreach (JToken card in deck["CardsInDeck"])
                                 {
@@ -230,7 +230,7 @@ namespace YARDT
                         playerCards.Clear();
                         mulligan = false;
                         Console.WriteLine("No longer in mulligan phase");
-                        printDeckList(deck, set, manaCostOrder);
+                        PrintDeckList(deck, set, manaCostOrder);
                     }
 
                     if (!mulligan && deck.Count > 0)
@@ -262,7 +262,7 @@ namespace YARDT
                                 Console.WriteLine(name);
                             }
                             toDelete.Clear();
-                            printDeckList(deck, set, manaCostOrder);
+                            PrintDeckList(deck, set, manaCostOrder);
                         }
                     }
                 }
@@ -275,7 +275,7 @@ namespace YARDT
             string correctHash = "904e7678a42f5893424534df9941b96b";
             if(File.Exists(mainDirName + "set1-en_us.json"))
             {
-                hash = CalculateMD5(mainDirName + "set1-en_us.json");         
+                hash = StringUtils.CalculateMD5(mainDirName + "set1-en_us.json");         
             }
 
             Console.WriteLine(hash);
@@ -353,18 +353,6 @@ namespace YARDT
             return hash == correctHash;
         }
 
-        static string CalculateMD5(string filename)
-        {
-            using (var md5 = MD5.Create())
-            {
-                using (var stream = File.OpenRead(filename))
-                {
-                    var hash = md5.ComputeHash(stream);
-                    return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
-                }
-            }
-        }
-
         public void DownloadToDir(string directory)
         {
             Console.WriteLine("Begining Data Dragon download");
@@ -398,7 +386,7 @@ namespace YARDT
             }
         }
 
-        public void printDeckList(JObject deck, JArray set, List<string> order)
+        public void PrintDeckList(JObject deck, JArray set, List<string> order)
         {
             foreach (string cardCode in order)
             {
@@ -418,7 +406,7 @@ namespace YARDT
             labelsDrawn = true;
         }
 
-        public static string httpReq(string URL)
+        public static string HttpReq(string URL)
         {
             using (var client = new HttpClient())
             {
@@ -514,7 +502,7 @@ namespace YARDT
                     //var img = CropAtRect(new BitmapImage(new Uri(string.Join("", fileName), UriKind.Relative)), new Rectangle(500, 250, 250, 30))
 
                     label.Background = new ImageBrush(new BitmapImage(new Uri(string.Join("", fileName), UriKind.Relative)));
-                    label.Name = SanitizeString(item.Value<string>("name"));
+                    label.Name = StringUtils.SanitizeString(item.Value<string>("name"));
                     sp.Children.Add(label);
                 }
                 else
@@ -527,7 +515,7 @@ namespace YARDT
                     cardsLeft.FontWeight = FontWeights.Bold;
                     cardsLeft.VerticalAlignment = VerticalAlignment.Center;
 
-                    Grid grid = sp.Children.OfType<Label>().Where(label => label.Name == SanitizeString(item.Value<string>("name"))).First<Label>().Content as Grid;
+                    Grid grid = sp.Children.OfType<Label>().Where(label => label.Name == StringUtils.SanitizeString(item.Value<string>("name"))).First<Label>().Content as Grid;
                     TextBlock cardAmount = grid.Children.OfType<TextBlock>().Last();
                     if (grid != null)
                     {
@@ -545,11 +533,6 @@ namespace YARDT
 
                 }
             });
-        }
-
-        public static string SanitizeString(string dirtyString)
-        {
-            return new String(dirtyString.Where(Char.IsLetterOrDigit).ToArray());
         }
 
         private void ClearControls() //Clear buttons
