@@ -139,5 +139,23 @@
   <ItemGroup>
     <Resource Include="Resources\RuneterraManaBackground.bmp" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\GradientDemacia.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\GradientFreljord.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\GradientIonia.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\GradientNoxus.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\GradientPiltoverZaun.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\GradientShadowIsles.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
