@@ -68,8 +68,7 @@
                         HorizontalAlignment="Left" 
                         Margin="0" 
                         VerticalAlignment="Top" 
-                        Width="250">
-            </StackPanel>
+                        Width="250"/>
         </ScrollViewer>
     </DockPanel>
     
