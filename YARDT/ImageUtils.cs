@@ -8,7 +8,7 @@ namespace YARDT
 {
     class ImageUtils
     {
-        public static Bitmap CropImage(Bitmap image, string name, int x, int y, int width, int height)
+        public static Bitmap CropImage(Bitmap image, int x, int y, int width, int height)
         {
             Bitmap croppedImage;
 
@@ -27,7 +27,7 @@ namespace YARDT
         public static Bitmap AddGradient(Bitmap image, string name)
         {
             Bitmap gradient;
-            //Console.WriteLine(name.Split('\\').Last<string>().Substring(2, 2).ToLower());
+
             switch (name.Split('\\').Last().Substring(2, 2).ToLower())
             {
                 case "de":

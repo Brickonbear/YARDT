@@ -322,18 +322,16 @@ namespace YARDT
                         if (img.Width == 1024)
                         {
                             image = ImageUtils.ResizeImage(img, 250, 250);
-                            image = ImageUtils.CropImage(image, file.FullName, 25, 110, 200, 30);
+                            image = ImageUtils.CropImage(image, 25, 110, 200, 30);
                             image = ImageUtils.AddGradient(image, file.FullName);
                             image.Save(file.FullName.TrimEnd('_'), ImageFormat.Png);
-
                         }
                         else
                         {
                             image = ImageUtils.ResizeImage(img, 200, 100);
-                            image = ImageUtils.CropImage(image, file.FullName, 0, 30, 200, 30);
+                            image = ImageUtils.CropImage(image, 0, 30, 200, 30);
                             image = ImageUtils.AddGradient(image, file.FullName);
                             image.Save(file.FullName.TrimEnd('_'), ImageFormat.Png);
-
                         }
                         img.Dispose();
                         file.Delete();
