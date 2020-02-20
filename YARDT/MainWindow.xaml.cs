@@ -40,6 +40,7 @@ namespace YARDT
         bool isMinimized = false;
         bool verified = false;
         bool labelsDrawn = false;
+        bool printMenu = true;
         double prevHeight = 0;
         JObject deck = new JObject();
         List<string> toDelete = new List<string>();
@@ -96,8 +97,9 @@ namespace YARDT
                     if (responseString["GameState"].ToString() == "Menus")
                     {
 
-                        ResetVars();
                         Console.WriteLine("Not in game, stopping timer");
+                        aTimer.IsEnabled = false;
+                        ResetVars();
                     }
                     else
                     {
@@ -109,6 +111,7 @@ namespace YARDT
                     Console.WriteLine("Game closed, stopping timer");
                     aTimer.IsEnabled = false;
                     gameIsRunning = false;
+                    ResetVars();
                 }
             }
             
@@ -149,16 +152,25 @@ namespace YARDT
                                 Console.WriteLine("Got deck");
                             }
                         }
-                        else if(inGame || aTimer.IsEnabled)
+                        else 
                         {
-                            Console.WriteLine("\nNot currently in game, stopping timer");
-                            aTimer.IsEnabled = false;
-                            inGame = false;
+                            if (printMenu)
+                            {
+                                Console.WriteLine("In menu, waiting for game to start");
+                                printMenu = false;
+                            }
+
+                            if (inGame || aTimer.IsEnabled)
+                            {
+                                Console.WriteLine("Not currently in game, stopping timer");
+                                aTimer.IsEnabled = false;
+                                inGame = false;
+                            }
                         }
                     }
                     catch (Exception)
                     {
-                        Console.WriteLine("\nCould not connect to game!");
+                        Console.WriteLine("Could not connect to game!");
                         Console.WriteLine("Trying again in 5 sec");
                         //Console.WriteLine("Message :{0} ", err.Message);
                         gameIsRunning = false;
@@ -224,6 +236,7 @@ namespace YARDT
                         playerCards.Clear();
                         mulligan = false;
                         Console.WriteLine("No longer in mulligan phase");
+                        printDeckList(deck, set, manaCostOrder);
                     }
 
                     if (!mulligan && deck.Count > 0)
@@ -380,6 +393,7 @@ namespace YARDT
             // It is desirable release this resource too.
             croppedImage.Dispose();
         }
+        
         public Bitmap AddGradient (Bitmap image, string name)
         {
             Bitmap gradient;
@@ -418,6 +432,7 @@ namespace YARDT
 
             return target;
         }
+       
         public static Bitmap ResizeImage(System.Drawing.Image image, int width, int height)
         {
             var destRect = new Rectangle(0, 0, width, height);
@@ -477,7 +492,6 @@ namespace YARDT
 
         public void printDeckList(JObject deck, JArray set, List<string> order)
         {
-            //ClearControls();
             foreach (string cardCode in order)
             {
                 string amount = deck["CardsInDeck"].Value<string>(cardCode);
@@ -540,8 +554,6 @@ namespace YARDT
                         Height = 30
                     };
 
-                    Console.WriteLine("This should only happen once");
-
                     Grid grid = new Grid();
 
                     ColumnDefinition col1 = new ColumnDefinition();
@@ -594,7 +606,7 @@ namespace YARDT
                     //var img = CropAtRect(new BitmapImage(new Uri(string.Join("", fileName), UriKind.Relative)), new Rectangle(500, 250, 250, 30))
 
                     label.Background = new ImageBrush(new BitmapImage(new Uri(string.Join("", fileName), UriKind.Relative)));
-                    label.Name = item.Value<string>("name").Replace(" ", "");
+                    label.Name = SanitizeString(item.Value<string>("name"));
                     sp.Children.Add(label);
                 }
                 else
@@ -607,9 +619,8 @@ namespace YARDT
                     cardsLeft.FontWeight = FontWeights.Bold;
                     cardsLeft.VerticalAlignment = VerticalAlignment.Center;
 
-                    Grid grid = sp.Children.OfType<Label>().Where(label => label.Name == item.Value<string>("name").Replace(" ", "")).First<Label>().Content as Grid;
+                    Grid grid = sp.Children.OfType<Label>().Where(label => label.Name == SanitizeString(item.Value<string>("name"))).First<Label>().Content as Grid;
                     TextBlock cardAmount = grid.Children.OfType<TextBlock>().Last();
-                    Console.WriteLine(cardAmount.Text);
                     if (grid != null)
                     {
                         var column = Grid.GetColumn(cardAmount);
@@ -624,11 +635,22 @@ namespace YARDT
                         Grid.SetRowSpan(cardsLeft, rowSpan);
                     }
 
-                    Console.WriteLine(item.Value<string>("name"));
                 }
             });
         }
 
+        public static string SanitizeString(string dirtyString)
+        {
+            return new String(dirtyString.Where(Char.IsLetterOrDigit).ToArray());
+        }
+
+        private void ClearControls() //Clear buttons
+        {
+            Dispatcher.Invoke(() =>
+            {
+                sp.Children.Clear();
+            });
+        }
         private void ResetVars()
         {
             gameIsRunning = false;
@@ -646,8 +668,10 @@ namespace YARDT
             playerCards = new Dictionary<string, JObject>();
             purgatory = new Dictionary<string, JObject>();
             aTimer.IsEnabled = false;
+            labelsDrawn = false;
+            printMenu = true;
+            ClearControls();
         }
-
 
         //Main window functions
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
