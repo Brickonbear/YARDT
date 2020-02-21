@@ -68,10 +68,7 @@
                         HorizontalAlignment="Left" 
                         Margin="0" 
                         VerticalAlignment="Top" 
-                        Width="250">
-                <Label x:Name="lbl" Background="{x:Null}" Content="12345"/>
-            </StackPanel>
-
+                        Width="250"/>
         </ScrollViewer>
     </DockPanel>
     

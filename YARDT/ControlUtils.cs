@@ -13,7 +13,7 @@ namespace YARDT
     class ControlUtils
     {
 
-        public static void CreateButton(StackPanel sp, JToken item, string amount, bool reset, string mainDirName) //Create button
+        public static void CreateLabel(StackPanel sp, JToken item, string amount, bool reset, string mainDirName) //Create button
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -76,20 +76,36 @@ namespace YARDT
                     grid.Children.Add(name);
                     grid.Children.Add(cardsLeft);
 
-                    label.Content = grid;//string.Format("{0,-3}{1,-25}{2}", item.Value<string>("cost"), item.Value<string>("name"), amount);
-                    string[] fileName = { mainDirName + "full/", item.Value<string>("cardCode"), "-full.png" };
-                    //Console.WriteLine(string.Join("", fileName));
-                    //var img = CropAtRect(new BitmapImage(new Uri(string.Join("", fileName), UriKind.Relative)), new Rectangle(500, 250, 250, 30))
+                    label.Content = grid;
+                    string fileName = mainDirName + "full/" + item.Value<string>("cardCode") + "-full.png";
+                    label.Background = new ImageBrush(new BitmapImage(new Uri(string.Join("", fileName), UriKind.Relative)));
 
+                    label.Name = StringUtils.SanitizeString(item.Value<string>("name"));
+
+
+                    //ToolTip stuff
+                    //Get Image
                     System.IO.FileInfo file = new System.IO.FileInfo(mainDirName + "cards/" + item.Value<string>("cardCode").ToUpper()+".png");
                     Image myImage3 = new Image();
                     BitmapImage bi3 = new BitmapImage(new Uri(file.FullName, UriKind.Absolute));
                     myImage3.Stretch = Stretch.Fill;
                     myImage3.Source = bi3;
-                    label.ToolTip = myImage3;
 
-                    label.Background = new ImageBrush(new BitmapImage(new Uri(string.Join("", fileName), UriKind.Relative)));
-                    label.Name = StringUtils.SanitizeString(item.Value<string>("name"));
+                    //Create ControlTemplate
+                    ControlTemplate controlTemplate = new ControlTemplate(typeof(ToolTip));
+                    FrameworkElementFactory contentPresenter = new FrameworkElementFactory(typeof(ContentPresenter));
+                    controlTemplate.VisualTree = contentPresenter;
+
+                    //Create ToolTip with Image and ControlTemplate
+                    ToolTip tt = new ToolTip
+                    {
+                        Template = controlTemplate,
+                        Content = myImage3
+                    };
+
+                    label.ToolTip = tt;
+
+                    //Finally add label to Window
                     sp.Children.Add(label);
                 }
                 else

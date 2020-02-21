@@ -19,7 +19,7 @@ namespace YARDT
                     if (item.Value<string>("cardCode") == cardCode)
                     {
                         //Create button
-                        ControlUtils.CreateButton(sp, item, amount, !labelsDrawn, mainDirName);
+                        ControlUtils.CreateLabel(sp, item, amount, !labelsDrawn, mainDirName);
                         //top += button.Height + 2;
                         Console.WriteLine(string.Format("{0,-3}{1,-25}{2}", item.Value<string>("cost"), item.Value<string>("name"), amount));
                         break;
