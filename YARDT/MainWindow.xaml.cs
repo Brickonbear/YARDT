@@ -12,6 +12,7 @@ using System.Windows.Threading;
 using System.IO.Compression;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Windows.Media;
 
 namespace YARDT
 {
@@ -300,10 +301,20 @@ namespace YARDT
                     Console.WriteLine("Moving cards to " + mainDirName + "cards/");
                     foreach (var file in dir.EnumerateFiles())
                     {
-                        string[] filename = { mainDirName+"/cards/", file.Name };
+                        string[] filename = { mainDirName+"/cards/", file.Name , "_" };
                         file.MoveTo(string.Join("", filename));
                     }
-
+                    dir = new DirectoryInfo(mainDirName + "/cards");
+                    Console.WriteLine("Resizing card images");
+                    foreach (var file in dir.EnumerateFiles("*.png_"))
+                    {
+                        Bitmap image;
+                        Bitmap img = new Bitmap(file.FullName);
+                        image = ImageUtils.ResizeImage(img, 340, 512);
+                        image.Save(file.FullName.TrimEnd('_'), ImageFormat.Png);
+                        img.Dispose();
+                        file.Delete();
+                    }
                     dir = new DirectoryInfo(mainDirName+"/full");
                     Console.WriteLine("Cropping full images and applying gradient");
                     foreach (var file in dir.EnumerateFiles("*.png_"))
