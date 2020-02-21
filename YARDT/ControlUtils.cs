@@ -81,6 +81,16 @@ namespace YARDT
                     //Console.WriteLine(string.Join("", fileName));
                     //var img = CropAtRect(new BitmapImage(new Uri(string.Join("", fileName), UriKind.Relative)), new Rectangle(500, 250, 250, 30))
 
+                    Image myImage3 = new Image();
+                    BitmapImage bi3 = new BitmapImage();
+                    bi3.BeginInit();
+                    bi3.UriSource = new Uri(mainDirName + "cards/01DE001.png", UriKind.Relative);
+                    bi3.EndInit();
+                    myImage3.Stretch = Stretch.Fill;
+                    myImage3.Source = bi3;
+
+                    label.ToolTip = myImage3;
+
                     label.Background = new ImageBrush(new BitmapImage(new Uri(string.Join("", fileName), UriKind.Relative)));
                     label.Name = StringUtils.SanitizeString(item.Value<string>("name"));
                     sp.Children.Add(label);
