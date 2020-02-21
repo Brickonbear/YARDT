@@ -229,31 +229,5 @@ namespace YARDT.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to [
-        ///  {
-        ///    &quot;associatedCards&quot;: [],
-        ///    &quot;associatedCardRefs&quot;: [],
-        ///    &quot;assets&quot;: [
-        ///      {
-        ///        &quot;gameAbsolutePath&quot;: &quot;http://dd.b.pvp.net/Set1/en_us/img/cards/01IO012T2.png&quot;,
-        ///        &quot;fullAbsolutePath&quot;: &quot;http://dd.b.pvp.net/Set1/en_us/img/cards/01IO012T2-full.png&quot;
-        ///      }
-        ///    ],
-        ///    &quot;region&quot;: &quot;Ionia&quot;,
-        ///    &quot;regionRef&quot;: &quot;Ionia&quot;,
-        ///    &quot;attack&quot;: 0,
-        ///    &quot;cost&quot;: 3,
-        ///    &quot;health&quot;: 0,
-        ///    &quot;description&quot;: &quot;Give an ally +0|+3 this round.&quot;,
-        ///    &quot;descriptionRaw&quot;: &quot;Give an ally +0|+3 this round.&quot;,
-        ///    &quot;level [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string set1_en_us {
-            get {
-                return ResourceManager.GetString("set1_en_us", resourceCulture);
-            }
-        }
     }
 }

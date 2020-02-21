@@ -114,7 +114,6 @@
     <Resource Include="Resources\RomanSerif.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <None Include="Resources\set1_en_us.json" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\CloseButton.bmp" />
