@@ -290,12 +290,14 @@ namespace YARDT
                     Directory.CreateDirectory(mainDirName+"/full");
                     Directory.CreateDirectory(mainDirName+"/cards");
 
+                    Console.WriteLine("Moving full images to " + mainDirName + "full/");
+
                     foreach (var file in dir.EnumerateFiles("*-full.png"))
                     {
                         string[] filename = { mainDirName+"/full/", file.Name , "_"};
                         file.MoveTo(string.Join("", filename));
                     }
-
+                    Console.WriteLine("Moving cards to " + mainDirName + "cards/");
                     foreach (var file in dir.EnumerateFiles())
                     {
                         string[] filename = { mainDirName+"/cards/", file.Name };
@@ -303,7 +305,7 @@ namespace YARDT
                     }
 
                     dir = new DirectoryInfo(mainDirName+"/full");
-
+                    Console.WriteLine("Cropping full images and applying gradient");
                     foreach (var file in dir.EnumerateFiles("*.png_"))
                     {
                         Bitmap image;
@@ -328,6 +330,7 @@ namespace YARDT
                     bool verified = VerifyData(true);
                     if (verified)
                     {
+                        Console.WriteLine("Deleting Data Dragon");
                         FileUtils.DeleteFromDir(tempDirName);
                         Directory.Delete(tempDirName);
                         return true;
