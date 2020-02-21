@@ -51,19 +51,6 @@ namespace YARDT
         {
             InitializeComponent();
 
-            if (!Directory.Exists("YARDTData"))
-            {
-                Directory.CreateDirectory("YARDTData");
-                Console.WriteLine("Created folder YARDTData");
-            }
-
-            if (!Directory.Exists("YARDTTempData"))
-            {
-                Directory.CreateDirectory("YARDTTempData");
-                Console.WriteLine("Created folder YARDTTempData");
-            }
-
-
             Console.WriteLine("Verifying Data");
             for(int i = 5; i > 0; i--)
             {
@@ -271,12 +258,14 @@ namespace YARDT
                 hash = StringUtils.CalculateMD5(mainDirName + "set1-en_us.json");         
             }
 
-            Console.WriteLine(hash);
-
             if (!downloaded)
             {
                 if (hash != correctHash)
                 {
+                    Directory.CreateDirectory(mainDirName);
+                    Console.WriteLine("Created folder "+mainDirName);
+                    Directory.CreateDirectory(tempDirName);
+                    Console.WriteLine("Created folder "+tempDirName);
                     Console.WriteLine("Hashes don't match, deleting content of " + mainDirName);
 
                     FileUtils.DeleteFromDir(mainDirName);
@@ -339,6 +328,8 @@ namespace YARDT
                     bool verified = VerifyData(true);
                     if (verified)
                     {
+                        FileUtils.DeleteFromDir(tempDirName);
+                        Directory.Delete(tempDirName);
                         return true;
                     }
                     else
