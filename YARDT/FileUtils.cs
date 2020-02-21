@@ -1,21 +1,58 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.ComponentModel;
 using System.IO;
 using System.Net;
+using System.Threading;
+using System.Windows;
 
 namespace YARDT
 {
     class FileUtils
     {
+
         public static void DownloadToDir(string directory)
         {
             Console.WriteLine("Begining Data Dragon download");
-            using (var client = new WebClient())
-            {
-                client.DownloadFile("https://dd.b.pvp.net/datadragon-set1-en_us.zip", directory + "/datadragon-set1-en_us.zip");
-            }
+
+            DownloadFile("https://dd.b.pvp.net/datadragon-set1-en_us.zip", directory + "/datadragon-set1-en_us.zip");
+
             Console.WriteLine("Finished download");
+        }
+
+        public static void DownloadFile(string address, string destination)
+        {
+            ManualResetEvent Waiter = new ManualResetEvent(false);
+
+            Uri uri = new Uri(address);
+            WebClient wc = new WebClient();
+
+            new Thread(() =>
+            {
+                wc.DownloadProgressChanged += new DownloadProgressChangedEventHandler(HandleDownloadProgress);
+                wc.DownloadFileCompleted += new AsyncCompletedEventHandler(HandleDownloadComplete);
+                wc.DownloadFileAsync(uri, destination, Waiter);
+
+            }).Start();
+
+            Waiter.WaitOne();
+        }
+        
+
+        public static void HandleDownloadComplete(object sender, AsyncCompletedEventArgs e)
+        {
+            ManualResetEvent Waiter = e.UserState as ManualResetEvent;
+
+            Waiter.Set();
+        }
+
+        public static void HandleDownloadProgress(object sender, DownloadProgressChangedEventArgs e)
+        {
+            Console.Write("\rDownloaded {0} of {1} bytes. {2} % complete...      ",
+                e.BytesReceived,
+                e.TotalBytesToReceive,
+                e.ProgressPercentage);
         }
 
         public static void DeleteFromDir(string directory)
