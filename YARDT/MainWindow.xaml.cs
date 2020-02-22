@@ -12,7 +12,6 @@ using System.Windows.Threading;
 using System.IO.Compression;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Windows.Media;
 
 namespace YARDT
 {
