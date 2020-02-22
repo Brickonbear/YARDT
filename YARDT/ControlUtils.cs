@@ -146,29 +146,5 @@ namespace YARDT
             });
         }
 
-        public static void ChangeMainWindowTitle(string newTitle)
-        {
-            TextBlock windowTitle = null;
-
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                foreach (Window window in Application.Current.Windows)
-                {
-                    if (window.GetType() == typeof(MainWindow))
-                    {
-                        windowTitle = (window as MainWindow).WindowTitle;
-                        break;
-                    }
-                }
-                if (windowTitle != null)
-                {
-                    windowTitle.Text = newTitle;
-                }
-            });
-
-
-            
-        }
-
     }
 }
