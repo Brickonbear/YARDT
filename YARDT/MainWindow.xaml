@@ -56,7 +56,7 @@
                    MouseLeftButtonDown="OptionsButton_MouseLeftButtonDown" 
                    MouseEnter="OptionsButton_MouseEnter" 
                    MouseLeave="OptionsButton_MouseLeave"/>
-            <TextBlock HorizontalAlignment="Center" Foreground="#FFEDECEC">YARDT</TextBlock>
+            <TextBlock x:Name="WindowTitle" HorizontalAlignment="Center" Foreground="#FFEDECEC">YARDT</TextBlock>
         </DockPanel>
 
         <ScrollViewer 
