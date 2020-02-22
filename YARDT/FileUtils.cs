@@ -6,6 +6,8 @@ using System.IO;
 using System.Net;
 using System.Threading;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Threading;
 
 namespace YARDT
 {
@@ -42,6 +44,9 @@ namespace YARDT
 
         public static void HandleDownloadComplete(object sender, AsyncCompletedEventArgs e)
         {
+
+            ControlUtils.ChangeMainWindowTitle("YARDT");
+
             Console.WriteLine();
             ManualResetEvent Waiter = e.UserState as ManualResetEvent;
 
@@ -50,6 +55,9 @@ namespace YARDT
 
         public static void HandleDownloadProgress(object sender, DownloadProgressChangedEventArgs e)
         {
+
+            ControlUtils.ChangeMainWindowTitle("Downloading data, " + e.ProgressPercentage + "% complete...");
+
             Console.Write("\rDownloaded {0} of {1} bytes. {2} % complete...      ",
                 e.BytesReceived,
                 e.TotalBytesToReceive,
@@ -60,13 +68,16 @@ namespace YARDT
         {
             DirectoryInfo di = new DirectoryInfo(directory);
 
-            foreach (FileInfo file in di.GetFiles())
+            if (di.Exists)
             {
-                file.Delete();
-            }
-            foreach (DirectoryInfo dir in di.GetDirectories())
-            {
-                dir.Delete(true);
+                foreach (FileInfo file in di.GetFiles())
+                {
+                    file.Delete();
+                }
+                foreach (DirectoryInfo dir in di.GetDirectories())
+                {
+                    dir.Delete(true);
+                }
             }
         }
 

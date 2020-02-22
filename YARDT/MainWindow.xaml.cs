@@ -228,8 +228,11 @@ namespace YARDT
             if(hash == correctHash)
             {
                 Console.WriteLine("Deleting Data Dragon");
-                FileUtils.DeleteFromDir(tempDirName);
-                Directory.Delete(tempDirName);
+
+                if(Directory.Exists(tempDirName)){
+                    FileUtils.DeleteFromDir(tempDirName);
+                    Directory.Delete(tempDirName);
+                }
                 Console.WriteLine("Succesfully verified Data");
                 System.Threading.Tasks.Task.Delay(1000).ContinueWith(t => Main());
                 return true;
@@ -254,10 +257,6 @@ namespace YARDT
                     ZipFile.ExtractToDirectory(tempDirName+"/datadragon-set1-en_us.zip", tempDirName+"/datadragon-set1-en_us");
 
                     var dir = new DirectoryInfo(tempDirName+"/datadragon-set1-en_us/en_us/img/cards");
-
-                    var data = new FileInfo(tempDirName+"/datadragon-set1-en_us/en_us/data/set1-en_us.json");
-
-                    data.MoveTo(mainDirName+ "/set1-en_us.json");
 
                     foreach (var file in dir.EnumerateFiles("*-alt*.png"))
                     {
@@ -314,6 +313,10 @@ namespace YARDT
                         img.Dispose();
                         file.Delete();
                     }
+                    
+                    var dataSet = new FileInfo(tempDirName + "/datadragon-set1-en_us/en_us/data/set1-en_us.json");
+                    dataSet.MoveTo(mainDirName + "/set1-en_us.json");
+
                     bool verified = VerifyData(true);
                     if (!verified)
                     {
@@ -410,7 +413,8 @@ namespace YARDT
         //CloseButton Functions
         private void CloseButton_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            Application.Current.Shutdown();
+            Environment.Exit(Environment.ExitCode);
+            //Application.Current.Shutdown();
         }
 
         private void CloseButton_MouseEnter(object sender, MouseEventArgs e)
