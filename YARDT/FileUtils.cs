@@ -42,6 +42,7 @@ namespace YARDT
 
         public static void HandleDownloadComplete(object sender, AsyncCompletedEventArgs e)
         {
+            Console.WriteLine();
             ManualResetEvent Waiter = e.UserState as ManualResetEvent;
 
             Waiter.Set();

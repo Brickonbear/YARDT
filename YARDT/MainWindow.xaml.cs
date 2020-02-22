@@ -52,48 +52,12 @@ namespace YARDT
         {
             InitializeComponent();
 
-            Console.WriteLine("Verifying Data");
-            for(int i = 5; i > 0; i--)
-            {
-                Console.WriteLine("Attempting to verify " + i + " tries left");
-                verified = VerifyData(false);
-                if (verified) break;
-
-            }
-            Console.WriteLine("Succesfully verified Data");
+            //verified = VerifyData(false);
             
             aTimer.Interval = TimeSpan.FromMilliseconds(2000);
-
-            async void UpdateCardsInPlay(object source, EventArgs e)
-            {
-                try
-                {
-                    JObject responseString = JsonConvert.DeserializeObject<JObject>(await client.GetStringAsync($"http://localhost:{port}/positional-rectangles"));
-                    if (responseString["GameState"].ToString() == "Menus")
-                    {
-
-                        Console.WriteLine("Not in game, stopping timer");
-                        aTimer.IsEnabled = false;
-                        ResetVars();
-                    }
-                    else
-                    {
-                        cardsInPlay = responseString["Rectangles"].ToObject<JArray>();
-                    }
-                }
-                catch
-                {
-                    Console.WriteLine("Game closed, stopping timer");
-                    aTimer.IsEnabled = false;
-                    gameIsRunning = false;
-                    ResetVars();
-                }
-            }
-            
             aTimer.Tick += new EventHandler(UpdateCardsInPlay);
-
+            System.Threading.Tasks.Task.Delay(1000).ContinueWith(t => VerifyData(false));
             Console.WriteLine("Heyo fuckface its ya boi LEGIIIIIIIIIIIT FOOD REVIEWS");
-            System.Threading.Tasks.Task.Delay(1000).ContinueWith(t => Main());
         }
 
         public void Main()
@@ -252,11 +216,23 @@ namespace YARDT
 
         public bool VerifyData(bool downloaded)
         {
+            Console.WriteLine("Verifying Data");
+
             string hash = "";
             string correctHash = "904e7678a42f5893424534df9941b96b";
             if(File.Exists(mainDirName + "set1-en_us.json"))
             {
                 hash = StringUtils.CalculateMD5(mainDirName + "set1-en_us.json");         
+            }
+
+            if(hash == correctHash)
+            {
+                Console.WriteLine("Deleting Data Dragon");
+                FileUtils.DeleteFromDir(tempDirName);
+                Directory.Delete(tempDirName);
+                Console.WriteLine("Succesfully verified Data");
+                System.Threading.Tasks.Task.Delay(1000).ContinueWith(t => Main());
+                return true;
             }
 
             if (!downloaded)
@@ -339,20 +315,40 @@ namespace YARDT
                         file.Delete();
                     }
                     bool verified = VerifyData(true);
-                    if (verified)
+                    if (!verified)
                     {
-                        Console.WriteLine("Deleting Data Dragon");
-                        FileUtils.DeleteFromDir(tempDirName);
-                        Directory.Delete(tempDirName);
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
+                        Console.WriteLine("Could not verify data");
+                        Environment.Exit(1337);
                     }
                 }
             }
             return hash == correctHash;
+        }
+
+        public async void UpdateCardsInPlay(object source, EventArgs e)
+        {
+            try
+            {
+                JObject responseString = JsonConvert.DeserializeObject<JObject>(await client.GetStringAsync($"http://localhost:{port}/positional-rectangles"));
+                if (responseString["GameState"].ToString() == "Menus")
+                {
+
+                    Console.WriteLine("Not in game, stopping timer");
+                    aTimer.IsEnabled = false;
+                    ResetVars();
+                }
+                else
+                {
+                    cardsInPlay = responseString["Rectangles"].ToObject<JArray>();
+                }
+            }
+            catch
+            {
+                Console.WriteLine("Game closed, stopping timer");
+                aTimer.IsEnabled = false;
+                gameIsRunning = false;
+                ResetVars();
+            }
         }
 
         private void ResetVars()
