@@ -61,38 +61,172 @@ namespace YARDT.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap CloseButton {
+            get {
+                object obj = ResourceManager.GetObject("CloseButton", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap CloseButtonClick {
+            get {
+                object obj = ResourceManager.GetObject("CloseButtonClick", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap CloseButtonHover {
+            get {
+                object obj = ResourceManager.GetObject("CloseButtonHover", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap CollapseButton {
+            get {
+                object obj = ResourceManager.GetObject("CollapseButton", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap CollapseButtonClick {
+            get {
+                object obj = ResourceManager.GetObject("CollapseButtonClick", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap CollapseButtonHover {
+            get {
+                object obj = ResourceManager.GetObject("CollapseButtonHover", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap GradientDemacia {
+            get {
+                object obj = ResourceManager.GetObject("GradientDemacia", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap GradientFreljord {
+            get {
+                object obj = ResourceManager.GetObject("GradientFreljord", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap GradientIonia {
+            get {
+                object obj = ResourceManager.GetObject("GradientIonia", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap GradientNoxus {
+            get {
+                object obj = ResourceManager.GetObject("GradientNoxus", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap GradientPiltoverZaun {
+            get {
+                object obj = ResourceManager.GetObject("GradientPiltoverZaun", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap GradientShadowIsles {
+            get {
+                object obj = ResourceManager.GetObject("GradientShadowIsles", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap OptionsButton {
+            get {
+                object obj = ResourceManager.GetObject("OptionsButton", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap OptionsButtonClick {
+            get {
+                object obj = ResourceManager.GetObject("OptionsButtonClick", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap OptionsButtonHover {
+            get {
+                object obj = ResourceManager.GetObject("OptionsButtonHover", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] logo {
+        internal static byte[] RomanSerif {
             get {
-                object obj = ResourceManager.GetObject("logo", resourceCulture);
+                object obj = ResourceManager.GetObject("RomanSerif", resourceCulture);
                 return ((byte[])(obj));
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [
-        ///  {
-        ///    &quot;associatedCards&quot;: [],
-        ///    &quot;associatedCardRefs&quot;: [],
-        ///    &quot;assets&quot;: [
-        ///      {
-        ///        &quot;gameAbsolutePath&quot;: &quot;http://dd.b.pvp.net/Set1/en_us/img/cards/01IO012T2.png&quot;,
-        ///        &quot;fullAbsolutePath&quot;: &quot;http://dd.b.pvp.net/Set1/en_us/img/cards/01IO012T2-full.png&quot;
-        ///      }
-        ///    ],
-        ///    &quot;region&quot;: &quot;Ionia&quot;,
-        ///    &quot;regionRef&quot;: &quot;Ionia&quot;,
-        ///    &quot;attack&quot;: 0,
-        ///    &quot;cost&quot;: 3,
-        ///    &quot;health&quot;: 0,
-        ///    &quot;description&quot;: &quot;Give an ally +0|+3 this round.&quot;,
-        ///    &quot;descriptionRaw&quot;: &quot;Give an ally +0|+3 this round.&quot;,
-        ///    &quot;level [rest of string was truncated]&quot;;.
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static string set1_en_us {
+        internal static System.Drawing.Bitmap RuneterraManaBackground {
             get {
-                return ResourceManager.GetString("set1_en_us", resourceCulture);
+                object obj = ResourceManager.GetObject("RuneterraManaBackground", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }
