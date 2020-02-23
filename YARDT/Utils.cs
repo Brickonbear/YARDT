@@ -14,7 +14,7 @@ namespace YARDT
             foreach (string cardCode in order)
             {
                 string amount = deck["CardsInDeck"].Value<string>(cardCode);
-                foreach (var item in set)
+                foreach (JToken item in set)
                 {
                     if (item.Value<string>("cardCode") == cardCode)
                     {
@@ -31,15 +31,15 @@ namespace YARDT
 
         public static string HttpReq(string URL)
         {
-            using (var client = new HttpClient())
+            using (HttpClient client = new HttpClient())
             {
                 try
                 {
-                    var response = client.GetAsync(URL).Result;
+                    HttpResponseMessage response = client.GetAsync(URL).Result;
 
                     if (response.IsSuccessStatusCode)
                     {
-                        var responseContent = response.Content;
+                        HttpContent responseContent = response.Content;
 
                         // by calling .Result you are synchronously reading the result
                         string responseString = responseContent.ReadAsStringAsync().Result;

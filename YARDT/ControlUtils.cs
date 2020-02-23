@@ -122,10 +122,10 @@ namespace YARDT
                     TextBlock cardAmount = grid.Children.OfType<TextBlock>().Last();
                     if (grid != null)
                     {
-                        var column = Grid.GetColumn(cardAmount);
-                        var row = Grid.GetRow(cardAmount);
-                        var colSpan = Grid.GetColumnSpan(cardAmount);
-                        var rowSpan = Grid.GetRowSpan(cardAmount);
+                        int column = Grid.GetColumn(cardAmount);
+                        int row = Grid.GetRow(cardAmount);
+                        int colSpan = Grid.GetColumnSpan(cardAmount);
+                        int rowSpan = Grid.GetRowSpan(cardAmount);
                         grid.Children.Remove(cardAmount); //remove old canvas
                         grid.Children.Add(cardsLeft);//add new canvas
                         Grid.SetColumn(cardsLeft, column);

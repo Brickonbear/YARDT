@@ -31,7 +31,6 @@ namespace YARDT
         bool sorted = false;
         bool mulligan = true;
         bool isMinimized = false;
-        bool verified = false;
         bool labelsDrawn = false;
         bool printMenu = true;
         double prevHeight = 0;
@@ -52,7 +51,7 @@ namespace YARDT
             InitializeComponent();
 
             //verified = VerifyData(false);
-            
+
             aTimer.Interval = TimeSpan.FromMilliseconds(2000);
             aTimer.Tick += new EventHandler(UpdateCardsInPlay);
             System.Threading.Tasks.Task.Delay(100).ContinueWith(t => VerifyData(false));
@@ -92,7 +91,7 @@ namespace YARDT
                                 Console.WriteLine("Got deck");
                             }
                         }
-                        else 
+                        else
                         {
                             if (printMenu)
                             {
@@ -132,7 +131,7 @@ namespace YARDT
                     manaCostOrder.Sort((x, y) =>
                     {
                         int xManaCost = -1, yManaCost = -1;
-                        foreach (var item in set)
+                        foreach (JToken item in set)
                         {
                             if (item.Value<string>("cardCode") == x)
                             {
@@ -156,7 +155,7 @@ namespace YARDT
                 {
                     Console.WriteLine("Cards are different");
                     cardsInPlayCopy = cardsInPlay;
-                    foreach (var card in cardsInPlayCopy)
+                    foreach (JToken card in cardsInPlayCopy)
                     {
                         if (!playerCards.ContainsKey(card.Value<string>("CardID")))
                         {
@@ -181,12 +180,12 @@ namespace YARDT
 
                     if (!mulligan && deck.Count > 0)
                     {
-                        foreach (var card in playerCards.Keys)
+                        foreach (string card in playerCards.Keys)
                         {
                             if (!purgatory.ContainsKey(card))
                             {
                                 purgatory.Add(card, playerCards[card]);
-                                foreach (var item in deck["CardsInDeck"])
+                                foreach (JToken item in deck["CardsInDeck"])
                                 {
                                     JProperty itemProperty = item.ToObject<JProperty>();
 
@@ -201,7 +200,7 @@ namespace YARDT
                         if (toDelete.Count > 0)
                         {
                             Console.WriteLine("Deleting cards from deck");
-                            foreach (var name in toDelete)
+                            foreach (string name in toDelete)
                             {
                                 deck["CardsInDeck"][name] = deck["CardsInDeck"].Value<int>(name) - 1;
                                 Console.Write("Decremented item: ");
@@ -222,17 +221,18 @@ namespace YARDT
 
             string hash = "";
             string correctHash = "904e7678a42f5893424534df9941b96b";
-            if(File.Exists(mainDirName + "set1-en_us.json"))
+            if (File.Exists(mainDirName + "set1-en_us.json"))
             {
-                hash = StringUtils.CalculateMD5(mainDirName + "set1-en_us.json");         
+                hash = StringUtils.CalculateMD5(mainDirName + "set1-en_us.json");
             }
 
-            if(hash == correctHash)
+            if (hash == correctHash)
             {
                 Console.WriteLine("Deleting Data Dragon");
                 ControlUtils.CreateTextBox(sp, "Deleting Data Dragon");
 
-                if (Directory.Exists(tempDirName)){
+                if (Directory.Exists(tempDirName))
+                {
                     FileUtils.DeleteFromDir(tempDirName);
                     Directory.Delete(tempDirName);
                 }
@@ -250,11 +250,11 @@ namespace YARDT
                     ControlUtils.CreateTextBox(sp, "Hashes don't match");
 
                     Directory.CreateDirectory(mainDirName);
-                    Console.WriteLine("Created folder "+mainDirName);
+                    Console.WriteLine("Created folder " + mainDirName);
                     ControlUtils.CreateTextBox(sp, "Created folder " + mainDirName);
 
                     Directory.CreateDirectory(tempDirName);
-                    Console.WriteLine("Created folder "+tempDirName);
+                    Console.WriteLine("Created folder " + tempDirName);
                     ControlUtils.CreateTextBox(sp, "Created folder " + tempDirName);
 
                     Console.WriteLine("Deleting content of " + mainDirName);
@@ -268,37 +268,38 @@ namespace YARDT
                     //Unzip File
                     Console.WriteLine("Unziping DataDragon");
                     ControlUtils.CreateTextBox(sp, "Unziping DataDragon");
-                    ZipFile.ExtractToDirectory(tempDirName+"/datadragon-set1-en_us.zip", tempDirName+"/datadragon-set1-en_us");
+                    ZipFile.ExtractToDirectory(tempDirName + "/datadragon-set1-en_us.zip", tempDirName + "/datadragon-set1-en_us");
 
-                    var dir = new DirectoryInfo(tempDirName+"/datadragon-set1-en_us/en_us/img/cards");
+                    DirectoryInfo dir = new DirectoryInfo(tempDirName + "/datadragon-set1-en_us/en_us/img/cards");
 
-                    foreach (var file in dir.EnumerateFiles("*-alt*.png"))
+                    foreach (FileInfo file in dir.EnumerateFiles("*-alt*.png"))
                     {
                         file.Delete();
                     }
-                    
-                    Directory.CreateDirectory(mainDirName+"/full");
-                    Directory.CreateDirectory(mainDirName+"/cards");
+
+                    Directory.CreateDirectory(mainDirName + "/full");
+                    Directory.CreateDirectory(mainDirName + "/cards");
 
                     Console.WriteLine("Moving full images to " + mainDirName + "full/");
                     ControlUtils.CreateTextBox(sp, "Moving full images to " + mainDirName + "full/");
-
-                    foreach (var file in dir.EnumerateFiles("*-full.png"))
+                    foreach (FileInfo file in dir.EnumerateFiles("*-full.png"))
                     {
-                        string[] filename = { mainDirName+"/full/", file.Name , "_"};
+                        string[] filename = { mainDirName + "/full/", file.Name, "_" };
                         file.MoveTo(string.Join("", filename));
                     }
+                    
                     Console.WriteLine("Moving cards to " + mainDirName + "cards/");
                     ControlUtils.CreateTextBox(sp, "Moving cards to " + mainDirName + "cards/");
-                    foreach (var file in dir.EnumerateFiles())
+                    foreach (FileInfo file in dir.EnumerateFiles())
                     {
-                        string[] filename = { mainDirName+"/cards/", file.Name , "_" };
+                        string[] filename = { mainDirName + "/cards/", file.Name, "_" };
                         file.MoveTo(string.Join("", filename));
                     }
+                   
                     dir = new DirectoryInfo(mainDirName + "/cards");
                     Console.WriteLine("Resizing card images");
                     ControlUtils.CreateTextBox(sp, "Resizing card images");
-                    foreach (var file in dir.EnumerateFiles("*.png_"))
+                    foreach (FileInfo file in dir.EnumerateFiles("*.png_"))
                     {
                         Bitmap image;
                         Bitmap img = new Bitmap(file.FullName);
@@ -307,10 +308,11 @@ namespace YARDT
                         img.Dispose();
                         file.Delete();
                     }
-                    dir = new DirectoryInfo(mainDirName+"/full");
+                    
+                    dir = new DirectoryInfo(mainDirName + "/full");
                     Console.WriteLine("Cropping full images and applying gradient");
                     ControlUtils.CreateTextBox(sp, "Cropping full images and applying gradient");
-                    foreach (var file in dir.EnumerateFiles("*.png_"))
+                    foreach (FileInfo file in dir.EnumerateFiles("*.png_"))
                     {
                         Bitmap image;
                         Bitmap img = new Bitmap(file.FullName);
@@ -331,9 +333,9 @@ namespace YARDT
                         img.Dispose();
                         file.Delete();
                     }
-                    
-                    var dataSet = new FileInfo(tempDirName + "/datadragon-set1-en_us/en_us/data/set1-en_us.json");
-                    dataSet.MoveTo(mainDirName + "/set1-en_us.json");
+
+                    FileInfo dataSetFile = new FileInfo(tempDirName + "/datadragon-set1-en_us/en_us/data/set1-en_us.json");
+                    dataSetFile.MoveTo(mainDirName + "/set1-en_us.json");
 
                     bool verified = VerifyData(true);
                     if (!verified)
@@ -452,7 +454,7 @@ namespace YARDT
             if (direction)
             {
                 Height++;
-               
+
             }
             else
             {
