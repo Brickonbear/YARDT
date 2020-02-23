@@ -71,7 +71,5 @@
                         Width="250"/>
         </ScrollViewer>
     </DockPanel>
-    
-
 </Window>
     

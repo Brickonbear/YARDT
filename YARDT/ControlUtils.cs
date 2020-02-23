@@ -138,9 +138,9 @@ namespace YARDT
             });
         }
 
-        public static void ClearControls(Dispatcher dispatcher, StackPanel sp) //Clear buttons
+        public static void ClearControls(StackPanel sp) //Clear buttons
         {
-            dispatcher.Invoke(() =>
+            Application.Current.Dispatcher.Invoke(() =>
             {
                 sp.Children.Clear();
             });
@@ -168,6 +168,22 @@ namespace YARDT
 
 
             
+        }
+
+        public static void CreateTextBox(StackPanel sp, string content)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                TextBox textBox = new TextBox
+                {
+                    Text = content,
+                    Background = Brushes.Transparent,
+                    Foreground = Brushes.White,
+                    BorderBrush = Brushes.Transparent
+                };
+
+                sp.Children.Add(textBox);
+            });
         }
 
     }

@@ -55,12 +55,14 @@ namespace YARDT
             
             aTimer.Interval = TimeSpan.FromMilliseconds(2000);
             aTimer.Tick += new EventHandler(UpdateCardsInPlay);
-            System.Threading.Tasks.Task.Delay(1000).ContinueWith(t => VerifyData(false));
+            System.Threading.Tasks.Task.Delay(100).ContinueWith(t => VerifyData(false));
             Console.WriteLine("Heyo fuckface its ya boi LEGIIIIIIIIIIIT FOOD REVIEWS");
         }
 
         public void Main()
         {
+            ControlUtils.ClearControls(sp);
+
             while (true)
             {
                 while (!inGame || !gameIsRunning)
@@ -216,6 +218,7 @@ namespace YARDT
         public bool VerifyData(bool downloaded)
         {
             Console.WriteLine("Verifying Data");
+            ControlUtils.CreateTextBox(sp, "Verifying Data");
 
             string hash = "";
             string correctHash = "904e7678a42f5893424534df9941b96b";
@@ -227,13 +230,15 @@ namespace YARDT
             if(hash == correctHash)
             {
                 Console.WriteLine("Deleting Data Dragon");
+                ControlUtils.CreateTextBox(sp, "Deleting Data Dragon");
 
-                if(Directory.Exists(tempDirName)){
+                if (Directory.Exists(tempDirName)){
                     FileUtils.DeleteFromDir(tempDirName);
                     Directory.Delete(tempDirName);
                 }
                 Console.WriteLine("Succesfully verified Data");
-                System.Threading.Tasks.Task.Delay(1000).ContinueWith(t => Main());
+                ControlUtils.CreateTextBox(sp, "Succesfully verified Data");
+                System.Threading.Tasks.Task.Delay(100).ContinueWith(t => Main());
                 return true;
             }
 
@@ -241,18 +246,28 @@ namespace YARDT
             {
                 if (hash != correctHash)
                 {
+                    Console.WriteLine("Hashes don't match");
+                    ControlUtils.CreateTextBox(sp, "Hashes don't match");
+
                     Directory.CreateDirectory(mainDirName);
                     Console.WriteLine("Created folder "+mainDirName);
+                    ControlUtils.CreateTextBox(sp, "Created folder " + mainDirName);
+
                     Directory.CreateDirectory(tempDirName);
                     Console.WriteLine("Created folder "+tempDirName);
-                    Console.WriteLine("Hashes don't match, deleting content of " + mainDirName);
+                    ControlUtils.CreateTextBox(sp, "Created folder " + tempDirName);
 
+                    Console.WriteLine("Deleting content of " + mainDirName);
+                    ControlUtils.CreateTextBox(sp, "Deleting content of " + mainDirName);
                     FileUtils.DeleteFromDir(mainDirName);
+
+                    ControlUtils.CreateTextBox(sp, "Downloading DataDragon");
 
                     FileUtils.DownloadToDir(tempDirName);
 
                     //Unzip File
                     Console.WriteLine("Unziping DataDragon");
+                    ControlUtils.CreateTextBox(sp, "Unziping DataDragon");
                     ZipFile.ExtractToDirectory(tempDirName+"/datadragon-set1-en_us.zip", tempDirName+"/datadragon-set1-en_us");
 
                     var dir = new DirectoryInfo(tempDirName+"/datadragon-set1-en_us/en_us/img/cards");
@@ -266,6 +281,7 @@ namespace YARDT
                     Directory.CreateDirectory(mainDirName+"/cards");
 
                     Console.WriteLine("Moving full images to " + mainDirName + "full/");
+                    ControlUtils.CreateTextBox(sp, "Moving full images to " + mainDirName + "full/");
 
                     foreach (var file in dir.EnumerateFiles("*-full.png"))
                     {
@@ -273,6 +289,7 @@ namespace YARDT
                         file.MoveTo(string.Join("", filename));
                     }
                     Console.WriteLine("Moving cards to " + mainDirName + "cards/");
+                    ControlUtils.CreateTextBox(sp, "Moving cards to " + mainDirName + "cards/");
                     foreach (var file in dir.EnumerateFiles())
                     {
                         string[] filename = { mainDirName+"/cards/", file.Name , "_" };
@@ -280,6 +297,7 @@ namespace YARDT
                     }
                     dir = new DirectoryInfo(mainDirName + "/cards");
                     Console.WriteLine("Resizing card images");
+                    ControlUtils.CreateTextBox(sp, "Resizing card images");
                     foreach (var file in dir.EnumerateFiles("*.png_"))
                     {
                         Bitmap image;
@@ -291,6 +309,7 @@ namespace YARDT
                     }
                     dir = new DirectoryInfo(mainDirName+"/full");
                     Console.WriteLine("Cropping full images and applying gradient");
+                    ControlUtils.CreateTextBox(sp, "Cropping full images and applying gradient");
                     foreach (var file in dir.EnumerateFiles("*.png_"))
                     {
                         Bitmap image;
@@ -372,7 +391,7 @@ namespace YARDT
             aTimer.IsEnabled = false;
             labelsDrawn = false;
             printMenu = true;
-            ControlUtils.ClearControls(Dispatcher.CurrentDispatcher, sp);
+            ControlUtils.ClearControls(sp);
         }
 
         //Main window functions
