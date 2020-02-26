@@ -21,7 +21,7 @@ namespace YARDT
     public partial class MainWindow : Window
     {
         private static readonly HttpClient client = new HttpClient();
-        public static int port = 21338;
+        public static int port = 21337;
 
         bool gameIsRunning = false;
         bool inGame = false;
