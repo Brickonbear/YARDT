@@ -211,6 +211,7 @@ namespace YARDT
                         }
                     }
                 }
+                Thread.Sleep(500);
             }
         }
 
