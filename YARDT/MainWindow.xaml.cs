@@ -76,6 +76,7 @@ namespace YARDT
                         {
                             inGame = true;
                             Console.WriteLine("Starting timer");
+                            ControlUtils.ChangeMainWindowTitle("YARDT");
                             aTimer.IsEnabled = true;
                             if (!gotDeck)
                             {
@@ -96,6 +97,7 @@ namespace YARDT
                             if (printMenu)
                             {
                                 Console.WriteLine("In menu, waiting for game to start");
+                                ControlUtils.ChangeMainWindowTitle("Waiting for match to start");
                                 printMenu = false;
                             }
 
@@ -111,6 +113,7 @@ namespace YARDT
                     {
                         Console.WriteLine("Could not connect to game!");
                         Console.WriteLine("Trying again in 5 sec");
+                        ControlUtils.ChangeMainWindowTitle("Waiting for game to start");
                         //Console.WriteLine("Message :{0} ", err.Message);
                         gameIsRunning = false;
                         Thread.Sleep(5000);
@@ -221,7 +224,7 @@ namespace YARDT
             ControlUtils.CreateTextBox(sp, "Verifying Data");
 
             string hash = "";
-            string correctHash = "904e7678a42f5893424534df9941b96b";
+            string correctHash = "885a4f142a285bcb0c7b1dd9767c0023";
             if (File.Exists(mainDirName + "set1-en_us.json"))
             {
                 hash = StringUtils.CalculateMD5(mainDirName + "set1-en_us.json");

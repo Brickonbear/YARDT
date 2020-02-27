@@ -15,7 +15,7 @@ namespace YARDT
         {
             Console.WriteLine("Begining Data Dragon download");
 
-            DownloadFile("https://dd.b.pvp.net/datadragon-set1-en_us.zip", directory + "/datadragon-set1-en_us.zip");
+            DownloadFile("https://dd.b.pvp.net/latest/set1-en_us.zip", directory + "/datadragon-set1-en_us.zip");
 
             Console.WriteLine("Finished download");
         }
