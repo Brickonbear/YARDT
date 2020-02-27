@@ -234,7 +234,7 @@ namespace YARDT
 
             foreach (string cardCode in expeditionState["Deck"])
             {
-                if (cardsInDeck.ContainsKey(cardCode){
+                if (cardsInDeck.ContainsKey(cardCode)){
                     cardsInDeck[cardCode] = (int)cardsInDeck[cardCode] + 1;
                 }
                 else
