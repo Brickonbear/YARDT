@@ -50,10 +50,9 @@ namespace YARDT
         {
             InitializeComponent();
 
-            //verified = VerifyData(false);
-
             aTimer.Interval = TimeSpan.FromMilliseconds(2000);
             aTimer.Tick += new EventHandler(UpdateCardsInPlay);
+
             System.Threading.Tasks.Task.Delay(100).ContinueWith(t => VerifyData(false));
             Console.WriteLine("Heyo fuckface its ya boi LEGIIIIIIIIIIIT FOOD REVIEWS");
         }
@@ -78,10 +77,19 @@ namespace YARDT
                             Console.WriteLine("Starting timer");
                             ControlUtils.ChangeMainWindowTitle("YARDT");
                             aTimer.IsEnabled = true;
+
                             if (!gotDeck)
                             {
                                 gotDeck = true;
-                                deck = JsonConvert.DeserializeObject<JObject>(Utils.HttpReq($"http://localhost:{port}/static-decklist"));
+                                JObject expeditionState = JsonConvert.DeserializeObject<JObject>(Utils.HttpReq($"http://localhost:{port}/expeditions-state"));
+                                if ((string)expeditionState["State"] == "Offscreen")
+                                {
+                                    deck = DeckFromExpedition(expeditionState);
+                                }
+                                else 
+                                {
+                                    deck = JsonConvert.DeserializeObject<JObject>(Utils.HttpReq($"http://localhost:{port}/static-decklist"));
+                                }
                                 manaCostOrder.Clear();
                                 foreach (JToken card in deck["CardsInDeck"])
                                 {
@@ -216,6 +224,27 @@ namespace YARDT
                 }
                 Thread.Sleep(500);
             }
+        }
+
+        private JObject DeckFromExpedition(JObject expeditionState)
+        {
+            JObject deckList = new JObject();
+            JObject cardsInDeck = new JObject();
+            deckList.Add("DeckCode", "DECKCODE");
+
+            foreach (string cardCode in expeditionState["Deck"])
+            {
+                if (cardsInDeck.ContainsKey(cardCode){
+                    cardsInDeck[cardCode] = (int)cardsInDeck[cardCode] + 1;
+                }
+                else
+                {
+                    cardsInDeck.Add(cardCode, 1);
+                }
+            }
+
+            deckList.Add("CardsInDeck", cardsInDeck);
+            return deckList;
         }
 
         public bool VerifyData(bool downloaded)
