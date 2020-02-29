@@ -64,6 +64,7 @@ namespace YARDT
 
             while (true)
             {
+                deck = JsonConvert.DeserializeObject<JObject>(Utils.HttpReq($"http://localhost:{port}/static-decklist"));
                 while (!inGame || !gameIsRunning)
                 {
                     try

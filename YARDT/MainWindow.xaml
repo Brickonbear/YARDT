@@ -59,16 +59,42 @@
             <TextBlock x:Name="WindowTitle" HorizontalAlignment="Center" Foreground="#FFEDECEC">YARDT</TextBlock>
         </DockPanel>
 
+
         <ScrollViewer 
             Margin="5,5,5,5" 
             Name="scrollViewer1" 
             ScrollViewer.HorizontalScrollBarVisibility="Hidden" 
             ScrollViewer.VerticalScrollBarVisibility="Hidden" >
-            <StackPanel x:Name="sp" 
+            <Canvas>
+                <StackPanel x:Name="settingsSP"
+                            Canvas.ZIndex="2"
+                            HorizontalAlignment="Left" 
+                            Margin="0" 
+                            VerticalAlignment="Top" 
+                            Width="250"
+                            Background="#FF1E1E1E">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="50"/>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="50"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Foreground="#FFEDECEC" HorizontalAlignment="Center" VerticalAlignment="Center">Port:</TextBlock>
+                        <TextBox Grid.Column="1" TextAlignment="Center" VerticalContentAlignment="Center" Height="23" TextWrapping="Wrap" Text="You shouldn't see"/>
+                        <Button Grid.Column="2" Width="23" Height="23"/>
+                    </Grid>
+
+
+                </StackPanel>
+                <StackPanel x:Name="sp" 
+                        Canvas.ZIndex="2"
                         HorizontalAlignment="Left" 
                         Margin="0" 
                         VerticalAlignment="Top" 
-                        Width="250"/>
+                        Width="250"
+                        Background="#FF1E1E1E">
+                </StackPanel>
+            </Canvas>
         </ScrollViewer>
     </DockPanel>
 </Window>
