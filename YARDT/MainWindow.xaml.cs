@@ -21,13 +21,11 @@ namespace YARDT
     public partial class MainWindow : Window
     {
         private static readonly HttpClient client = new HttpClient();
-        public static int port = 21337;
 
         bool gameIsRunning = false;
         bool inGame = false;
         bool setLoaded = false;
         bool gotDeck = false;
-        bool direction = false;
         bool sorted = false;
         bool mulligan = true;
         bool isMinimized = false;
@@ -50,7 +48,7 @@ namespace YARDT
         {
             InitializeComponent();
 
-            //verified = VerifyData(false);
+            portSettingText.Text = Properties.Settings.Default.Port.ToString();
 
             aTimer.Interval = TimeSpan.FromMilliseconds(2000);
             aTimer.Tick += new EventHandler(UpdateCardsInPlay);
@@ -64,12 +62,11 @@ namespace YARDT
 
             while (true)
             {
-                deck = JsonConvert.DeserializeObject<JObject>(Utils.HttpReq($"http://localhost:{port}/static-decklist"));
                 while (!inGame || !gameIsRunning)
                 {
                     try
                     {
-                        JObject responseString = JsonConvert.DeserializeObject<JObject>(Utils.HttpReq($"http://localhost:{port}/positional-rectangles"));
+                        JObject responseString = JsonConvert.DeserializeObject<JObject>(Utils.HttpReq($"http://localhost:{Properties.Settings.Default.Port}/positional-rectangles"));
 
 
                         gameIsRunning = true;
@@ -82,7 +79,7 @@ namespace YARDT
                             if (!gotDeck)
                             {
                                 gotDeck = true;
-                                deck = JsonConvert.DeserializeObject<JObject>(Utils.HttpReq($"http://localhost:{port}/static-decklist"));
+                                deck = JsonConvert.DeserializeObject<JObject>(Utils.HttpReq($"http://localhost:{Properties.Settings.Default.Port}/static-decklist"));
                                 manaCostOrder.Clear();
                                 foreach (JToken card in deck["CardsInDeck"])
                                 {
@@ -357,7 +354,7 @@ namespace YARDT
         {
             try
             {
-                JObject responseString = JsonConvert.DeserializeObject<JObject>(await client.GetStringAsync($"http://localhost:{port}/positional-rectangles"));
+                JObject responseString = JsonConvert.DeserializeObject<JObject>(await client.GetStringAsync($"http://localhost:{Properties.Settings.Default.Port}/positional-rectangles"));
                 if (responseString["GameState"].ToString() == "Menus")
                 {
 
@@ -456,16 +453,16 @@ namespace YARDT
         private void OptionsButton_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             OptionsButton.Source = new BitmapImage(new Uri(@"/Resources/OptionsButtonClick.bmp", UriKind.Relative));
-            if (direction)
-            {
-                Height++;
 
+            if(settingsSP.Visibility == Visibility.Collapsed)
+            {
+                portSettingText.Text = Properties.Settings.Default.Port.ToString();
+                settingsSP.Visibility = Visibility.Visible;
             }
             else
             {
-                Height--;
+                settingsSP.Visibility = Visibility.Collapsed;
             }
-            direction = !direction;
         }
 
         private void OptionsButton_MouseEnter(object sender, MouseEventArgs e)
@@ -476,6 +473,22 @@ namespace YARDT
         private void OptionsButton_MouseLeave(object sender, MouseEventArgs e)
         {
             OptionsButton.Source = new BitmapImage(new Uri(@"/Resources/OptionsButton.bmp", UriKind.Relative));
+        }
+        
+        //Settings menu Functions
+         private void portApplyButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (portSettingText.Text != Properties.Settings.Default.Port.ToString())
+            {
+                int number;
+
+                bool success = int.TryParse(portSettingText.Text, out number);
+                if (success)
+                {
+                    Properties.Settings.Default.Port = number;
+                    Properties.Settings.Default.Save();
+                }
+            }
         }
     }
 }

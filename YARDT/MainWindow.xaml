@@ -72,22 +72,24 @@
                             Margin="0" 
                             VerticalAlignment="Top" 
                             Width="250"
-                            Background="#FF1E1E1E">
+                            Height="30"
+                            Background="#FF1E1E1E"
+                            Visibility="Collapsed">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="50"/>
                             <ColumnDefinition Width="100"/>
-                            <ColumnDefinition Width="50"/>
+                            <ColumnDefinition Width="100"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0" Foreground="#FFEDECEC" HorizontalAlignment="Center" VerticalAlignment="Center">Port:</TextBlock>
-                        <TextBox Grid.Column="1" TextAlignment="Center" VerticalContentAlignment="Center" Height="23" TextWrapping="Wrap" Text="You shouldn't see"/>
-                        <Button Grid.Column="2" Width="23" Height="23"/>
+                        <TextBox x:Name="portSettingText" Grid.Column="1" TextAlignment="Center" VerticalContentAlignment="Center" Height="23" TextWrapping="Wrap"/>
+                        <Button x:Name="portApplyButton" Grid.Column="2" Width="50" Height="23" Content="Apply" Click="portApplyButton_Click"/>
                     </Grid>
 
 
                 </StackPanel>
                 <StackPanel x:Name="sp" 
-                        Canvas.ZIndex="2"
+                        Canvas.ZIndex="1"
                         HorizontalAlignment="Left" 
                         Margin="0" 
                         VerticalAlignment="Top" 
