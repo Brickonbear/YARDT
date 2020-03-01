@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
+﻿using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
+using YARDT.Classes;
 
 namespace YARDT
 {
@@ -13,6 +10,8 @@ namespace YARDT
     /// </summary>
     public partial class App : Application
     {
+        public static string Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+
         private async void Application_Startup(object sender, StartupEventArgs e)
         {
             await Task.Run(async () => await Updater.Run());

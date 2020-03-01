@@ -1,21 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
+using System.Net;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
+using System.Windows;
+
 
 namespace YARDT.Classes
 {
     class Updater
     {
-        private static readonly string APILatestURL = "https://api.github.com/repos/Assistant/ModAssistant/releases/latest";
+        private static readonly string APILatestURL = "https://api.github.com/repos/Sebski123/YARDT/releases/latest";
 
         private static Update LatestUpdate;
         private static Version CurrentVersion;
         private static Version LatestVersion;
         private static bool NeedsUpdate = false;
-        private static string NewExe = Path.Combine(Path.GetDirectoryName(Utils.ExePath), "ModAssistant.exe");
+        public static string ExePath = Process.GetCurrentProcess().MainModule.FileName;
+
+        private static string NewExe = Path.Combine(Path.GetDirectoryName(ExePath), "YARDT.exe");
 
         public static async Task<bool> CheckForUpdate()
         {
@@ -31,7 +35,7 @@ namespace YARDT.Classes
 
         public static async Task Run()
         {
-            if (Path.GetFileName(Utils.ExePath).Equals("ModAssistant.old.exe")) RunNew();
+            if (Path.GetFileName(ExePath).Equals("YARDT.old.exe")) RunNew();
             try
             {
                 NeedsUpdate = await CheckForUpdate();
@@ -46,12 +50,12 @@ namespace YARDT.Classes
 
         public static async Task StartUpdate()
         {
-            string OldExe = Path.Combine(Path.GetDirectoryName(Utils.ExePath), "ModAssistant.old.exe");
+            string OldExe = Path.Combine(Path.GetDirectoryName(ExePath), "YARDT.old.exe");
             string DownloadLink = null;
 
             foreach (Update.Asset asset in LatestUpdate.assets)
             {
-                if (asset.name == "ModAssistant.exe")
+                if (asset.name == "YARDT.exe")
                 {
                     DownloadLink = asset.browser_download_url;
                 }
@@ -68,9 +72,9 @@ namespace YARDT.Classes
                     File.Delete(OldExe);
                 }
 
-                File.Move(Utils.ExePath, OldExe);
+                File.Move(ExePath, OldExe);
 
-                await Utils.Download(DownloadLink, NewExe);
+                await Download(DownloadLink, NewExe);
                 RunNew();
             }
         }
@@ -80,7 +84,48 @@ namespace YARDT.Classes
             Process.Start(NewExe);
             Application.Current.Dispatcher.Invoke(() => { Application.Current.Shutdown(); });
         }
+
+        private static System.Net.Http.HttpClient _client = null;
+        public static System.Net.Http.HttpClient HttpClient
+        {
+            get
+            {
+                if (_client != null) return _client;
+
+                var handler = new System.Net.Http.HttpClientHandler()
+                {
+                    AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
+                };
+
+                _client = new System.Net.Http.HttpClient(handler)
+                {
+                    Timeout = TimeSpan.FromSeconds(30),
+                };
+
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                _client.DefaultRequestHeaders.Add("User-Agent", "ModAssistant/" + App.Version);
+
+                return _client;
+            }
+        }
+
+        public static JavaScriptSerializer JsonSerializer = new JavaScriptSerializer()
+        {
+            MaxJsonLength = int.MaxValue,
+        };
+
+        public static async Task Download(string link, string output)
+        {
+            var resp = await HttpClient.GetAsync(link);
+            using (var stream = await resp.Content.ReadAsStreamAsync())
+            using (var fs = new FileStream(output, FileMode.OpenOrCreate, FileAccess.Write))
+            {
+                await stream.CopyToAsync(fs);
+            }
+        }
     }
+
+
     public class Update
     {
         public string url;
