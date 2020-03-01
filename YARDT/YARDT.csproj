@@ -41,7 +41,7 @@
     <StartupObject />
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>RuneterraIcon.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\RuneterraIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Costura, Version=4.1.0.0, Culture=neutral, PublicKeyToken=9919ef960d84173d, processorArchitecture=MSIL">
@@ -74,10 +74,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ControlUtils.cs" />
-    <Compile Include="FileUtils.cs" />
-    <Compile Include="StringUtils.cs" />
-    <Compile Include="Utils.cs" />
+    <Compile Include="Classes\ControlUtils.cs" />
+    <Compile Include="Classes\FileUtils.cs" />
+    <Compile Include="Classes\StringUtils.cs" />
+    <Compile Include="Classes\Utils.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -86,7 +86,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ImageUtils.cs" />
+    <Compile Include="Classes\ImageUtils.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -173,7 +173,7 @@
     <Resource Include="Resources\GradientShadowIsles.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="RuneterraIcon.ico" />
+    <Resource Include="Resources\RuneterraIcon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.6.0.0\build\Fody.targets" Condition="Exists('..\packages\Fody.6.0.0\build\Fody.targets')" />
