@@ -13,5 +13,12 @@ namespace YARDT
     /// </summary>
     public partial class App : Application
     {
+        private async void Application_Startup(object sender, StartupEventArgs e)
+        {
+            await Task.Run(async () => await Updater.Run());
+
+            MainWindow window = new MainWindow();
+            window.Show();
+        }
     }
 }
