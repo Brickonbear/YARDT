@@ -11,5 +11,5 @@ Currently the deck tracker is functioning as intended, but lacks a couple of fea
 
  - [x] Port change option
  - [x] Automatic updates
- - [ ] Expedition support
+ - [x] Expedition support
  - [ ] Support for different languages
