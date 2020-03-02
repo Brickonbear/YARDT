@@ -7,12 +7,12 @@ To use the deck tracker, you will need to do a first time launch. The deck track
 
 ## Future plans
 
-Currently the deck tracker is functioning as intended, but lacks a couple of features:
+Currently the deck tracker is functioning as intended, feel free to add suggestions(via pull request):
 
  - [x] Port change option
  - [x] Automatic updates
  - [x] Expedition support
- - [ ] Support for different languages
+ - [x] Support for different languages
 
 ## Known issues
 
