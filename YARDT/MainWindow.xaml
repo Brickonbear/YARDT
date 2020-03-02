@@ -64,9 +64,9 @@
             Name="scrollViewer1" 
             ScrollViewer.HorizontalScrollBarVisibility="Hidden" 
             ScrollViewer.VerticalScrollBarVisibility="Hidden" >
-            <Canvas>
+            <Grid>
                 <StackPanel x:Name="settingsSP"
-                            Canvas.ZIndex="2"
+                            Grid.ZIndex="2"
                             HorizontalAlignment="Left" 
                             Margin="0" 
                             VerticalAlignment="Top" 
@@ -88,7 +88,7 @@
 
                 </StackPanel>
                 <StackPanel x:Name="sp" 
-                        Canvas.ZIndex="1"
+                        Grid.ZIndex="1"
                         HorizontalAlignment="Left" 
                         Margin="0" 
                         VerticalAlignment="Top" 
@@ -117,7 +117,7 @@
                         </Grid>
                     </Label>-->
                 </StackPanel>
-            </Canvas>
+            </Grid>
         </ScrollViewer>
     </DockPanel>
 </Window>
