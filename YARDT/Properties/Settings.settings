@@ -5,5 +5,8 @@
     <Setting Name="Port" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">21337</Value>
     </Setting>
+    <Setting Name="Language" Type="System.String" Scope="User">
+      <Value Profile="(Default)">en_us</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

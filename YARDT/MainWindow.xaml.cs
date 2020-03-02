@@ -256,16 +256,15 @@ namespace YARDT
 
             string hash = "";
             string correctHash = "885a4f142a285bcb0c7b1dd9767c0023";
-            if (File.Exists(mainDirName + "set1-en_us.json"))
+            if (File.Exists(mainDirName + "set1-" + Properties.Settings.Default.Language + ".json"))
             {
-                hash = StringUtils.CalculateMD5(mainDirName + "set1-en_us.json");
+                hash = StringUtils.CalculateMD5(mainDirName + "set1-" + Properties.Settings.Default.Language + ".json");
             }
 
             if (hash == correctHash)
             {
-                Console.WriteLine("Deleting Data Dragon");
-                ControlUtils.CreateTextBox(sp, "Deleting Data Dragon");
-
+                Console.WriteLine("Deleting Temp Data");
+                ControlUtils.CreateTextBox(sp, "Deleting Temp Data");
                 if (Directory.Exists(tempDirName))
                 {
                     FileUtils.DeleteFromDir(tempDirName);
@@ -303,9 +302,9 @@ namespace YARDT
                     //Unzip File
                     Console.WriteLine("Unziping DataDragon");
                     ControlUtils.CreateTextBox(sp, "Unziping DataDragon");
-                    ZipFile.ExtractToDirectory(tempDirName + "/datadragon-set1-en_us.zip", tempDirName + "/datadragon-set1-en_us");
+                    ZipFile.ExtractToDirectory(tempDirName + "/datadragon-set1-" + Properties.Settings.Default.Language + ".zip", tempDirName + "/datadragon-set1-" + Properties.Settings.Default.Language + "");
 
-                    DirectoryInfo dir = new DirectoryInfo(tempDirName + "/datadragon-set1-en_us/en_us/img/cards");
+                    DirectoryInfo dir = new DirectoryInfo(tempDirName + "/datadragon-set1-" + Properties.Settings.Default.Language + "/" + Properties.Settings.Default.Language + "/img/cards");
 
                     foreach (FileInfo file in dir.EnumerateFiles("*-alt*.png"))
                     {
@@ -369,8 +368,8 @@ namespace YARDT
                         file.Delete();
                     }
 
-                    FileInfo dataSetFile = new FileInfo(tempDirName + "/datadragon-set1-en_us/en_us/data/set1-en_us.json");
-                    dataSetFile.MoveTo(mainDirName + "/set1-en_us.json");
+                    FileInfo dataSetFile = new FileInfo(tempDirName + "/datadragon-set1-" + Properties.Settings.Default.Language + "/" + Properties.Settings.Default.Language + "/data/set1-" + Properties.Settings.Default.Language + ".json");
+                    dataSetFile.MoveTo(mainDirName + "/set1-" + Properties.Settings.Default.Language + ".json");
 
                     bool verified = VerifyData(true);
                     if (!verified)

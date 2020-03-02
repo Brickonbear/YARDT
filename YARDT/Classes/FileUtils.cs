@@ -15,7 +15,7 @@ namespace YARDT
         {
             Console.WriteLine("Begining Data Dragon download");
 
-            DownloadFile("https://dd.b.pvp.net/latest/set1-en_us.zip", directory + "/datadragon-set1-en_us.zip");
+            DownloadFile("https://dd.b.pvp.net/latest/set1-" + Properties.Settings.Default.Language + ".zip", directory + "/datadragon-set1-" + Properties.Settings.Default.Language + ".zip");
 
             Console.WriteLine("Finished download");
         }
@@ -80,7 +80,7 @@ namespace YARDT
 
         public static JArray LoadJson(string mainDirName)
         {
-            using (StreamReader r = new StreamReader(mainDirName + "set1-en_us.json"))
+            using (StreamReader r = new StreamReader(mainDirName + "set1-" + Properties.Settings.Default.Language + ".json"))
             {
                 string json = r.ReadToEnd();
                 return JsonConvert.DeserializeObject<JArray>(json);
