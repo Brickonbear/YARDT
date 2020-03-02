@@ -1,5 +1,5 @@
 # YARDT
-This is a WIP deck tracker for Legends Of Runeterra. Made primarily so that you don't have to use the mobalytics one since it uses overwolf.
+This is a deck tracker for Legends Of Runeterra. Made primarily so that you don't have to use the Mobalytics one since it uses Overwolf.
 
 ## Setup
 
@@ -7,4 +7,9 @@ To use the deck tracker, you will need to do a first time launch. The deck track
 
 ## Future plans
 
-Currently the deck tracker is functioning as intended, but lacks some features, such as a field to choose your own port or Expeditions support. These features are planned to be implemented at a later time, but no specific date can be given at this moment.
+Currently the deck tracker is functioning as intended, but lacks a couple of features:
+
+ - [x] Port change option
+ - [x] Automatic updates
+ - [ ] Expedition support
+ - [ ] Support for different languages
