@@ -46,5 +46,17 @@ namespace YARDT.Properties {
                 this["Language"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool LanguageChosen {
+            get {
+                return ((bool)(this["LanguageChosen"]));
+            }
+            set {
+                this["LanguageChosen"] = value;
+            }
+        }
     }
 }

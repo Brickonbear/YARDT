@@ -1,0 +1,91 @@
+﻿<Window x:Class="YARDT.ChooseLanguage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+    Title="YARDT"
+    Height="200" 
+    Width="250" 
+    Topmost="True" 
+    MaxWidth="250" 
+    MaxHeight="200" 
+    MinWidth="250" 
+    MinHeight="20" 
+    WindowStyle="None" 
+    Background="#FF1E1E1E" 
+    MouseLeftButtonDown="Window_MouseLeftButtonDown">
+
+    <Window.Style>
+        <Style TargetType="{x:Type Window}">
+            <Setter Property="shell:WindowChrome.WindowChrome">
+                <Setter.Value>
+                    <shell:WindowChrome 
+                        CaptionHeight="0"
+                        CornerRadius="0"
+                        GlassFrameThickness="0"
+                        NonClientFrameEdges="None"
+                        ResizeBorderThickness="2"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Style>
+
+    <DockPanel x:Name="RootWindow">
+        <DockPanel x:Name="TitleBar" DockPanel.Dock="Top">
+            <Image x:Name="CloseButton"
+                   Source="/Resources/CloseButton.bmp" 
+                   Width="16" 
+                   Height="16"
+                   DockPanel.Dock="Right"
+                   MouseLeftButtonDown="CloseButton_MouseLeftButtonDown" 
+                   MouseEnter="CloseButton_MouseEnter" 
+                   MouseLeave="CloseButton_MouseLeave"/>
+            <Image x:Name="CollapseButton"
+                   Source="/Resources/CollapseButton.bmp" 
+                   Width="16" 
+                   Height="16"
+                   DockPanel.Dock="Right" 
+                   MouseLeftButtonDown="CollapseButton_MouseLeftButtonDown" 
+                   MouseEnter="CollapseButton_MouseEnter" 
+                   MouseLeave="CollapseButton_MouseLeave"/>
+            <Image x:Name="OptionsButton"
+                   Source="/Resources/OptionsButton.bmp" 
+                   Width="16" 
+                   Height="16"
+                   DockPanel.Dock="Right" 
+                   MouseLeftButtonDown="OptionsButton_MouseLeftButtonDown" 
+                   MouseEnter="OptionsButton_MouseEnter" 
+                   MouseLeave="OptionsButton_MouseLeave"/>
+            <TextBlock x:Name="WindowTitle" HorizontalAlignment="Center" Foreground="#FFEDECEC">YARDT</TextBlock>
+        </DockPanel>
+        <StackPanel x:Name="LanguageSettings"
+                            Canvas.ZIndex="2"
+                            HorizontalAlignment="Left" 
+                            Margin="0" 
+                            VerticalAlignment="Top" 
+                            Width="250"
+                            Height="30"
+                            Background="#FF1E1E1E">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition Width="90"/>
+                    <ColumnDefinition Width="80"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Foreground="#FFEDECEC" HorizontalAlignment="Center" VerticalAlignment="Center">Language:</TextBlock>
+                <ComboBox Grid.Column="1" x:Name="choosenLanguage" SelectedValuePath="Content">
+                    <ComboBoxItem ToolTip="English (United States)" IsSelected="True">en_us</ComboBoxItem>
+                    <ComboBoxItem ToolTip="German (Germany)">de_de</ComboBoxItem>
+                    <ComboBoxItem ToolTip="Spanish (Spain)">es_es</ComboBoxItem>
+                    <ComboBoxItem ToolTip="French (France)">fr_fr</ComboBoxItem>
+                    <ComboBoxItem ToolTip="Italian (Italy)">it_it</ComboBoxItem>
+                    <ComboBoxItem ToolTip="Japanese (Japan)">ja_jp</ComboBoxItem>
+                    <ComboBoxItem ToolTip="Korean (Korea)">ko_kr</ComboBoxItem>
+                </ComboBox>
+                <Button x:Name="portApplyButton" Grid.Column="2" Width="50" Height="23" Content="Apply" Click="portApplyButton_Click"/>
+            </Grid>
+
+
+        </StackPanel>
+    </DockPanel>
+</Window>
+       

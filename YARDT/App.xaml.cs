@@ -16,6 +16,12 @@ namespace YARDT
         {
             await Task.Run(async () => await Updater.Run());
 
+            if (!YARDT.Properties.Settings.Default.LanguageChosen)
+            {
+                ChooseLanguage chooseLanguage = new ChooseLanguage();
+                chooseLanguage.ShowDialog();
+            }
+
             MainWindow window = new MainWindow();
             window.Show();
         }
