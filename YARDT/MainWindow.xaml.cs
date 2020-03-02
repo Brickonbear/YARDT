@@ -81,14 +81,16 @@ namespace YARDT
                             if (!gotDeck)
                             {
                                 gotDeck = true;
-                                JObject expeditionState = JsonConvert.DeserializeObject<JObject>(Utils.HttpReq($"http://localhost:{Properties.Settings.Default.Port}/expeditions-state"));
-                                if ((string)expeditionState["State"] == "Offscreen")
+                                
+                                string resString = Utils.HttpReq($"http://localhost:{Properties.Settings.Default.Port}/static-decklist");
+                                if (resString == "failure")
                                 {
+                                    JObject expeditionState = JsonConvert.DeserializeObject<JObject>(Utils.HttpReq($"http://localhost:{Properties.Settings.Default.Port}/expeditions-state"));
                                     deck = DeckFromExpedition(expeditionState);
                                 }
-                                else 
+                                else
                                 {
-                                    deck = JsonConvert.DeserializeObject<JObject>(Utils.HttpReq($"http://localhost:{Properties.Settings.Default.Port}/static-decklist"));
+                                    deck = JsonConvert.DeserializeObject<JObject>(resString);
                                 }
                                 manaCostOrder.Clear();
                                 foreach (JToken card in deck["CardsInDeck"])

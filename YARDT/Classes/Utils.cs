@@ -46,6 +46,10 @@ namespace YARDT
 
                         return responseString;
                     }
+                    else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+                    {
+                        return "failure";
+                    }
 
                     return null;
                 }
