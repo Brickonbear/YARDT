@@ -13,3 +13,7 @@ Currently the deck tracker is functioning as intended, but lacks a couple of fea
  - [x] Automatic updates
  - [x] Expedition support
  - [ ] Support for different languages
+
+## Known issues
+
+The way the program is set up now is not 100% efficient, but that is due to Riot's API not functioning properly on Expeditions; The static decklist of the api often returns errors when used during expeditions, so a workaround had to be implemented. It will be changed once Riot's API no longer produces the errors mentioned.
