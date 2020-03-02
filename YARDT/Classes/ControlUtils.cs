@@ -31,15 +31,16 @@ namespace YARDT
                     };
 
                     Grid grid = new Grid();
+                    grid.Margin = new Thickness(-5, 0, 0, 0);
 
                     ColumnDefinition col1 = new ColumnDefinition();
                     ColumnDefinition col1_5 = new ColumnDefinition();
                     ColumnDefinition col2 = new ColumnDefinition();
                     ColumnDefinition col3 = new ColumnDefinition();
 
-                    col1.Width = new GridLength(16);
-                    col1_5.Width = new GridLength(14);
-                    col2.Width = new GridLength(180);
+                    col1.Width = new GridLength(25);
+                    col1_5.Width = new GridLength(9);
+                    col2.Width = new GridLength(176);
                     col3.Width = new GridLength(40);
 
                     grid.ColumnDefinitions.Add(col1);
