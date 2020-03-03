@@ -202,7 +202,7 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Row="0" Grid.Column="0" Foreground="#FFEDECEC" Text="Cards Left:"/>
-                <TextBlock Grid.Row="0" Grid.Column="1" Foreground="#FFEDECEC" x:Name="cardsLeftText" Text="30"/>
+                <TextBlock Grid.Row="0" Grid.Column="1" Foreground="#FFEDECEC" x:Name="cardsLeftText"/>
             </Grid>
             <Grid Grid.ColumnSpan="4" Grid.Row="1" x:Name="percentageGrid" Visibility="Collapsed">
                 <Grid.ColumnDefinitions>

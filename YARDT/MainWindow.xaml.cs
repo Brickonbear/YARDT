@@ -24,11 +24,11 @@ namespace YARDT
         private static readonly HttpClient client = new HttpClient();
 
         bool gameIsRunning = false;
-        bool inGame = false;
+        bool inMatch = false;
         bool setLoaded = false;
         bool gotDeck = false;
-        bool sorted = false;
-        bool mulligan = true;
+        bool sortedManaCost = false;
+        bool inMulligan = true;
         bool isMinimized = false;
         bool labelsDrawn = false;
         bool printMenu = true;
@@ -89,7 +89,7 @@ namespace YARDT
 
             while (true)
             {
-                while (!inGame || !gameIsRunning)
+                while (!inMatch || !gameIsRunning)
                 {
                     try
                     {
@@ -99,7 +99,7 @@ namespace YARDT
                         gameIsRunning = true;
                         if (responseString["GameState"].ToString() == "InProgress")
                         {
-                            inGame = true;
+                            inMatch = true;
                             Console.WriteLine("Starting timer");
                             ControlUtils.ChangeMainWindowTitle("YARDT");
                             aTimer.IsEnabled = true;
@@ -125,7 +125,7 @@ namespace YARDT
                                     manaCostOrder.Add(cardProperty.Name);
                                     cardsLeftInDeck += (int)cardProperty.Value;
                                 }
-                                sorted = false;
+                                sortedManaCost = false;
                                 ControlUtils.UpdateCardsLeftInDeck(cardsLeftText, cardsLeftInDeck);
                                 Console.WriteLine("Got deck");
                             }
@@ -139,11 +139,11 @@ namespace YARDT
                                 printMenu = false;
                             }
 
-                            if (inGame || aTimer.IsEnabled)
+                            if (inMatch || aTimer.IsEnabled)
                             {
                                 Console.WriteLine("Not currently in game, stopping timer");
                                 aTimer.IsEnabled = false;
-                                inGame = false;
+                                inMatch = false;
                             }
                         }
                     }
@@ -166,7 +166,7 @@ namespace YARDT
                     Console.WriteLine("Loaded set");
                 }
 
-                if (!sorted && setLoaded)
+                if (!sortedManaCost && setLoaded)
                 {
                     Console.WriteLine("Sorting deck");
                     manaCostOrder.Sort((x, y) =>
@@ -188,7 +188,7 @@ namespace YARDT
                         return xManaCost.CompareTo(yManaCost);
                     });
 
-                    sorted = true;
+                    sortedManaCost = true;
                     Console.WriteLine("Sorted deck");
                 }
 
@@ -211,15 +211,15 @@ namespace YARDT
                         }
                     }
 
-                    if (mulligan && playerCards.Count > 4)
+                    if (inMulligan && playerCards.Count > 4)
                     {
                         playerCards.Clear();
-                        mulligan = false;
+                        inMulligan = false;
                         Console.WriteLine("No longer in mulligan phase");
                         Utils.PrintDeckList(deck, set, manaCostOrder, sp, ref labelsDrawn, mainDirName);
                     }
 
-                    if (!mulligan && deck.Count > 0)
+                    if (!inMulligan && deck.Count > 0)
                     {
                         foreach (string card in playerCards.Keys)
                         {
@@ -441,11 +441,11 @@ namespace YARDT
         private void ResetVars()
         {
             gameIsRunning = false;
-            inGame = false;
+            inMatch = false;
             setLoaded = false;
             gotDeck = false;
-            sorted = false;
-            mulligan = true;
+            sortedManaCost = false;
+            inMulligan = true;
             deck = new JObject();
             toDelete = new List<string>();
             manaCostOrder = new List<string>();
