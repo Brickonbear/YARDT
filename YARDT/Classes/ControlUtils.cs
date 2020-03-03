@@ -143,6 +143,15 @@ namespace YARDT
             Application.Current.Dispatcher.Invoke(() =>
             {
                 sp.Children.Clear();
+                foreach (Window window in Application.Current.Windows)
+                {
+                    if (window.GetType() == typeof(MainWindow))
+                    {
+                        (window as MainWindow).cardDrawPercentage1.Text = "";
+                        (window as MainWindow).cardDrawPercentage2.Text = "";
+                        (window as MainWindow).cardDrawPercentage3.Text = "";
+                    }
+                }
             });
         }
 
@@ -191,6 +200,15 @@ namespace YARDT
             Application.Current.Dispatcher.Invoke(() =>
             {
                 textBlock.Text = cardsLeftInDeck.ToString();
+                foreach (Window window in Application.Current.Windows)
+                {
+                    if (window.GetType() == typeof(MainWindow))
+                    {
+                        (window as MainWindow).cardDrawPercentage1.Text = Math.Round(100f / cardsLeftInDeck, 1).ToString("0.0");
+                        (window as MainWindow).cardDrawPercentage2.Text = Math.Round(200f / cardsLeftInDeck, 1).ToString("0.0");
+                        (window as MainWindow).cardDrawPercentage3.Text = Math.Round(300f / cardsLeftInDeck, 1).ToString("0.0");
+                    }
+                }
             });
         }
     }

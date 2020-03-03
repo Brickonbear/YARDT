@@ -12,6 +12,7 @@ using System.Windows.Threading;
 using System.IO.Compression;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Windows.Controls;
 
 namespace YARDT
 {
@@ -64,6 +65,18 @@ namespace YARDT
 
             portSettingText.Text = Properties.Settings.Default.Port.ToString();
 
+            if (Properties.Settings.Default.ShowCards)
+            {
+                cardsGrid.Visibility = Visibility.Visible;
+                showCardsCheck.IsChecked = true;
+            }
+
+            if (Properties.Settings.Default.ShowPercent)
+            {
+                percentageGrid.Visibility = Visibility.Visible;
+                showPercentCheck.IsChecked = true;
+            }
+
             aTimer.Interval = TimeSpan.FromMilliseconds(2000);
             aTimer.Tick += new EventHandler(UpdateCardsInPlay);
 
@@ -110,9 +123,10 @@ namespace YARDT
                                 {
                                     JProperty cardProperty = card.ToObject<JProperty>();
                                     manaCostOrder.Add(cardProperty.Name);
-                                    cardsLeftInDeck += card.Value<int>();
+                                    cardsLeftInDeck += (int)cardProperty.Value;
                                 }
                                 sorted = false;
+                                ControlUtils.UpdateCardsLeftInDeck(cardsLeftText, cardsLeftInDeck);
                                 Console.WriteLine("Got deck");
                             }
                         }
@@ -538,6 +552,42 @@ namespace YARDT
                     Properties.Settings.Default.Save();
                 }
             }
+        }
+
+        private void showCardsCheck_Click(object sender, RoutedEventArgs e)
+        {
+            CheckBox checkBox = sender as CheckBox;
+            if ((bool)checkBox.IsChecked)
+            {
+                cardsGrid.Visibility = Visibility.Visible;
+                //(statsGrid.Parent as Grid).RowDefinitions[2].Height = new GridLength(32);
+                Properties.Settings.Default.ShowCards = true;
+            }
+            else
+            {
+                cardsGrid.Visibility = Visibility.Collapsed;
+                //(statsGrid.Parent as Grid).RowDefinitions[2].Height = new GridLength(0);
+                Properties.Settings.Default.ShowCards = false;
+            }
+            Properties.Settings.Default.Save();
+        }
+
+        private void showPercentCheck_Click(object sender, RoutedEventArgs e)
+        {
+            CheckBox checkBox = sender as CheckBox;
+            if ((bool)checkBox.IsChecked)
+            {
+                percentageGrid.Visibility = Visibility.Visible;
+                //(statsGrid.Parent as Grid).RowDefinitions[2].Height = new GridLength(32);
+                Properties.Settings.Default.ShowPercent = true;
+            }
+            else
+            {
+                percentageGrid.Visibility = Visibility.Collapsed;
+                //(statsGrid.Parent as Grid).RowDefinitions[2].Height = new GridLength(0);
+                Properties.Settings.Default.ShowPercent = false;
+            }
+            Properties.Settings.Default.Save();
         }
     }
 }

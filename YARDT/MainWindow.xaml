@@ -33,7 +33,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="16"/>
             <RowDefinition/>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <DockPanel Grid.Row="0" x:Name="TitleBar">
             <Image x:Name="CloseButton"
@@ -77,18 +77,27 @@
                             Margin="0" 
                             VerticalAlignment="Top" 
                             Width="250"
-                            Height="30"
                             Background="#FF1E1E1E"
                             Visibility="Collapsed">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="50"/>
-                            <ColumnDefinition Width="100"/>
-                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="80"/>
+                            <ColumnDefinition Width="85"/>
+                            <ColumnDefinition Width="85"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Foreground="#FFEDECEC" HorizontalAlignment="Center" VerticalAlignment="Center">Port:</TextBlock>
-                        <TextBox x:Name="portSettingText" Grid.Column="1" TextAlignment="Center" VerticalContentAlignment="Center" Height="23" TextWrapping="Wrap"/>
-                        <Button x:Name="portApplyButton" Grid.Column="2" Width="50" Height="23" Content="Apply" Click="portApplyButton_Click"/>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="23"/>
+                            <RowDefinition Height="23"/>
+                            <RowDefinition Height="23"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Foreground="#FFEDECEC" HorizontalAlignment="Left" VerticalAlignment="Center">Port:</TextBlock>
+                        <TextBox   Grid.Row="0" Grid.Column="1" x:Name="portSettingText" BorderThickness="0" Foreground="#FFEDECEC" Background="#FF3E3E3F" TextAlignment="Center" VerticalContentAlignment="Center" TextWrapping="Wrap"/>
+                        <Button    Grid.Row="0" Grid.Column="2" x:Name="portApplyButton" Width="50" Content="Apply" Click="portApplyButton_Click"/>
+
+                        <TextBlock Grid.Row="1" Grid.Column="0" Foreground="#FFEDECEC" HorizontalAlignment="Left" VerticalAlignment="Center">Card info:</TextBlock>
+                        <CheckBox  Grid.Row="1" Grid.Column="2" x:Name="showCardsCheck" VerticalAlignment="Center" HorizontalAlignment="Center" Click="showCardsCheck_Click"></CheckBox>
+                        <TextBlock Grid.Row="2" Grid.Column="0" Foreground="#FFEDECEC" HorizontalAlignment="Left" VerticalAlignment="Center">Draw chance:</TextBlock>
+                        <CheckBox  Grid.Row="2" Grid.Column="2" x:Name="showPercentCheck" VerticalAlignment="Center" HorizontalAlignment="Center" Click="showPercentCheck_Click"></CheckBox>
                     </Grid>
 
 
@@ -125,13 +134,40 @@
                 </StackPanel>
             </Grid>
         </ScrollViewer>
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="2" x:Name="statsGrid">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="65"/>
                 <ColumnDefinition Width="50"/>
+                <ColumnDefinition Width="65"/>
+                <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0"> Cards Left: </TextBlock>
-            <TextBlock Grid.Column="1" x:Name="cardsLeftText">69</TextBlock>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid Grid.ColumnSpan="4" Grid.Row="0" x:Name="cardsGrid" Visibility="Collapsed">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="65"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Foreground="#FFEDECEC" Text="Cards Left:"/>
+                <TextBlock Grid.Row="0" Grid.Column="1" Foreground="#FFEDECEC" x:Name="cardsLeftText" Text="30"/>
+            </Grid>
+            <Grid Grid.ColumnSpan="4" Grid.Row="1" x:Name="percentageGrid" Visibility="Collapsed">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="40"/>
+                    <ColumnDefinition Width="65"/>
+                    <ColumnDefinition Width="40"/>
+                    <ColumnDefinition Width="65"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Foreground="#FFEDECEC" Text="%1:" HorizontalAlignment="Left"/>
+                <TextBlock Grid.Column="0" Foreground="#FFEDECEC" x:Name="cardDrawPercentage1" HorizontalAlignment="Right"/>
+                <TextBlock Grid.Column="2" Foreground="#FFEDECEC" Text="%2:" HorizontalAlignment="Left"/>
+                <TextBlock Grid.Column="2" Foreground="#FFEDECEC" x:Name="cardDrawPercentage2" HorizontalAlignment="Right"/>
+                <TextBlock Grid.Column="4" Foreground="#FFEDECEC" Text="%3:" HorizontalAlignment="Left" />
+                <TextBlock Grid.Column="4" Foreground="#FFEDECEC" x:Name="cardDrawPercentage3" HorizontalAlignment="Right"/>
+            </Grid>
         </Grid>
     </Grid>
 </Window>
