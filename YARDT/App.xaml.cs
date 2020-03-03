@@ -14,6 +14,13 @@ namespace YARDT
 
         private async void Application_Startup(object sender, StartupEventArgs e)
         {
+            if (YARDT.Properties.Settings.Default.UpgradeRequired)
+            {
+                YARDT.Properties.Settings.Default.Upgrade();
+                YARDT.Properties.Settings.Default.UpgradeRequired = false;
+                YARDT.Properties.Settings.Default.Save();
+            }
+
             await Task.Run(async () => await Updater.Run());
 
             if (!YARDT.Properties.Settings.Default.LanguageChosen)
