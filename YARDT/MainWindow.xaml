@@ -200,9 +200,13 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="65"/>
                     <ColumnDefinition/>
+                    <ColumnDefinition Width="88"/>
+                    <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="0" Foreground="#FFEDECEC" Text="Cards Left:"/>
-                <TextBlock Grid.Row="0" Grid.Column="1" Foreground="#FFEDECEC" x:Name="cardsLeftText"/>
+                <TextBlock Grid.Column="0" Foreground="#FFEDECEC" Text="Cards Left:"/>
+                <TextBlock Grid.Column="1" Foreground="#FFEDECEC" x:Name="cardsLeftText"/>
+                <TextBlock Grid.Column="2" Foreground="#FFEDECEC" Text="Cards In Hand:"/>
+                <TextBlock Grid.Column="3" Foreground="#FFEDECEC" x:Name="cardsInHandText"/>
             </Grid>
             <Grid Grid.ColumnSpan="4" Grid.Row="1" x:Name="percentageGrid" Visibility="Collapsed">
                 <Grid.ColumnDefinitions>

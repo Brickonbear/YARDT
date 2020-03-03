@@ -60,9 +60,20 @@ namespace YARDT
             }
         }
 
-        public static int GetCardsInHand(Dictionary<string, JObject> playerCards)
+        public static int GetCardsInHand(JArray playerCards, int windowHeight)
         {
-            return 0;
+            int numCardsInHand = 0;
+            double limit = windowHeight * 0.121;
+
+            foreach (JToken card in playerCards)
+            {
+                double cardHeight = card.Value<double>("Height");
+                if (!((cardHeight > limit) && (cardHeight < (limit + 30))))
+                {
+                    numCardsInHand++;
+                }
+            }
+            return numCardsInHand;
         }
 
         internal static JArray GetPlayerCards(JArray jArray)

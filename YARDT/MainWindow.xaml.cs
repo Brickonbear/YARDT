@@ -33,6 +33,7 @@ namespace YARDT
         bool labelsDrawn = false;
         bool printMenu = true;
         double prevHeight = 0;
+        int gameWindowHeight = 0;
         int cardsLeftInDeck = 0;
         int numOfCardsInHand;
         JObject deck = new JObject();
@@ -41,7 +42,6 @@ namespace YARDT
         JArray set = new JArray();
         JArray cardsInPlay = new JArray();
         JArray cardsInPlayCopy = new JArray();
-        Dictionary<string, JObject> cardsInPlayerControl = new Dictionary<string, JObject>();
         Dictionary<string, JObject> playerCards = new Dictionary<string, JObject>();
         Dictionary<string, JObject> purgatory = new Dictionary<string, JObject>();
         readonly DispatcherTimer aTimer = new DispatcherTimer();
@@ -128,7 +128,7 @@ namespace YARDT
                                     cardsLeftInDeck += (int)cardProperty.Value;
                                 }
                                 sortedManaCost = false;
-                                ControlUtils.UpdateCardsLeftInDeck(cardsLeftText, cardsLeftInDeck);
+                                ControlUtils.UpdateCardsLeftInDeck(cardsLeftText, cardsLeftInDeck, numOfCardsInHand);
                                 Console.WriteLine("Got deck");
                             }
                         }
@@ -197,6 +197,7 @@ namespace YARDT
                 if (cardsInPlay is JArray && !JToken.DeepEquals(cardsInPlay, cardsInPlayCopy))
                 {
                     Console.WriteLine("Cards are different");
+                    ControlUtils.UpdateCardsLeftInDeck(cardsLeftText, cardsLeftInDeck, numOfCardsInHand);
                     cardsInPlayCopy = cardsInPlay;
                     foreach (JToken card in cardsInPlayCopy)
                     {
@@ -207,7 +208,7 @@ namespace YARDT
                         }
                     }
 
-                    numOfCardsInHand = Utils.GetCardsInHand(playerCards);
+                    numOfCardsInHand = Utils.GetCardsInHand(cardsInPlay, gameWindowHeight);
 
                     if (inMulligan && playerCards.Count > 4)
                     {
@@ -243,7 +244,7 @@ namespace YARDT
                             {
                                 deck["CardsInDeck"][name] = deck["CardsInDeck"].Value<int>(name) - 1;
                                 cardsLeftInDeck--;
-                                ControlUtils.UpdateCardsLeftInDeck(cardsLeftText, cardsLeftInDeck);
+                                ControlUtils.UpdateCardsLeftInDeck(cardsLeftText, cardsLeftInDeck, numOfCardsInHand);
                                 Console.Write("Decremented item: ");
                                 Console.WriteLine(name);
                             }
@@ -425,6 +426,7 @@ namespace YARDT
                 else
                 {
                     cardsInPlay = Utils.GetPlayerCards(responseString["Rectangles"].ToObject<JArray>());
+                    gameWindowHeight = (responseString["Screen"] as JObject)["ScreenHeight"].Value<int>();
                 }
             }
             catch

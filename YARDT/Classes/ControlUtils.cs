@@ -195,7 +195,7 @@ namespace YARDT
             });
         }
 
-        public static void UpdateCardsLeftInDeck(TextBlock textBlock, int cardsLeftInDeck)
+        public static void UpdateCardsLeftInDeck(TextBlock textBlock, int cardsLeftInDeck, int cardsInHand)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -207,6 +207,7 @@ namespace YARDT
                         (window as MainWindow).cardDrawPercentage1.Text = Math.Round(100f / cardsLeftInDeck, 1).ToString("0.0");
                         (window as MainWindow).cardDrawPercentage2.Text = Math.Round(200f / cardsLeftInDeck, 1).ToString("0.0");
                         (window as MainWindow).cardDrawPercentage3.Text = Math.Round(300f / cardsLeftInDeck, 1).ToString("0.0");
+                        (window as MainWindow).cardsInHandText.Text = cardsInHand.ToString();
                     }
                 }
             });
