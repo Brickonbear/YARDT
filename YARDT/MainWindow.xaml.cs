@@ -32,6 +32,7 @@ namespace YARDT
         bool labelsDrawn = false;
         bool printMenu = true;
         double prevHeight = 0;
+        int cardsLeftInDeck = 0;
         JObject deck = new JObject();
         List<string> toDelete = new List<string>();
         List<string> manaCostOrder = new List<string>();
@@ -109,6 +110,7 @@ namespace YARDT
                                 {
                                     JProperty cardProperty = card.ToObject<JProperty>();
                                     manaCostOrder.Add(cardProperty.Name);
+                                    cardsLeftInDeck += card.Value<int>();
                                 }
                                 sorted = false;
                                 Console.WriteLine("Got deck");
@@ -228,6 +230,8 @@ namespace YARDT
                             foreach (string name in toDelete)
                             {
                                 deck["CardsInDeck"][name] = deck["CardsInDeck"].Value<int>(name) - 1;
+                                cardsLeftInDeck--;
+                                ControlUtils.UpdateCardsLeftInDeck(cardsLeftText, cardsLeftInDeck);
                                 Console.Write("Decremented item: ");
                                 Console.WriteLine(name);
                             }
@@ -439,6 +443,7 @@ namespace YARDT
             aTimer.IsEnabled = false;
             labelsDrawn = false;
             printMenu = true;
+            cardsLeftInDeck = 0;
             ControlUtils.ClearControls(sp);
         }
 

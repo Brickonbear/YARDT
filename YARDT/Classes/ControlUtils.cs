@@ -6,7 +6,6 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Threading;
 
 namespace YARDT
 {
@@ -187,5 +186,12 @@ namespace YARDT
             });
         }
 
+        public static void UpdateCardsLeftInDeck(TextBlock textBlock, int cardsLeftInDeck)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                textBlock.Text = cardsLeftInDeck.ToString();
+            });
+        }
     }
 }
