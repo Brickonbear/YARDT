@@ -27,6 +27,7 @@ namespace YARDT
             {
                 ChooseLanguage chooseLanguage = new ChooseLanguage();
                 chooseLanguage.ShowDialog();
+                Updater.RunNew();
             }
 
             MainWindow window = new MainWindow();

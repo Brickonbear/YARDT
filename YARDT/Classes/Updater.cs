@@ -79,7 +79,7 @@ namespace YARDT.Classes
             }
         }
 
-        private static void RunNew()
+        public static void RunNew()
         {
             Process.Start(NewExe);
             Application.Current.Dispatcher.Invoke(() => { Application.Current.Shutdown(); });

@@ -44,6 +44,19 @@ namespace YARDT
         const string mainDirName = "YARDTData/";
         const string tempDirName = "YARDTTempData/";
 
+        Dictionary<string, string> hashTable = new Dictionary<string, string>()
+        {
+            {"de_de", "d19422011f99ede7490fe445b046b0a5"},
+            {"en_us", "885a4f142a285bcb0c7b1dd9767c0023"},
+            {"es_es", "6e9b725464203a06271c90529a242e08"},
+            {"fr_fr", "123354b6b920e66f0fe97eedc58c1d84"},
+            {"it_it", "222561a9c3cada90ca6a8be50374e1b0"},
+            {"ja_jp", "7eea717db7e1c1b84ceca0219f9cdff9"},
+            { "ko_kr", "f0d30526c42cd2d4a6d7b4d0556762c3"}
+        };
+
+        
+
         public MainWindow()
         {
             InitializeComponent();
@@ -53,8 +66,7 @@ namespace YARDT
             aTimer.Interval = TimeSpan.FromMilliseconds(2000);
             aTimer.Tick += new EventHandler(UpdateCardsInPlay);
 
-            System.Threading.Tasks.Task.Delay(100).ContinueWith(t => VerifyData(false));
-            Console.WriteLine("Heyo fuckface its ya boi LEGIIIIIIIIIIIT FOOD REVIEWS");
+            System.Threading.Tasks.Task.Delay(50).ContinueWith(t => VerifyData(false));
         }
 
         public void Main()
@@ -255,7 +267,7 @@ namespace YARDT
             ControlUtils.CreateTextBox(sp, "Verifying Data");
 
             string hash = "";
-            string correctHash = "885a4f142a285bcb0c7b1dd9767c0023";
+            hashTable.TryGetValue(Properties.Settings.Default.Language, out string correctHash);
             if (File.Exists(mainDirName + "set1-" + Properties.Settings.Default.Language + ".json"))
             {
                 hash = StringUtils.CalculateMD5(mainDirName + "set1-" + Properties.Settings.Default.Language + ".json");
