@@ -47,14 +47,6 @@
                    MouseLeftButtonDown="CollapseButton_MouseLeftButtonDown" 
                    MouseEnter="CollapseButton_MouseEnter" 
                    MouseLeave="CollapseButton_MouseLeave"/>
-            <Image x:Name="OptionsButton"
-                   Source="/Resources/OptionsButton.bmp" 
-                   Width="16" 
-                   Height="16"
-                   DockPanel.Dock="Right" 
-                   MouseLeftButtonDown="OptionsButton_MouseLeftButtonDown" 
-                   MouseEnter="OptionsButton_MouseEnter" 
-                   MouseLeave="OptionsButton_MouseLeave"/>
             <TextBlock x:Name="WindowTitle" HorizontalAlignment="Center" Foreground="#FFEDECEC">YARDT</TextBlock>
         </DockPanel>
         <StackPanel x:Name="LanguageSettings"
@@ -81,7 +73,7 @@
                     <ComboBoxItem ToolTip="Japanese (Japan)">ja_jp</ComboBoxItem>
                     <ComboBoxItem ToolTip="Korean (Korea)">ko_kr</ComboBoxItem>
                 </ComboBox>
-                <Button x:Name="portApplyButton" Grid.Column="2" Width="50" Height="23" Content="Apply" Click="portApplyButton_Click"/>
+                <Button x:Name="portApplyButton" Grid.Column="2" Width="50" Height="23" Content="OK" Click="portApplyButton_Click"/>
             </Grid>
 
 

@@ -77,28 +77,12 @@ namespace YARDT
             CloseButton.Source = new BitmapImage(new Uri(@"/Resources/CloseButton.bmp", UriKind.Relative));
         }
 
-        //OptionsButton Functions
-        private void OptionsButton_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            OptionsButton.Source = new BitmapImage(new Uri(@"/Resources/OptionsButtonClick.bmp", UriKind.Relative));
-            Height++;
-        }
-
-        private void OptionsButton_MouseEnter(object sender, MouseEventArgs e)
-        {
-            OptionsButton.Source = new BitmapImage(new Uri(@"/Resources/OptionsButtonHover.bmp", UriKind.Relative));
-        }
-
-        private void OptionsButton_MouseLeave(object sender, MouseEventArgs e)
-        {
-            OptionsButton.Source = new BitmapImage(new Uri(@"/Resources/OptionsButton.bmp", UriKind.Relative));
-        }
-
         private void portApplyButton_Click(object sender, RoutedEventArgs e)
         {
             Properties.Settings.Default.Language = ((ComboBoxItem)choosenLanguage.SelectedItem).Content.ToString();
             Properties.Settings.Default.LanguageChosen = true;
             Properties.Settings.Default.Save();
+            Close();
 
         }
     }
