@@ -60,5 +60,27 @@ namespace YARDT
             }
         }
 
+        public static int GetCardsInHand(Dictionary<string, JObject> playerCards)
+        {
+            return 0;
+        }
+
+        internal static JArray GetPlayerCards(JArray jArray)
+        {
+            JArray playerCards = new JArray();
+
+            foreach (JToken card in jArray)
+            {
+                if (card.Value<bool>("LocalPlayer") == true)
+                {
+                    if (card.Value<string>("CardCode") != "face")
+                    {
+                        playerCards.Add(card);
+                    }
+                }
+            }
+
+            return playerCards;
+        }
     }
 }

@@ -2,17 +2,17 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
+using System.IO.Compression;
 using System.Net.Http;
 using System.Threading;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using System.IO.Compression;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Windows.Controls;
 
 namespace YARDT
 {
@@ -34,19 +34,21 @@ namespace YARDT
         bool printMenu = true;
         double prevHeight = 0;
         int cardsLeftInDeck = 0;
+        int numOfCardsInHand;
         JObject deck = new JObject();
         List<string> toDelete = new List<string>();
         List<string> manaCostOrder = new List<string>();
         JArray set = new JArray();
         JArray cardsInPlay = new JArray();
         JArray cardsInPlayCopy = new JArray();
+        Dictionary<string, JObject> cardsInPlayerControl = new Dictionary<string, JObject>();
         Dictionary<string, JObject> playerCards = new Dictionary<string, JObject>();
         Dictionary<string, JObject> purgatory = new Dictionary<string, JObject>();
         readonly DispatcherTimer aTimer = new DispatcherTimer();
         const string mainDirName = "YARDTData/";
         const string tempDirName = "YARDTTempData/";
 
-        Dictionary<string, string> hashTable = new Dictionary<string, string>()
+        readonly Dictionary<string, string> hashTable = new Dictionary<string, string>()
         {
             {"de_de", "d19422011f99ede7490fe445b046b0a5"},
             {"en_us", "885a4f142a285bcb0c7b1dd9767c0023"},
@@ -57,7 +59,7 @@ namespace YARDT
             { "ko_kr", "f0d30526c42cd2d4a6d7b4d0556762c3"}
         };
 
-        
+
 
         public MainWindow()
         {
@@ -107,7 +109,7 @@ namespace YARDT
                             if (!gotDeck)
                             {
                                 gotDeck = true;
-                                
+
                                 string resString = Utils.HttpReq($"http://localhost:{Properties.Settings.Default.Port}/static-decklist");
                                 if (resString == "failure")
                                 {
@@ -150,11 +152,11 @@ namespace YARDT
                     catch (Exception)
                     {
                         Console.WriteLine("Could not connect to game!");
-                        Console.WriteLine("Trying again in 5 sec");
+                        Console.WriteLine("Trying again in 2 sec");
                         ControlUtils.ChangeMainWindowTitle("Waiting for game to start");
                         //Console.WriteLine("Message :{0} ", err.Message);
                         gameIsRunning = false;
-                        Thread.Sleep(5000);
+                        Thread.Sleep(2000);
                     }
                 }
 
@@ -200,16 +202,12 @@ namespace YARDT
                     {
                         if (!playerCards.ContainsKey(card.Value<string>("CardID")))
                         {
-                            if (card.Value<bool>("LocalPlayer") == true)
-                            {
-                                if (card.Value<string>("CardCode") != "face")
-                                {
-                                    Console.WriteLine("Adding card: " + card.Value<string>("CardID") + " to playerCards");
-                                    playerCards.Add(card.Value<string>("CardID"), card.ToObject<JObject>());
-                                }
-                            }
+                            Console.WriteLine("Adding card: " + card.Value<string>("CardID") + " to playerCards");
+                            playerCards.Add(card.Value<string>("CardID"), card.ToObject<JObject>());
                         }
                     }
+
+                    numOfCardsInHand = Utils.GetCardsInHand(playerCards);
 
                     if (inMulligan && playerCards.Count > 4)
                     {
@@ -351,7 +349,7 @@ namespace YARDT
                         string[] filename = { mainDirName + "/full/", file.Name, "_" };
                         file.MoveTo(string.Join("", filename));
                     }
-                    
+
                     Console.WriteLine("Moving cards to " + mainDirName + "cards/");
                     ControlUtils.CreateTextBox(sp, "Moving cards to " + mainDirName + "cards/");
                     foreach (FileInfo file in dir.EnumerateFiles())
@@ -359,7 +357,7 @@ namespace YARDT
                         string[] filename = { mainDirName + "/cards/", file.Name, "_" };
                         file.MoveTo(string.Join("", filename));
                     }
-                   
+
                     dir = new DirectoryInfo(mainDirName + "/cards");
                     Console.WriteLine("Resizing card images");
                     ControlUtils.CreateTextBox(sp, "Resizing card images");
@@ -372,7 +370,7 @@ namespace YARDT
                         img.Dispose();
                         file.Delete();
                     }
-                    
+
                     dir = new DirectoryInfo(mainDirName + "/full");
                     Console.WriteLine("Cropping full images and applying gradient");
                     ControlUtils.CreateTextBox(sp, "Cropping full images and applying gradient");
@@ -426,7 +424,7 @@ namespace YARDT
                 }
                 else
                 {
-                    cardsInPlay = responseString["Rectangles"].ToObject<JArray>();
+                    cardsInPlay = Utils.GetPlayerCards(responseString["Rectangles"].ToObject<JArray>());
                 }
             }
             catch
@@ -537,9 +535,9 @@ namespace YARDT
         {
             OptionsButton.Source = new BitmapImage(new Uri(@"/Resources/OptionsButton.bmp", UriKind.Relative));
         }
-        
+
         //Settings menu Functions
-         private void portApplyButton_Click(object sender, RoutedEventArgs e)
+        private void portApplyButton_Click(object sender, RoutedEventArgs e)
         {
             if (portSettingText.Text != Properties.Settings.Default.Port.ToString())
             {
