@@ -87,7 +87,7 @@ namespace YARDT
 
         public void Main()
         {
-            ControlUtils.ClearControls(sp);
+            ControlUtils.ClearControls(sp, cardDrawPercentage1, cardDrawPercentage2, cardDrawPercentage3, cardsInHandText);
 
             while (true)
             {
@@ -103,7 +103,7 @@ namespace YARDT
                         {
                             inMatch = true;
                             Console.WriteLine("Starting timer");
-                            ControlUtils.ChangeMainWindowTitle("YARDT");
+                            ControlUtils.ChangeMainWindowTitle(WindowTitle, "YARDT");
                             aTimer.IsEnabled = true;
 
                             if (!gotDeck)
@@ -128,7 +128,7 @@ namespace YARDT
                                     cardsLeftInDeck += (int)cardProperty.Value;
                                 }
                                 sortedManaCost = false;
-                                ControlUtils.UpdateCardsLeftInDeck(cardsLeftText, cardsLeftInDeck, numOfCardsInHand);
+                                ControlUtils.UpdateCardsLeftInDeck(cardDrawPercentage1, cardDrawPercentage2, cardDrawPercentage3, cardsInHandText, cardsLeftText, cardsLeftInDeck, numOfCardsInHand);
                                 Console.WriteLine("Got deck");
                             }
                         }
@@ -137,7 +137,7 @@ namespace YARDT
                             if (printMenu)
                             {
                                 Console.WriteLine("In menu, waiting for game to start");
-                                ControlUtils.ChangeMainWindowTitle("Waiting for match to start");
+                                ControlUtils.ChangeMainWindowTitle(WindowTitle, "Waiting for match to start");
                                 printMenu = false;
                             }
 
@@ -153,7 +153,7 @@ namespace YARDT
                     {
                         Console.WriteLine("Could not connect to game!");
                         Console.WriteLine("Trying again in 2 sec");
-                        ControlUtils.ChangeMainWindowTitle("Waiting for game to start");
+                        ControlUtils.ChangeMainWindowTitle(WindowTitle, "Waiting for game to start");
                         //Console.WriteLine("Message :{0} ", err.Message);
                         gameIsRunning = false;
                         Thread.Sleep(2000);
@@ -197,7 +197,7 @@ namespace YARDT
                 if (cardsInPlay is JArray && !JToken.DeepEquals(cardsInPlay, cardsInPlayCopy))
                 {
                     Console.WriteLine("Cards are different");
-                    ControlUtils.UpdateCardsLeftInDeck(cardsLeftText, cardsLeftInDeck, numOfCardsInHand);
+                    ControlUtils.UpdateCardsLeftInDeck(cardDrawPercentage1, cardDrawPercentage2, cardDrawPercentage3, cardsInHandText, cardsLeftText, cardsLeftInDeck, numOfCardsInHand);
                     cardsInPlayCopy = cardsInPlay;
                     foreach (JToken card in cardsInPlayCopy)
                     {
@@ -244,7 +244,7 @@ namespace YARDT
                             {
                                 deck["CardsInDeck"][name] = deck["CardsInDeck"].Value<int>(name) - 1;
                                 cardsLeftInDeck--;
-                                ControlUtils.UpdateCardsLeftInDeck(cardsLeftText, cardsLeftInDeck, numOfCardsInHand);
+                                ControlUtils.UpdateCardsLeftInDeck(cardDrawPercentage1, cardDrawPercentage2, cardDrawPercentage3, cardsInHandText, cardsLeftText, cardsLeftInDeck, numOfCardsInHand);
                                 Console.Write("Decremented item: ");
                                 Console.WriteLine(name);
                             }
@@ -278,7 +278,7 @@ namespace YARDT
             return deckList;
         }
 
-        public bool VerifyData(bool downloaded)
+        public bool VerifyData(bool downloaded)    
         {
             Console.WriteLine("Verifying Data");
             ControlUtils.CreateTextBox(sp, "Verifying Data");
@@ -458,7 +458,7 @@ namespace YARDT
             labelsDrawn = false;
             printMenu = true;
             cardsLeftInDeck = 0;
-            ControlUtils.ClearControls(sp);
+            ControlUtils.ClearControls(sp, cardDrawPercentage1, cardDrawPercentage2, cardDrawPercentage3, cardsInHandText);
         }
 
         //Main window functions
