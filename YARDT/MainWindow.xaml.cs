@@ -50,13 +50,13 @@ namespace YARDT
 
         readonly Dictionary<string, string> hashTable = new Dictionary<string, string>()
         {
-            {"de_de", "d19422011f99ede7490fe445b046b0a5"},
-            {"en_us", "885a4f142a285bcb0c7b1dd9767c0023"},
-            {"es_es", "6e9b725464203a06271c90529a242e08"},
-            {"fr_fr", "123354b6b920e66f0fe97eedc58c1d84"},
-            {"it_it", "222561a9c3cada90ca6a8be50374e1b0"},
-            {"ja_jp", "7eea717db7e1c1b84ceca0219f9cdff9"},
-            { "ko_kr", "f0d30526c42cd2d4a6d7b4d0556762c3"}
+            {"de_de", "3FAE9FEE88EF06A6BC2D569352910ECF"},
+            {"en_us", "085EF7C3EFB1A0B3C75960FDFE008445"},
+            {"es_es", "24AA2ACFC06AAB0C850F83FB49954AF4"},
+            {"fr_fr", "9A74A5B4D208FBE5B18AEBD792BA5F07"},
+            {"it_it", "73C9DA72E1D4B54A3C9E15C6D40CEF99"},
+            {"ja_jp", "20B5BF972B8755BD815DA60620E4D305"},
+            { "ko_kr", "056E89E1A3E298E3673780CB3B39FA7D"}
         };
 
 
