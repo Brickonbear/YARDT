@@ -7,11 +7,21 @@ namespace YARDT
 {
     class StringUtils
     {
+        /// <summary>
+        /// Removes illigal characters from string
+        /// </summary>
+        /// <param name="dirtyString"></param>
+        /// <returns></returns>
         public static string SanitizeString(string dirtyString)
         {
             return new string(dirtyString.Where(Char.IsLetterOrDigit).ToArray());
         }
 
+        /// <summary>
+        /// Calculate MD5 checksum of file
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
         public static string CalculateMD5(string filename)
         {
             using (MD5 md5 = MD5.Create())

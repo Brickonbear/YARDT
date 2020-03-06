@@ -11,7 +11,14 @@ namespace YARDT
 {
     class ControlUtils
     {
-
+        /// <summary>
+        /// Create label with mana cost and card amount; if label already exists, just update card amount
+        /// </summary>
+        /// <param name="sp"></param>
+        /// <param name="item"></param>
+        /// <param name="amount"></param>
+        /// <param name="reset"></param>
+        /// <param name="mainDirName"></param>
         public static void CreateLabel(StackPanel sp, JToken item, string amount, bool reset, string mainDirName) //Create button
         {
             Application.Current.Dispatcher.Invoke(() =>
@@ -138,6 +145,14 @@ namespace YARDT
             });
         }
 
+        /// <summary>
+        /// Delete all labels and text from window
+        /// </summary>
+        /// <param name="sp"></param>
+        /// <param name="cardDrawPercentage1"></param>
+        /// <param name="cardDrawPercentage2"></param>
+        /// <param name="cardDrawPercentage3"></param>
+        /// <param name="cardsInHandText"></param>
         public static void ClearControls(StackPanel sp, TextBlock cardDrawPercentage1, TextBlock cardDrawPercentage2, TextBlock cardDrawPercentage3, TextBlock cardsInHandText) //Clear buttons
         {
             Application.Current.Dispatcher.Invoke(() =>
@@ -150,6 +165,11 @@ namespace YARDT
             });
         }
 
+        /// <summary>
+        /// Change the title of the window
+        /// </summary>
+        /// <param name="windowTitle"></param>
+        /// <param name="newTitle"></param>
         public static void ChangeMainWindowTitle(TextBlock windowTitle, string newTitle)
         {
             Application.Current.Dispatcher.Invoke(() =>
@@ -158,6 +178,11 @@ namespace YARDT
             });  
         }
 
+        /// <summary>
+        /// Create textBox in main window, mostly for debugging
+        /// </summary>
+        /// <param name="sp"></param>
+        /// <param name="content"></param>
         public static void CreateTextBox(StackPanel sp, string content)
         {
             Application.Current.Dispatcher.Invoke(() =>
@@ -174,6 +199,14 @@ namespace YARDT
             });
         }
 
+        /// <summary>
+        /// Update amount of cards in deck, in the window
+        /// </summary>
+        /// <param name="cardDrawPercentage1"></param>
+        /// <param name="cardDrawPercentage2"></param>
+        /// <param name="cardDrawPercentage3"></param>
+        /// <param name="cardsLeftText"></param>
+        /// <param name="cardsLeftInDeck"></param>
         public static void UpdateCardsLeftInDeck(TextBlock cardDrawPercentage1, TextBlock cardDrawPercentage2, TextBlock cardDrawPercentage3,TextBlock cardsLeftText, int cardsLeftInDeck)
         {
             Application.Current.Dispatcher.Invoke(() =>
@@ -185,6 +218,11 @@ namespace YARDT
             });
         }
 
+        /// <summary>
+        /// Update amount of cards in hand, in the window
+        /// </summary>
+        /// <param name="cardsInHandText"></param>
+        /// <param name="cardsInHand"></param>
         public static void UpdateCardsInHand(TextBlock cardsInHandText, int cardsInHand)
         {
             Application.Current.Dispatcher.Invoke(() =>

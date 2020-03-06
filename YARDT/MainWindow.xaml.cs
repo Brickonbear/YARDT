@@ -48,7 +48,7 @@ namespace YARDT
         const string mainDirName = "YARDTData/";
         const string tempDirName = "YARDTTempData/";
 
-        readonly Dictionary<string, string> hashTable = new Dictionary<string, string>()
+        readonly Dictionary<string, string> hashTable = new Dictionary<string, string>()    //MD5 hashes for different languages
         {
             {"de_de", "3FAE9FEE88EF06A6BC2D569352910ECF"},
             {"en_us", "085EF7C3EFB1A0B3C75960FDFE008445"},
@@ -65,7 +65,8 @@ namespace YARDT
         {
             InitializeComponent();
 
-            portSettingText.Text = Properties.Settings.Default.Port.ToString();
+            #region Initialize values based on user config
+            portSettingText.Text = Properties.Settings.Default.Port.ToString();     //Get port from user config
 
             if (Properties.Settings.Default.ShowCardsLeftInDeck)
             {
@@ -86,10 +87,13 @@ namespace YARDT
                 _cardsInHandText.Visibility = Visibility.Visible;
                 showCardsInHandCheck.IsChecked = true;
             }
+            #endregion
 
+            //Add UpdateCardsInPlay to timer and make it run every 2 sec's
             aTimer.Interval = TimeSpan.FromMilliseconds(2000);
             aTimer.Tick += new EventHandler(UpdateCardsInPlay);
 
+            //Start data check
             System.Threading.Tasks.Task.Delay(50).ContinueWith(t => VerifyData(false));
         }
 
@@ -264,27 +268,11 @@ namespace YARDT
             }
         }
 
-        private JObject DeckFromExpedition(JObject expeditionState)
-        {
-            JObject deckList = new JObject();
-            JObject cardsInDeck = new JObject();
-            deckList.Add("DeckCode", "DECKCODE");
-
-            foreach (string cardCode in expeditionState["Deck"])
-            {
-                if (cardsInDeck.ContainsKey(cardCode)){
-                    cardsInDeck[cardCode] = (int)cardsInDeck[cardCode] + 1;
-                }
-                else
-                {
-                    cardsInDeck.Add(cardCode, 1);
-                }
-            }
-
-            deckList.Add("CardsInDeck", cardsInDeck);
-            return deckList;
-        }
-
+        /// <summary>
+        /// Check if data is correct; if not correct, delete it and download the correct data; then start the main loop
+        /// </summary>
+        /// <param name="downloaded"></param>
+        /// <returns></returns>
         public bool VerifyData(bool downloaded)    
         {
             Console.WriteLine("Verifying Data");
@@ -418,6 +406,38 @@ namespace YARDT
             return hash == correctHash;
         }
 
+        /// <summary>
+        /// Get deck list from expedition endpoint (only runs if static-decklist endpoint is broken)
+        /// </summary>
+        /// <param name="expeditionState"></param>
+        /// <returns></returns>
+        private JObject DeckFromExpedition(JObject expeditionState)
+        {
+            JObject deckList = new JObject();
+            JObject cardsInDeck = new JObject();
+            deckList.Add("DeckCode", "DECKCODE");
+
+            foreach (string cardCode in expeditionState["Deck"])
+            {
+                if (cardsInDeck.ContainsKey(cardCode))
+                {
+                    cardsInDeck[cardCode] = (int)cardsInDeck[cardCode] + 1;
+                }
+                else
+                {
+                    cardsInDeck.Add(cardCode, 1);
+                }
+            }
+
+            deckList.Add("CardsInDeck", cardsInDeck);
+            return deckList;
+        }
+
+        /// <summary>
+        /// Updates which cards are on screen
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="e"></param>
         public async void UpdateCardsInPlay(object source, EventArgs e)
         {
             try
@@ -445,6 +465,9 @@ namespace YARDT
             }
         }
 
+        /// <summary>
+        /// reset all variables and clear window
+        /// </summary>
         private void ResetVars()
         {
             gameIsRunning = false;

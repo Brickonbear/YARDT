@@ -21,6 +21,10 @@ namespace YARDT.Classes
 
         private static string NewExe = Path.Combine(Path.GetDirectoryName(ExePath), "YARDT.exe");
 
+        /// <summary>
+        /// Check if newer version is available
+        /// </summary>
+        /// <returns></returns>
         public static async Task<bool> CheckForUpdate()
         {
             var resp = await HttpClient.GetAsync(APILatestURL);
@@ -33,6 +37,10 @@ namespace YARDT.Classes
             return (LatestVersion > CurrentVersion);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static async Task Run()
         {
             if (Path.GetFileName(ExePath).Equals("YARDT.old.exe")) RunNew();
@@ -48,6 +56,10 @@ namespace YARDT.Classes
             if (NeedsUpdate) await StartUpdate();
         }
 
+        /// <summary>
+        /// Download new version and replace the old one
+        /// </summary>
+        /// <returns></returns>
         public static async Task StartUpdate()
         {
             string OldExe = Path.Combine(Path.GetDirectoryName(ExePath), "YARDT.old.exe");
@@ -79,11 +91,15 @@ namespace YARDT.Classes
             }
         }
 
+        /// <summary>
+        /// Run new version and close old one
+        /// </summary>
         public static void RunNew()
         {
             Process.Start(NewExe);
             Application.Current.Dispatcher.Invoke(() => { Application.Current.Shutdown(); });
         }
+
 
         private static System.Net.Http.HttpClient _client = null;
         public static System.Net.Http.HttpClient HttpClient
@@ -114,6 +130,12 @@ namespace YARDT.Classes
             MaxJsonLength = int.MaxValue,
         };
 
+        /// <summary>
+        /// Download file to specified path
+        /// </summary>
+        /// <param name="link"></param>
+        /// <param name="output"></param>
+        /// <returns></returns>
         public static async Task Download(string link, string output)
         {
             var resp = await HttpClient.GetAsync(link);
@@ -125,7 +147,9 @@ namespace YARDT.Classes
         }
     }
 
-
+    /// <summary>
+    /// Class for storing output from github API
+    /// </summary>
     public class Update
     {
         public string url;

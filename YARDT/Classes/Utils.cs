@@ -9,6 +9,15 @@ namespace YARDT
 {
     class Utils
     {
+        /// <summary>
+        /// Display the deck list in the main window
+        /// </summary>
+        /// <param name="deck"></param>
+        /// <param name="set"></param>
+        /// <param name="order"></param>
+        /// <param name="sp"></param>
+        /// <param name="labelsDrawn"></param>
+        /// <param name="mainDirName"></param>
         public static void PrintDeckList(JObject deck, JArray set, List<string> order, StackPanel sp, ref bool labelsDrawn, string mainDirName)
         {
             foreach (string cardCode in order)
@@ -29,6 +38,11 @@ namespace YARDT
             labelsDrawn = true;
         }
 
+        /// <summary>
+        /// Make a HTTP GET request and return text content
+        /// </summary>
+        /// <param name="URL"></param>
+        /// <returns></returns>
         public static string HttpReq(string URL)
         {
             using (HttpClient client = new HttpClient())
@@ -60,6 +74,12 @@ namespace YARDT
             }
         }
 
+        /// <summary>
+        /// Calculate number of cards in players hand based on Runeterra window size
+        /// </summary>
+        /// <param name="playerCards"></param>
+        /// <param name="windowHeight"></param>
+        /// <returns></returns>
         public static int GetCardsInHand(JArray playerCards, int windowHeight)
         {
             int numCardsInHand = 0;
@@ -76,6 +96,11 @@ namespace YARDT
             return numCardsInHand;
         }
 
+        /// <summary>
+        /// Filter out opponent cards as well as the nexus
+        /// </summary>
+        /// <param name="jArray"></param>
+        /// <returns></returns>
         internal static JArray GetPlayerCards(JArray jArray)
         {
             JArray playerCards = new JArray();

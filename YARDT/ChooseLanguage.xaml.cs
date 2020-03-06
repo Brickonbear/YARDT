@@ -30,7 +30,7 @@ namespace YARDT
         //Main window functions
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            DragMove();
+            DragMove(); //Make window dragable
         }
 
         //CollapseButton Functions

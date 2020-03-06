@@ -8,6 +8,15 @@ namespace YARDT
 {
     class ImageUtils
     {
+        /// <summary>
+        /// Crops image from x,y to x+width,y+height
+        /// </summary>
+        /// <param name="image"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <returns></returns>
         public static Bitmap CropImage(Bitmap image, int x, int y, int width, int height)
         {
             Bitmap croppedImage;
@@ -24,6 +33,12 @@ namespace YARDT
             return croppedImage;
         }
 
+        /// <summary>
+        /// Applies gradient to cropped image based on region
+        /// </summary>
+        /// <param name="image"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public static Bitmap AddGradient(Bitmap image, string name)
         {
             Bitmap gradient;
@@ -63,6 +78,13 @@ namespace YARDT
             return target;
         }
 
+        /// <summary>
+        /// Resizes image to specified width and height
+        /// </summary>
+        /// <param name="image"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <returns></returns>
         public static Bitmap ResizeImage(Image image, int width, int height)
         {
             Rectangle destRect = new Rectangle(0, 0, width, height);

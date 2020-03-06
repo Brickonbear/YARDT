@@ -11,12 +11,20 @@ namespace YARDT
 {
     class FileUtils
     {
+        /// <summary>
+        /// Class for passing to DownloadFileAsync for later use
+        /// </summary>
         public class userState
         {
             public ManualResetEvent waiter;
             public TextBlock title;
         }
 
+        /// <summary>
+        /// Download file to specified location
+        /// </summary>
+        /// <param name="directory"></param>
+        /// <param name="windowTitle"></param>
         public static void DownloadToDir(string directory, TextBlock windowTitle)
         {
             Console.WriteLine("Begining Data Dragon download");
@@ -26,6 +34,12 @@ namespace YARDT
             Console.WriteLine("Finished download");
         }
 
+        /// <summary>
+        /// Download file to specified location synchronously
+        /// </summary>
+        /// <param name="address"></param>
+        /// <param name="destination"></param>
+        /// <param name="windowTitle"></param>
         public static void DownloadFile(string address, string destination, TextBlock windowTitle)
         {
 
@@ -47,7 +61,11 @@ namespace YARDT
             usr.waiter.WaitOne();
         }
         
-
+        /// <summary>
+        /// Runs when download finishes; allows main thread to continue
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public static void HandleDownloadComplete(object sender, AsyncCompletedEventArgs e)
         {
             userState usr = e.UserState as userState;
@@ -60,6 +78,11 @@ namespace YARDT
             usr.waiter.Set();
         }
 
+        /// <summary>
+        /// Runs every time bytes have been downloaded; shows download progress in window title
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public static void HandleDownloadProgress(object sender, DownloadProgressChangedEventArgs e)
         {
             userState usr = e.UserState as userState;
@@ -71,6 +94,10 @@ namespace YARDT
                 e.ProgressPercentage);
         }
 
+        /// <summary>
+        /// Deletes all files from specified directory
+        /// </summary>
+        /// <param name="directory"></param>
         public static void DeleteFromDir(string directory)
         {
             DirectoryInfo di = new DirectoryInfo(directory);
@@ -88,6 +115,11 @@ namespace YARDT
             }
         }
 
+        /// <summary>
+        /// Loads relevant set from json file
+        /// </summary>
+        /// <param name="mainDirName"></param>
+        /// <returns></returns>
         public static JArray LoadJson(string mainDirName)
         {
             using (StreamReader r = new StreamReader(mainDirName + "set1-" + Properties.Settings.Default.Language + ".json"))
