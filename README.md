@@ -7,12 +7,21 @@ To use the deck tracker, you will need to do a first time launch. The deck track
 
 ## Future plans
 
-Currently the deck tracker is functioning as intended, feel free to add suggestions (via pull request):
+Currently the deck tracker is functioning as intended, feel free to add suggestions (via pull request)
+
+List of features planned:
 
  - [x] Port change option
  - [x] Automatic updates
  - [x] Expedition support
+ - [x] Card stats (cards left in deck/hand, draw chances)
  - [x] Support for different languages
+ - [ ] Enemy deck
+ - [ ] Enemy cards in hand
+ - [ ] Card graveyard
+ - [ ] Darken colour of cards that can no longer be drawn (0 of that card left in deck)
+ - [ ] Add shuffled cards to deck tracker
+ - [ ] Deck winrate stats
 
 ## Known issues
 
