@@ -79,6 +79,13 @@ namespace YARDT
                 showPercentCheck.IsChecked = true;
             }
 
+            if (Properties.Settings.Default.ShowCardsLeftInhand)
+            {
+                cardsInHandText.Visibility = Visibility.Visible;
+                _cardsInHandText.Visibility = Visibility.Visible;
+                showCardsInHandCheck.IsChecked = true;
+            }
+
             aTimer.Interval = TimeSpan.FromMilliseconds(2000);
             aTimer.Tick += new EventHandler(UpdateCardsInPlay);
 
@@ -559,13 +566,11 @@ namespace YARDT
             if ((bool)checkBox.IsChecked)
             {
                 cardsGrid.Visibility = Visibility.Visible;
-                //(statsGrid.Parent as Grid).RowDefinitions[2].Height = new GridLength(32);
                 Properties.Settings.Default.ShowCards = true;
             }
             else
             {
                 cardsGrid.Visibility = Visibility.Collapsed;
-                //(statsGrid.Parent as Grid).RowDefinitions[2].Height = new GridLength(0);
                 Properties.Settings.Default.ShowCards = false;
             }
             Properties.Settings.Default.Save();
@@ -577,14 +582,30 @@ namespace YARDT
             if ((bool)checkBox.IsChecked)
             {
                 percentageGrid.Visibility = Visibility.Visible;
-                //(statsGrid.Parent as Grid).RowDefinitions[2].Height = new GridLength(32);
                 Properties.Settings.Default.ShowPercent = true;
             }
             else
             {
                 percentageGrid.Visibility = Visibility.Collapsed;
-                //(statsGrid.Parent as Grid).RowDefinitions[2].Height = new GridLength(0);
                 Properties.Settings.Default.ShowPercent = false;
+            }
+            Properties.Settings.Default.Save();
+        }
+
+        private void showCardsInHandCheck_Click(object sender, RoutedEventArgs e)
+        {
+            CheckBox checkBox = sender as CheckBox;
+            if ((bool)checkBox.IsChecked)
+            {
+                cardsInHandText.Visibility = Visibility.Visible;
+                _cardsInHandText.Visibility = Visibility.Visible;
+                Properties.Settings.Default.ShowCardsLeftInhand = true;
+            }
+            else
+            {
+                cardsInHandText.Visibility = Visibility.Collapsed;
+                _cardsInHandText.Visibility = Visibility.Collapsed;
+                Properties.Settings.Default.ShowCardsLeftInhand = false;
             }
             Properties.Settings.Default.Save();
         }
