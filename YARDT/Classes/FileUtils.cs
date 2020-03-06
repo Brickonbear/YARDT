@@ -5,24 +5,33 @@ using System.ComponentModel;
 using System.IO;
 using System.Net;
 using System.Threading;
+using System.Windows.Controls;
 
 namespace YARDT
 {
     class FileUtils
     {
+        public class userState
+        {
+            public ManualResetEvent waiter;
+            public TextBlock title;
+        }
 
-        public static void DownloadToDir(string directory)
+        public static void DownloadToDir(string directory, TextBlock windowTitle)
         {
             Console.WriteLine("Begining Data Dragon download");
 
-            DownloadFile("https://dd.b.pvp.net/latest/set1-" + Properties.Settings.Default.Language + ".zip", directory + "/datadragon-set1-" + Properties.Settings.Default.Language + ".zip");
+            DownloadFile("https://dd.b.pvp.net/latest/set1-" + Properties.Settings.Default.Language + ".zip", directory + "/datadragon-set1-" + Properties.Settings.Default.Language + ".zip", windowTitle);
 
             Console.WriteLine("Finished download");
         }
 
-        public static void DownloadFile(string address, string destination)
+        public static void DownloadFile(string address, string destination, TextBlock windowTitle)
         {
-            ManualResetEvent Waiter = new ManualResetEvent(false);
+
+            userState usr = new userState();
+            usr.waiter = new ManualResetEvent(false);
+            usr.title = windowTitle;
 
             Uri uri = new Uri(address);
             WebClient wc = new WebClient();
@@ -31,29 +40,30 @@ namespace YARDT
             {
                 wc.DownloadProgressChanged += new DownloadProgressChangedEventHandler(HandleDownloadProgress);
                 wc.DownloadFileCompleted += new AsyncCompletedEventHandler(HandleDownloadComplete);
-                wc.DownloadFileAsync(uri, destination, Waiter);
+                wc.DownloadFileAsync(uri, destination, usr);
 
             }).Start();
 
-            Waiter.WaitOne();
+            usr.waiter.WaitOne();
         }
         
 
         public static void HandleDownloadComplete(object sender, AsyncCompletedEventArgs e)
         {
+            userState usr = e.UserState as userState;
 
-            ControlUtils.ChangeMainWindowTitle("YARDT");
+            ControlUtils.ChangeMainWindowTitle(usr.title, "YARDT");
 
             Console.WriteLine();
-            ManualResetEvent Waiter = e.UserState as ManualResetEvent;
+            
 
-            Waiter.Set();
+            usr.waiter.Set();
         }
 
         public static void HandleDownloadProgress(object sender, DownloadProgressChangedEventArgs e)
         {
-
-            ControlUtils.ChangeMainWindowTitle("Downloading data, " + e.ProgressPercentage + "% complete...");
+            userState usr = e.UserState as userState;
+            ControlUtils.ChangeMainWindowTitle(usr.title, "Downloading data, " + e.ProgressPercentage + "% complete...");
 
             Console.Write("\rDownloaded {0} of {1} bytes. {2} % complete...      ",
                 e.BytesReceived,

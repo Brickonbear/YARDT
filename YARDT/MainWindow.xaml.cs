@@ -326,7 +326,7 @@ namespace YARDT
 
                     ControlUtils.CreateTextBox(sp, "Downloading DataDragon");
 
-                    FileUtils.DownloadToDir(tempDirName);
+                    FileUtils.DownloadToDir(tempDirName, WindowTitle);
 
                     //Unzip File
                     Console.WriteLine("Unziping DataDragon");
