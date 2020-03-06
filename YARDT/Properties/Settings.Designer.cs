@@ -74,12 +74,12 @@ namespace YARDT.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool ShowCards {
+        public bool ShowCardsLeftInDeck {
             get {
-                return ((bool)(this["ShowCards"]));
+                return ((bool)(this["ShowCardsLeftInDeck"]));
             }
             set {
-                this["ShowCards"] = value;
+                this["ShowCardsLeftInDeck"] = value;
             }
         }
         
@@ -97,13 +97,13 @@ namespace YARDT.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool ShowCardsLeftInhand {
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ShowCardsLeftInHand {
             get {
-                return ((bool)(this["ShowCardsLeftInhand"]));
+                return ((bool)(this["ShowCardsLeftInHand"]));
             }
             set {
-                this["ShowCardsLeftInhand"] = value;
+                this["ShowCardsLeftInHand"] = value;
             }
         }
     }

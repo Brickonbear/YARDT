@@ -109,7 +109,7 @@
                             VerticalAlignment="Top" 
                             Width="250"
                             Background="#FF1E1E1E"
-                            Visibility="Visible">
+                            Visibility="Collapsed">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="80"/>
@@ -146,12 +146,15 @@
                             </Button.Style>
                         </Button>
 
-                        <TextBlock Grid.Row="1" Grid.Column="0" Foreground="#FFEDECEC" HorizontalAlignment="Left" VerticalAlignment="Center">Card info:</TextBlock>
-                        <CheckBox  Grid.Row="1" Grid.Column="2" Background="#FF3E3E3F" Foreground="#FFEDECEC" BorderThickness="0" x:Name="showCardsCheck" VerticalAlignment="Center" HorizontalAlignment="Center" Click="showCardsCheck_Click" Style="{DynamicResource CheckBoxStyleDark}"/>
-                        <TextBlock Grid.Row="2" Grid.Column="0" Foreground="#FFEDECEC" HorizontalAlignment="Left" VerticalAlignment="Center">Draw chance:</TextBlock>
-                        <CheckBox  Grid.Row="2" Grid.Column="2" Background="#FF3E3E3F" Foreground="#FFEDECEC" BorderThickness="0" x:Name="showPercentCheck" VerticalAlignment="Center" HorizontalAlignment="Center" Click="showPercentCheck_Click" Style="{DynamicResource CheckBoxStyleDark}"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" Foreground="#FFEDECEC" HorizontalAlignment="Left" VerticalAlignment="Center">Draw chance:</TextBlock>
+                        <CheckBox  Grid.Row="1" Grid.Column="2" Background="#FF3E3E3F" Foreground="#FFEDECEC" BorderThickness="0" x:Name="showPercentCheck" VerticalAlignment="Center" HorizontalAlignment="Center" Click="showPercentCheck_Click" Style="{DynamicResource CheckBoxStyleDark}"/>
+
+                        <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Foreground="#FFEDECEC" HorizontalAlignment="Left" VerticalAlignment="Center">Show cards left in deck:</TextBlock>
+                        <CheckBox  Grid.Row="2" Grid.Column="2" Background="#FF3E3E3F" Foreground="#FFEDECEC" BorderThickness="0" x:Name="showCardsInDeckCheck" VerticalAlignment="Center" HorizontalAlignment="Center" Style="{DynamicResource CheckBoxStyleDark}" Click="showCardsInDeckCheck_Click"/>
+                        
                         <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Foreground="#FFEDECEC" HorizontalAlignment="Left" VerticalAlignment="Center">Show cards left in hand:</TextBlock>
                         <CheckBox  Grid.Row="3" Grid.Column="2" Background="#FF3E3E3F" Foreground="#FFEDECEC" BorderThickness="0" x:Name="showCardsInHandCheck" VerticalAlignment="Center" HorizontalAlignment="Center"  Style="{DynamicResource CheckBoxStyleDark}" Click="showCardsInHandCheck_Click"/>
+                        
                     </Grid>
 
 
@@ -199,15 +202,15 @@
                 <RowDefinition/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <Grid Grid.ColumnSpan="4" Grid.Row="0" x:Name="cardsGrid" Visibility="Collapsed">
+            <Grid Grid.ColumnSpan="4" Grid.Row="0" x:Name="cardsGrid">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="65"/>
                     <ColumnDefinition/>
                     <ColumnDefinition Width="88"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Foreground="#FFEDECEC" Text="Cards Left:"/>
-                <TextBlock Grid.Column="1" Foreground="#FFEDECEC" x:Name="cardsLeftText"/>
+                <TextBlock Grid.Column="0" Foreground="#FFEDECEC" x:Name="_cardsLeftInDeckText"   Visibility="Collapsed" Text="Cards Left:"/>
+                <TextBlock Grid.Column="1" Foreground="#FFEDECEC" x:Name="cardsLeftInDeckText"    Visibility="Collapsed"/>
                 <TextBlock Grid.Column="2" Foreground="#FFEDECEC" x:Name="_cardsInHandText" Visibility="Collapsed" Text="Cards In Hand:"/>
                 <TextBlock Grid.Column="3" Foreground="#FFEDECEC" x:Name="cardsInHandText"  Visibility="Collapsed"/>
             </Grid>

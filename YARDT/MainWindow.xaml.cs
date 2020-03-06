@@ -67,10 +67,11 @@ namespace YARDT
 
             portSettingText.Text = Properties.Settings.Default.Port.ToString();
 
-            if (Properties.Settings.Default.ShowCards)
+            if (Properties.Settings.Default.ShowCardsLeftInDeck)
             {
-                cardsGrid.Visibility = Visibility.Visible;
-                showCardsCheck.IsChecked = true;
+                cardsLeftInDeckText.Visibility = Visibility.Visible;
+                _cardsLeftInDeckText.Visibility = Visibility.Visible;
+                showCardsInDeckCheck.IsChecked = true;
             }
 
             if (Properties.Settings.Default.ShowPercent)
@@ -79,7 +80,7 @@ namespace YARDT
                 showPercentCheck.IsChecked = true;
             }
 
-            if (Properties.Settings.Default.ShowCardsLeftInhand)
+            if (Properties.Settings.Default.ShowCardsLeftInHand)
             {
                 cardsInHandText.Visibility = Visibility.Visible;
                 _cardsInHandText.Visibility = Visibility.Visible;
@@ -250,7 +251,7 @@ namespace YARDT
                             {
                                 deck["CardsInDeck"][name] = deck["CardsInDeck"].Value<int>(name) - 1;
                                 cardsLeftInDeck--;
-                                ControlUtils.UpdateCardsLeftInDeck(cardDrawPercentage1, cardDrawPercentage2, cardDrawPercentage3, cardsLeftText, cardsLeftInDeck);
+                                ControlUtils.UpdateCardsLeftInDeck(cardDrawPercentage1, cardDrawPercentage2, cardDrawPercentage3, cardsLeftInDeckText, cardsLeftInDeck);
                                 Console.Write("Decremented item: ");
                                 Console.WriteLine(name);
                             }
@@ -560,22 +561,6 @@ namespace YARDT
             }
         }
 
-        private void showCardsCheck_Click(object sender, RoutedEventArgs e)
-        {
-            CheckBox checkBox = sender as CheckBox;
-            if ((bool)checkBox.IsChecked)
-            {
-                cardsGrid.Visibility = Visibility.Visible;
-                Properties.Settings.Default.ShowCards = true;
-            }
-            else
-            {
-                cardsGrid.Visibility = Visibility.Collapsed;
-                Properties.Settings.Default.ShowCards = false;
-            }
-            Properties.Settings.Default.Save();
-        }
-
         private void showPercentCheck_Click(object sender, RoutedEventArgs e)
         {
             CheckBox checkBox = sender as CheckBox;
@@ -599,13 +584,31 @@ namespace YARDT
             {
                 cardsInHandText.Visibility = Visibility.Visible;
                 _cardsInHandText.Visibility = Visibility.Visible;
-                Properties.Settings.Default.ShowCardsLeftInhand = true;
+                Properties.Settings.Default.ShowCardsLeftInHand = true;
             }
             else
             {
                 cardsInHandText.Visibility = Visibility.Collapsed;
                 _cardsInHandText.Visibility = Visibility.Collapsed;
-                Properties.Settings.Default.ShowCardsLeftInhand = false;
+                Properties.Settings.Default.ShowCardsLeftInHand = false;
+            }
+            Properties.Settings.Default.Save();
+        }
+
+        private void showCardsInDeckCheck_Click(object sender, RoutedEventArgs e)
+        {
+            CheckBox checkBox = sender as CheckBox;
+            if ((bool)checkBox.IsChecked)
+            {
+                cardsLeftInDeckText.Visibility = Visibility.Visible;
+                _cardsLeftInDeckText.Visibility = Visibility.Visible;
+                Properties.Settings.Default.ShowCardsLeftInDeck = true;
+            }
+            else
+            {
+                cardsLeftInDeckText.Visibility = Visibility.Collapsed;
+                _cardsLeftInDeckText.Visibility = Visibility.Collapsed;
+                Properties.Settings.Default.ShowCardsLeftInDeck = false;
             }
             Properties.Settings.Default.Save();
         }
