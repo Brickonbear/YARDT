@@ -174,15 +174,22 @@ namespace YARDT
             });
         }
 
-        public static void UpdateCardsLeftInDeck(TextBlock cardDrawPercentage1, TextBlock cardDrawPercentage2, TextBlock cardDrawPercentage3, TextBlock cardsInHandText, TextBlock cardsLeftText, int cardsLeftInDeck, int cardsInHand)
+        public static void UpdateCardsLeftInDeck(TextBlock cardDrawPercentage1, TextBlock cardDrawPercentage2, TextBlock cardDrawPercentage3,TextBlock cardsLeftText, int cardsLeftInDeck)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                cardsInHandText.Text = cardsInHand.ToString();
                 cardsLeftText.Text = cardsLeftInDeck.ToString();
                 cardDrawPercentage1.Text = Math.Round(100f / cardsLeftInDeck, 1).ToString("0.0");
                 cardDrawPercentage2.Text = Math.Round(200f / cardsLeftInDeck, 1).ToString("0.0");
                 cardDrawPercentage3.Text = Math.Round(300f / cardsLeftInDeck, 1).ToString("0.0");
+            });
+        }
+
+        public static void UpdateCardsInHand(TextBlock cardsInHandText, int cardsInHand)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                cardsInHandText.Text = cardsInHand.ToString();
             });
         }
     }

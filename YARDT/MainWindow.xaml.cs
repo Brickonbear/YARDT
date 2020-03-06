@@ -128,7 +128,7 @@ namespace YARDT
                                     cardsLeftInDeck += (int)cardProperty.Value;
                                 }
                                 sortedManaCost = false;
-                                ControlUtils.UpdateCardsLeftInDeck(cardDrawPercentage1, cardDrawPercentage2, cardDrawPercentage3, cardsInHandText, cardsLeftText, cardsLeftInDeck, numOfCardsInHand);
+                                ControlUtils.UpdateCardsLeftInDeck(cardDrawPercentage1, cardDrawPercentage2, cardDrawPercentage3,  cardsLeftText, cardsLeftInDeck);
                                 Console.WriteLine("Got deck");
                             }
                         }
@@ -197,7 +197,7 @@ namespace YARDT
                 if (cardsInPlay is JArray && !JToken.DeepEquals(cardsInPlay, cardsInPlayCopy))
                 {
                     Console.WriteLine("Cards are different");
-                    ControlUtils.UpdateCardsLeftInDeck(cardDrawPercentage1, cardDrawPercentage2, cardDrawPercentage3, cardsInHandText, cardsLeftText, cardsLeftInDeck, numOfCardsInHand);
+                    ControlUtils.UpdateCardsLeftInDeck(cardDrawPercentage1, cardDrawPercentage2, cardDrawPercentage3, cardsLeftText, cardsLeftInDeck);
                     cardsInPlayCopy = cardsInPlay;
                     foreach (JToken card in cardsInPlayCopy)
                     {
@@ -209,6 +209,7 @@ namespace YARDT
                     }
 
                     numOfCardsInHand = Utils.GetCardsInHand(cardsInPlay, gameWindowHeight);
+                    ControlUtils.UpdateCardsInHand(cardsInHandText, numOfCardsInHand);
 
                     if (inMulligan && playerCards.Count > 4)
                     {
@@ -244,7 +245,7 @@ namespace YARDT
                             {
                                 deck["CardsInDeck"][name] = deck["CardsInDeck"].Value<int>(name) - 1;
                                 cardsLeftInDeck--;
-                                ControlUtils.UpdateCardsLeftInDeck(cardDrawPercentage1, cardDrawPercentage2, cardDrawPercentage3, cardsInHandText, cardsLeftText, cardsLeftInDeck, numOfCardsInHand);
+                                ControlUtils.UpdateCardsLeftInDeck(cardDrawPercentage1, cardDrawPercentage2, cardDrawPercentage3, cardsLeftText, cardsLeftInDeck);
                                 Console.Write("Decremented item: ");
                                 Console.WriteLine(name);
                             }
