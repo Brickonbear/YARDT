@@ -6,7 +6,6 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Threading;
 
 namespace YARDT
 {
@@ -139,36 +138,24 @@ namespace YARDT
             });
         }
 
-        public static void ClearControls(StackPanel sp) //Clear buttons
+        public static void ClearControls(StackPanel sp, TextBlock cardDrawPercentage1, TextBlock cardDrawPercentage2, TextBlock cardDrawPercentage3, TextBlock cardsInHandText) //Clear buttons
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
                 sp.Children.Clear();
+                cardDrawPercentage1.Text = "";
+                cardDrawPercentage2.Text = "";
+                cardDrawPercentage3.Text = "";
+                cardsInHandText.Text = "";
             });
         }
 
-        public static void ChangeMainWindowTitle(string newTitle)
+        public static void ChangeMainWindowTitle(TextBlock windowTitle, string newTitle)
         {
-            TextBlock windowTitle = null;
-
             Application.Current.Dispatcher.Invoke(() =>
             {
-                foreach (Window window in Application.Current.Windows)
-                {
-                    if (window.GetType() == typeof(MainWindow))
-                    {
-                        windowTitle = (window as MainWindow).WindowTitle;
-                        break;
-                    }
-                }
-                if (windowTitle != null)
-                {
-                    windowTitle.Text = newTitle;
-                }
-            });
-
-
-            
+                windowTitle.Text = newTitle;
+            });  
         }
 
         public static void CreateTextBox(StackPanel sp, string content)
@@ -187,5 +174,23 @@ namespace YARDT
             });
         }
 
+        public static void UpdateCardsLeftInDeck(TextBlock cardDrawPercentage1, TextBlock cardDrawPercentage2, TextBlock cardDrawPercentage3,TextBlock cardsLeftText, int cardsLeftInDeck)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                cardsLeftText.Text = cardsLeftInDeck.ToString();
+                cardDrawPercentage1.Text = Math.Round(100f / cardsLeftInDeck, 1).ToString("0.0");
+                cardDrawPercentage2.Text = Math.Round(200f / cardsLeftInDeck, 1).ToString("0.0");
+                cardDrawPercentage3.Text = Math.Round(300f / cardsLeftInDeck, 1).ToString("0.0");
+            });
+        }
+
+        public static void UpdateCardsInHand(TextBlock cardsInHandText, int cardsInHand)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                cardsInHandText.Text = cardsInHand.ToString();
+            });
+        }
     }
 }

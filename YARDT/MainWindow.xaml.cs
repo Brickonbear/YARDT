@@ -2,16 +2,17 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
+using System.IO.Compression;
 using System.Net.Http;
 using System.Threading;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using System.IO.Compression;
-using System.Drawing;
-using System.Drawing.Imaging;
 
 namespace YARDT
 {
@@ -23,15 +24,18 @@ namespace YARDT
         private static readonly HttpClient client = new HttpClient();
 
         bool gameIsRunning = false;
-        bool inGame = false;
+        bool inMatch = false;
         bool setLoaded = false;
         bool gotDeck = false;
-        bool sorted = false;
-        bool mulligan = true;
+        bool sortedManaCost = false;
+        bool inMulligan = true;
         bool isMinimized = false;
         bool labelsDrawn = false;
         bool printMenu = true;
         double prevHeight = 0;
+        int gameWindowHeight = 0;
+        int cardsLeftInDeck = 0;
+        int numOfCardsInHand;
         JObject deck = new JObject();
         List<string> toDelete = new List<string>();
         List<string> manaCostOrder = new List<string>();
@@ -44,7 +48,7 @@ namespace YARDT
         const string mainDirName = "YARDTData/";
         const string tempDirName = "YARDTTempData/";
 
-        Dictionary<string, string> hashTable = new Dictionary<string, string>()
+        readonly Dictionary<string, string> hashTable = new Dictionary<string, string>()
         {
             {"de_de", "d19422011f99ede7490fe445b046b0a5"},
             {"en_us", "885a4f142a285bcb0c7b1dd9767c0023"},
@@ -55,13 +59,33 @@ namespace YARDT
             { "ko_kr", "f0d30526c42cd2d4a6d7b4d0556762c3"}
         };
 
-        
+
 
         public MainWindow()
         {
             InitializeComponent();
 
             portSettingText.Text = Properties.Settings.Default.Port.ToString();
+
+            if (Properties.Settings.Default.ShowCardsLeftInDeck)
+            {
+                cardsLeftInDeckText.Visibility = Visibility.Visible;
+                _cardsLeftInDeckText.Visibility = Visibility.Visible;
+                showCardsInDeckCheck.IsChecked = true;
+            }
+
+            if (Properties.Settings.Default.ShowPercent)
+            {
+                percentageGrid.Visibility = Visibility.Visible;
+                showPercentCheck.IsChecked = true;
+            }
+
+            if (Properties.Settings.Default.ShowCardsLeftInHand)
+            {
+                cardsInHandText.Visibility = Visibility.Visible;
+                _cardsInHandText.Visibility = Visibility.Visible;
+                showCardsInHandCheck.IsChecked = true;
+            }
 
             aTimer.Interval = TimeSpan.FromMilliseconds(2000);
             aTimer.Tick += new EventHandler(UpdateCardsInPlay);
@@ -71,11 +95,11 @@ namespace YARDT
 
         public void Main()
         {
-            ControlUtils.ClearControls(sp);
+            ControlUtils.ClearControls(sp, cardDrawPercentage1, cardDrawPercentage2, cardDrawPercentage3, cardsInHandText);
 
             while (true)
             {
-                while (!inGame || !gameIsRunning)
+                while (!inMatch || !gameIsRunning)
                 {
                     try
                     {
@@ -85,15 +109,15 @@ namespace YARDT
                         gameIsRunning = true;
                         if (responseString["GameState"].ToString() == "InProgress")
                         {
-                            inGame = true;
+                            inMatch = true;
                             Console.WriteLine("Starting timer");
-                            ControlUtils.ChangeMainWindowTitle("YARDT");
+                            ControlUtils.ChangeMainWindowTitle(WindowTitle, "YARDT");
                             aTimer.IsEnabled = true;
 
                             if (!gotDeck)
                             {
                                 gotDeck = true;
-                                
+
                                 string resString = Utils.HttpReq($"http://localhost:{Properties.Settings.Default.Port}/static-decklist");
                                 if (resString == "failure")
                                 {
@@ -109,8 +133,9 @@ namespace YARDT
                                 {
                                     JProperty cardProperty = card.ToObject<JProperty>();
                                     manaCostOrder.Add(cardProperty.Name);
+                                    cardsLeftInDeck += (int)cardProperty.Value;
                                 }
-                                sorted = false;
+                                sortedManaCost = false;
                                 Console.WriteLine("Got deck");
                             }
                         }
@@ -119,26 +144,26 @@ namespace YARDT
                             if (printMenu)
                             {
                                 Console.WriteLine("In menu, waiting for game to start");
-                                ControlUtils.ChangeMainWindowTitle("Waiting for match to start");
+                                ControlUtils.ChangeMainWindowTitle(WindowTitle, "Waiting for match to start");
                                 printMenu = false;
                             }
 
-                            if (inGame || aTimer.IsEnabled)
+                            if (inMatch || aTimer.IsEnabled)
                             {
                                 Console.WriteLine("Not currently in game, stopping timer");
                                 aTimer.IsEnabled = false;
-                                inGame = false;
+                                inMatch = false;
                             }
                         }
                     }
                     catch (Exception)
                     {
                         Console.WriteLine("Could not connect to game!");
-                        Console.WriteLine("Trying again in 5 sec");
-                        ControlUtils.ChangeMainWindowTitle("Waiting for game to start");
+                        Console.WriteLine("Trying again in 2 sec");
+                        ControlUtils.ChangeMainWindowTitle(WindowTitle, "Waiting for game to start");
                         //Console.WriteLine("Message :{0} ", err.Message);
                         gameIsRunning = false;
-                        Thread.Sleep(5000);
+                        Thread.Sleep(2000);
                     }
                 }
 
@@ -150,7 +175,7 @@ namespace YARDT
                     Console.WriteLine("Loaded set");
                 }
 
-                if (!sorted && setLoaded)
+                if (!sortedManaCost && setLoaded)
                 {
                     Console.WriteLine("Sorting deck");
                     manaCostOrder.Sort((x, y) =>
@@ -172,7 +197,7 @@ namespace YARDT
                         return xManaCost.CompareTo(yManaCost);
                     });
 
-                    sorted = true;
+                    sortedManaCost = true;
                     Console.WriteLine("Sorted deck");
                 }
 
@@ -184,26 +209,23 @@ namespace YARDT
                     {
                         if (!playerCards.ContainsKey(card.Value<string>("CardID")))
                         {
-                            if (card.Value<bool>("LocalPlayer") == true)
-                            {
-                                if (card.Value<string>("CardCode") != "face")
-                                {
-                                    Console.WriteLine("Adding card: " + card.Value<string>("CardID") + " to playerCards");
-                                    playerCards.Add(card.Value<string>("CardID"), card.ToObject<JObject>());
-                                }
-                            }
+                            Console.WriteLine("Adding card: " + card.Value<string>("CardID") + " to playerCards");
+                            playerCards.Add(card.Value<string>("CardID"), card.ToObject<JObject>());
                         }
                     }
 
-                    if (mulligan && playerCards.Count > 4)
+                    numOfCardsInHand = Utils.GetCardsInHand(cardsInPlay, gameWindowHeight);
+                    ControlUtils.UpdateCardsInHand(cardsInHandText, numOfCardsInHand);
+
+                    if (inMulligan && playerCards.Count > 4)
                     {
                         playerCards.Clear();
-                        mulligan = false;
+                        inMulligan = false;
                         Console.WriteLine("No longer in mulligan phase");
                         Utils.PrintDeckList(deck, set, manaCostOrder, sp, ref labelsDrawn, mainDirName);
                     }
 
-                    if (!mulligan && deck.Count > 0)
+                    if (!inMulligan && deck.Count > 0)
                     {
                         foreach (string card in playerCards.Keys)
                         {
@@ -228,6 +250,8 @@ namespace YARDT
                             foreach (string name in toDelete)
                             {
                                 deck["CardsInDeck"][name] = deck["CardsInDeck"].Value<int>(name) - 1;
+                                cardsLeftInDeck--;
+                                ControlUtils.UpdateCardsLeftInDeck(cardDrawPercentage1, cardDrawPercentage2, cardDrawPercentage3, cardsLeftInDeckText, cardsLeftInDeck);
                                 Console.Write("Decremented item: ");
                                 Console.WriteLine(name);
                             }
@@ -261,7 +285,7 @@ namespace YARDT
             return deckList;
         }
 
-        public bool VerifyData(bool downloaded)
+        public bool VerifyData(bool downloaded)    
         {
             Console.WriteLine("Verifying Data");
             ControlUtils.CreateTextBox(sp, "Verifying Data");
@@ -309,7 +333,7 @@ namespace YARDT
 
                     ControlUtils.CreateTextBox(sp, "Downloading DataDragon");
 
-                    FileUtils.DownloadToDir(tempDirName);
+                    FileUtils.DownloadToDir(tempDirName, WindowTitle);
 
                     //Unzip File
                     Console.WriteLine("Unziping DataDragon");
@@ -333,7 +357,7 @@ namespace YARDT
                         string[] filename = { mainDirName + "/full/", file.Name, "_" };
                         file.MoveTo(string.Join("", filename));
                     }
-                    
+
                     Console.WriteLine("Moving cards to " + mainDirName + "cards/");
                     ControlUtils.CreateTextBox(sp, "Moving cards to " + mainDirName + "cards/");
                     foreach (FileInfo file in dir.EnumerateFiles())
@@ -341,7 +365,7 @@ namespace YARDT
                         string[] filename = { mainDirName + "/cards/", file.Name, "_" };
                         file.MoveTo(string.Join("", filename));
                     }
-                   
+
                     dir = new DirectoryInfo(mainDirName + "/cards");
                     Console.WriteLine("Resizing card images");
                     ControlUtils.CreateTextBox(sp, "Resizing card images");
@@ -354,7 +378,7 @@ namespace YARDT
                         img.Dispose();
                         file.Delete();
                     }
-                    
+
                     dir = new DirectoryInfo(mainDirName + "/full");
                     Console.WriteLine("Cropping full images and applying gradient");
                     ControlUtils.CreateTextBox(sp, "Cropping full images and applying gradient");
@@ -408,7 +432,8 @@ namespace YARDT
                 }
                 else
                 {
-                    cardsInPlay = responseString["Rectangles"].ToObject<JArray>();
+                    cardsInPlay = Utils.GetPlayerCards(responseString["Rectangles"].ToObject<JArray>());
+                    gameWindowHeight = (responseString["Screen"] as JObject)["ScreenHeight"].Value<int>();
                 }
             }
             catch
@@ -423,11 +448,11 @@ namespace YARDT
         private void ResetVars()
         {
             gameIsRunning = false;
-            inGame = false;
+            inMatch = false;
             setLoaded = false;
             gotDeck = false;
-            sorted = false;
-            mulligan = true;
+            sortedManaCost = false;
+            inMulligan = true;
             deck = new JObject();
             toDelete = new List<string>();
             manaCostOrder = new List<string>();
@@ -439,7 +464,8 @@ namespace YARDT
             aTimer.IsEnabled = false;
             labelsDrawn = false;
             printMenu = true;
-            ControlUtils.ClearControls(sp);
+            cardsLeftInDeck = 0;
+            ControlUtils.ClearControls(sp, cardDrawPercentage1, cardDrawPercentage2, cardDrawPercentage3, cardsInHandText);
         }
 
         //Main window functions
@@ -518,9 +544,9 @@ namespace YARDT
         {
             OptionsButton.Source = new BitmapImage(new Uri(@"/Resources/OptionsButton.bmp", UriKind.Relative));
         }
-        
+
         //Settings menu Functions
-         private void portApplyButton_Click(object sender, RoutedEventArgs e)
+        private void portApplyButton_Click(object sender, RoutedEventArgs e)
         {
             if (portSettingText.Text != Properties.Settings.Default.Port.ToString())
             {
@@ -533,6 +559,58 @@ namespace YARDT
                     Properties.Settings.Default.Save();
                 }
             }
+        }
+
+        private void showPercentCheck_Click(object sender, RoutedEventArgs e)
+        {
+            CheckBox checkBox = sender as CheckBox;
+            if ((bool)checkBox.IsChecked)
+            {
+                percentageGrid.Visibility = Visibility.Visible;
+                Properties.Settings.Default.ShowPercent = true;
+            }
+            else
+            {
+                percentageGrid.Visibility = Visibility.Collapsed;
+                Properties.Settings.Default.ShowPercent = false;
+            }
+            Properties.Settings.Default.Save();
+        }
+
+        private void showCardsInHandCheck_Click(object sender, RoutedEventArgs e)
+        {
+            CheckBox checkBox = sender as CheckBox;
+            if ((bool)checkBox.IsChecked)
+            {
+                cardsInHandText.Visibility = Visibility.Visible;
+                _cardsInHandText.Visibility = Visibility.Visible;
+                Properties.Settings.Default.ShowCardsLeftInHand = true;
+            }
+            else
+            {
+                cardsInHandText.Visibility = Visibility.Collapsed;
+                _cardsInHandText.Visibility = Visibility.Collapsed;
+                Properties.Settings.Default.ShowCardsLeftInHand = false;
+            }
+            Properties.Settings.Default.Save();
+        }
+
+        private void showCardsInDeckCheck_Click(object sender, RoutedEventArgs e)
+        {
+            CheckBox checkBox = sender as CheckBox;
+            if ((bool)checkBox.IsChecked)
+            {
+                cardsLeftInDeckText.Visibility = Visibility.Visible;
+                _cardsLeftInDeckText.Visibility = Visibility.Visible;
+                Properties.Settings.Default.ShowCardsLeftInDeck = true;
+            }
+            else
+            {
+                cardsLeftInDeckText.Visibility = Visibility.Collapsed;
+                _cardsLeftInDeckText.Visibility = Visibility.Collapsed;
+                Properties.Settings.Default.ShowCardsLeftInDeck = false;
+            }
+            Properties.Settings.Default.Save();
         }
     }
 }

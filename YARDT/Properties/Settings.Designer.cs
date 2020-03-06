@@ -70,5 +70,41 @@ namespace YARDT.Properties {
                 this["UpgradeRequired"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ShowCardsLeftInDeck {
+            get {
+                return ((bool)(this["ShowCardsLeftInDeck"]));
+            }
+            set {
+                this["ShowCardsLeftInDeck"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ShowPercent {
+            get {
+                return ((bool)(this["ShowPercent"]));
+            }
+            set {
+                this["ShowPercent"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ShowCardsLeftInHand {
+            get {
+                return ((bool)(this["ShowCardsLeftInHand"]));
+            }
+            set {
+                this["ShowCardsLeftInHand"] = value;
+            }
+        }
     }
 }

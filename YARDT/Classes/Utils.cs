@@ -60,5 +60,38 @@ namespace YARDT
             }
         }
 
+        public static int GetCardsInHand(JArray playerCards, int windowHeight)
+        {
+            int numCardsInHand = 0;
+            double limit = windowHeight * 0.121;
+
+            foreach (JToken card in playerCards)
+            {
+                double cardHeight = card.Value<double>("Height");
+                if (!((cardHeight > limit) && (cardHeight < (limit + 30))))
+                {
+                    numCardsInHand++;
+                }
+            }
+            return numCardsInHand;
+        }
+
+        internal static JArray GetPlayerCards(JArray jArray)
+        {
+            JArray playerCards = new JArray();
+
+            foreach (JToken card in jArray)
+            {
+                if (card.Value<bool>("LocalPlayer") == true)
+                {
+                    if (card.Value<string>("CardCode") != "face")
+                    {
+                        playerCards.Add(card);
+                    }
+                }
+            }
+
+            return playerCards;
+        }
     }
 }

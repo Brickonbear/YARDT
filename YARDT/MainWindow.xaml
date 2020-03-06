@@ -14,6 +14,37 @@
     Background="#FF1E1E1E" 
     MouseLeftButtonDown="Window_MouseLeftButtonDown">
 
+    <Window.Resources>
+        <SolidColorBrush x:Key="OptionMark.Static.Glyph" Color="#FFEDECEC"/>
+        <Style x:Key="CheckBoxStyleDark" TargetType="{x:Type CheckBox}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type CheckBox}">
+                        <Grid>
+                            <Border x:Name="checkBoxBorder" Background="{TemplateBinding Background}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="1" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                                <Grid x:Name="markGrid">
+                                    <Path x:Name="optionMark" Data="F1 M 9.97498,1.22334L 4.6983,9.09834L 4.52164,9.09834L 0,5.19331L 1.27664,3.52165L 4.255,6.08833L 8.33331,1.52588e-005L 9.97498,1.22334 Z " Fill="{StaticResource OptionMark.Static.Glyph}" Margin="1" Opacity="0" Stretch="None"/>
+                                    <Rectangle x:Name="indeterminateMark" Fill="{StaticResource OptionMark.Static.Glyph}" Margin="2" Opacity="0"/>
+                                </Grid>
+                            </Border>
+                            <ContentPresenter x:Name="contentPresenter" HorizontalAlignment="Left" Margin="4" VerticalAlignment="Top"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="true">
+                                <Setter Property="Opacity" TargetName="optionMark" Value="1"/>
+                                <Setter Property="Opacity" TargetName="indeterminateMark" Value="0"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="{x:Null}">
+                                <Setter Property="Opacity" TargetName="optionMark" Value="0"/>
+                                <Setter Property="Opacity" TargetName="indeterminateMark" Value="1"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
     <Window.Style>
         <Style TargetType="{x:Type Window}">
             <Setter Property="shell:WindowChrome.WindowChrome">
@@ -29,8 +60,13 @@
         </Style>
     </Window.Style>
 
-    <DockPanel x:Name="RootWindow">
-        <DockPanel x:Name="TitleBar" DockPanel.Dock="Top">
+    <Grid x:Name="RootWindow">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="16"/>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <DockPanel Grid.Row="0" x:Name="TitleBar">
             <Image x:Name="CloseButton"
                    Source="/Resources/CloseButton.bmp" 
                    Width="16" 
@@ -60,6 +96,7 @@
 
 
         <ScrollViewer 
+            Grid.Row="1"
             Margin="5,5,5,5" 
             Name="scrollViewer1" 
             ScrollViewer.HorizontalScrollBarVisibility="Hidden" 
@@ -71,18 +108,53 @@
                             Margin="0" 
                             VerticalAlignment="Top" 
                             Width="250"
-                            Height="30"
                             Background="#FF1E1E1E"
                             Visibility="Collapsed">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="50"/>
-                            <ColumnDefinition Width="100"/>
-                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="80"/>
+                            <ColumnDefinition Width="85"/>
+                            <ColumnDefinition Width="85"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Foreground="#FFEDECEC" HorizontalAlignment="Center" VerticalAlignment="Center">Port:</TextBlock>
-                        <TextBox x:Name="portSettingText" Grid.Column="1" TextAlignment="Center" VerticalContentAlignment="Center" Height="23" TextWrapping="Wrap"/>
-                        <Button x:Name="portApplyButton" Grid.Column="2" Width="50" Height="23" Content="Apply" Click="portApplyButton_Click"/>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="23"/>
+                            <RowDefinition Height="23"/>
+                            <RowDefinition Height="23"/>
+                            <RowDefinition Height="23"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Foreground="#FFEDECEC" HorizontalAlignment="Left" VerticalAlignment="Center">Port:</TextBlock>
+                        <TextBox   Grid.Row="0" Grid.Column="1" x:Name="portSettingText" BorderThickness="0" Foreground="#FFEDECEC" Background="#FF3E3E3F" TextAlignment="Center" VerticalContentAlignment="Center" TextWrapping="Wrap"/>
+                        <Button    Grid.Row="0" Grid.Column="2" BorderThickness="0" Foreground="#FFEDECEC" x:Name="portApplyButton" Width="50" Content="Apply" Click="portApplyButton_Click">
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}">
+                                    <Setter Property="Background" Value="#FF3E3E3F" />
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type Button}">
+                                                <Border x:Name="Border" Background="{TemplateBinding Background}">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="#FF4E4E4F" TargetName="Border" />
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+
+                        <TextBlock Grid.Row="1" Grid.Column="0" Foreground="#FFEDECEC" HorizontalAlignment="Left" VerticalAlignment="Center">Draw chance:</TextBlock>
+                        <CheckBox  Grid.Row="1" Grid.Column="2" Background="#FF3E3E3F" Foreground="#FFEDECEC" BorderThickness="0" x:Name="showPercentCheck" VerticalAlignment="Center" HorizontalAlignment="Center" Click="showPercentCheck_Click" Style="{DynamicResource CheckBoxStyleDark}"/>
+
+                        <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Foreground="#FFEDECEC" HorizontalAlignment="Left" VerticalAlignment="Center">Show cards left in deck:</TextBlock>
+                        <CheckBox  Grid.Row="2" Grid.Column="2" Background="#FF3E3E3F" Foreground="#FFEDECEC" BorderThickness="0" x:Name="showCardsInDeckCheck" VerticalAlignment="Center" HorizontalAlignment="Center" Style="{DynamicResource CheckBoxStyleDark}" Click="showCardsInDeckCheck_Click"/>
+                        
+                        <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Foreground="#FFEDECEC" HorizontalAlignment="Left" VerticalAlignment="Center">Show cards left in hand:</TextBlock>
+                        <CheckBox  Grid.Row="3" Grid.Column="2" Background="#FF3E3E3F" Foreground="#FFEDECEC" BorderThickness="0" x:Name="showCardsInHandCheck" VerticalAlignment="Center" HorizontalAlignment="Center"  Style="{DynamicResource CheckBoxStyleDark}" Click="showCardsInHandCheck_Click"/>
+                        
                     </Grid>
 
 
@@ -119,6 +191,45 @@
                 </StackPanel>
             </Grid>
         </ScrollViewer>
-    </DockPanel>
+        <Grid Grid.Row="2" x:Name="statsGrid">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="65"/>
+                <ColumnDefinition Width="50"/>
+                <ColumnDefinition Width="65"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid Grid.ColumnSpan="4" Grid.Row="0" x:Name="cardsGrid">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="65"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="88"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Foreground="#FFEDECEC" x:Name="_cardsLeftInDeckText"   Visibility="Collapsed" Text="Cards Left:"/>
+                <TextBlock Grid.Column="1" Foreground="#FFEDECEC" x:Name="cardsLeftInDeckText"    Visibility="Collapsed"/>
+                <TextBlock Grid.Column="2" Foreground="#FFEDECEC" x:Name="_cardsInHandText" Visibility="Collapsed" Text="Cards In Hand:"/>
+                <TextBlock Grid.Column="3" Foreground="#FFEDECEC" x:Name="cardsInHandText"  Visibility="Collapsed"/>
+            </Grid>
+            <Grid Grid.ColumnSpan="4" Grid.Row="1" x:Name="percentageGrid" Visibility="Collapsed">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="40"/>
+                    <ColumnDefinition Width="65"/>
+                    <ColumnDefinition Width="40"/>
+                    <ColumnDefinition Width="65"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Foreground="#FFEDECEC" Text="%1:" HorizontalAlignment="Left"/>
+                <TextBlock Grid.Column="0" Foreground="#FFEDECEC" x:Name="cardDrawPercentage1" HorizontalAlignment="Right"/>
+                <TextBlock Grid.Column="2" Foreground="#FFEDECEC" Text="%2:" HorizontalAlignment="Left"/>
+                <TextBlock Grid.Column="2" Foreground="#FFEDECEC" x:Name="cardDrawPercentage2" HorizontalAlignment="Right"/>
+                <TextBlock Grid.Column="4" Foreground="#FFEDECEC" Text="%3:" HorizontalAlignment="Left" />
+                <TextBlock Grid.Column="4" Foreground="#FFEDECEC" x:Name="cardDrawPercentage3" HorizontalAlignment="Right"/>
+            </Grid>
+        </Grid>
+    </Grid>
 </Window>
     
