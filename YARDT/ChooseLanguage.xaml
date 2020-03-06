@@ -29,6 +29,45 @@
         </Style>
     </Window.Style>
 
+    <Window.Resources>
+        <Style x:Key="ComboBoxTest2" TargetType="{x:Type ComboBox}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton Grid.Column="2" Focusable="false" IsChecked="{Binding Path=IsDropDownOpen,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" >
+                                <ToggleButton.Template>
+                                    <ControlTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="5*" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <Border x:Name="Border"  Grid.ColumnSpan="2" Background="#FF3E3E3F" BorderThickness="0" />
+                                            <Path x:Name="Arrow" Grid.Column="1"  Fill="#FFEDECEC" HorizontalAlignment="Center" VerticalAlignment="Center" Data="M 0 0 L 4 4 L 8 0 Z"/>
+                                        </Grid>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+                            <ContentPresenter Name="ContentSite" IsHitTestVisible="False"  Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" Margin="3"  />
+                            <TextBox x:Name="PART_EditableTextBox" Visibility="Hidden" IsReadOnly="{TemplateBinding IsReadOnly}"/>
+                            <Popup Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True"  Focusable="False" PopupAnimation="Slide">
+                                <Grid  Name="DropDown" SnapsToDevicePixels="True" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <Border x:Name="DropDownBorder" Background="#FF4E4E4F" />
+                                    <ScrollViewer SnapsToDevicePixels="True">
+                                        <StackPanel IsItemsHost="True" />
+                                    </ScrollViewer>
+                                </Grid>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
     <DockPanel x:Name="RootWindow">
         <DockPanel x:Name="TitleBar" DockPanel.Dock="Top">
             <Image x:Name="CloseButton"
@@ -64,16 +103,36 @@
                     <ColumnDefinition Width="80"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0" Foreground="#FFEDECEC" HorizontalAlignment="Center" VerticalAlignment="Center">Language:</TextBlock>
-                <ComboBox Grid.Column="1" x:Name="choosenLanguage" SelectedValuePath="Content">
-                    <ComboBoxItem ToolTip="English (United States)" IsSelected="True">en_us</ComboBoxItem>
-                    <ComboBoxItem ToolTip="German (Germany)">de_de</ComboBoxItem>
-                    <ComboBoxItem ToolTip="Spanish (Spain)">es_es</ComboBoxItem>
-                    <ComboBoxItem ToolTip="French (France)">fr_fr</ComboBoxItem>
-                    <ComboBoxItem ToolTip="Italian (Italy)">it_it</ComboBoxItem>
-                    <ComboBoxItem ToolTip="Japanese (Japan)">ja_jp</ComboBoxItem>
-                    <ComboBoxItem ToolTip="Korean (Korea)">ko_kr</ComboBoxItem>
+                <ComboBox Grid.Column="1" x:Name="choosenLanguage" SelectedValuePath="Content" BorderThickness="0" BorderBrush="{x:Null}" Foreground="#FFEDECEC" Style="{StaticResource ComboBoxTest2}">
+                    <ComboBoxItem ToolTip="English (United States)" IsSelected="True" BorderThickness="0" Foreground="#FFEDECEC" Background="#FF3E3E3F">en_us</ComboBoxItem>
+                    <ComboBoxItem ToolTip="German (Germany)"    BorderThickness="0" Foreground="#FFEDECEC" Background="#FF3E3E3F">de_de</ComboBoxItem>
+                    <ComboBoxItem ToolTip="Spanish (Spain)"     BorderThickness="0" Foreground="#FFEDECEC" Background="#FF3E3E3F">es_es</ComboBoxItem>
+                    <ComboBoxItem ToolTip="French (France)"     BorderThickness="0" Foreground="#FFEDECEC" Background="#FF3E3E3F">fr_fr</ComboBoxItem>
+                    <ComboBoxItem ToolTip="Italian (Italy)"     BorderThickness="0" Foreground="#FFEDECEC" Background="#FF3E3E3F">it_it</ComboBoxItem>
+                    <ComboBoxItem ToolTip="Japanese (Japan)"    BorderThickness="0" Foreground="#FFEDECEC" Background="#FF3E3E3F">ja_jp</ComboBoxItem>
+                    <ComboBoxItem ToolTip="Korean (Korea)"      BorderThickness="0" Foreground="#FFEDECEC" Background="#FF3E3E3F">ko_kr</ComboBoxItem>
                 </ComboBox>
-                <Button x:Name="portApplyButton" Grid.Column="2" Width="50" Height="23" Content="OK" Click="portApplyButton_Click"/>
+                <Button x:Name="portApplyButton" Grid.Column="2" Width="50" Height="23" Content="OK" Click="portApplyButton_Click" Foreground="#FFEDECEC">
+                    <Button.Style>
+                        <Style TargetType="{x:Type Button}">
+                            <Setter Property="Background" Value="#FF3E3E3F" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type Button}">
+                                        <Border x:Name="Border" Background="{TemplateBinding Background}">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#FF4E4E4F" TargetName="Border" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
             </Grid>
 
 

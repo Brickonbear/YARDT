@@ -19,7 +19,7 @@ namespace YARDT
                 using (FileStream stream = File.OpenRead(filename))
                 {
                     byte[] hash = md5.ComputeHash(stream);
-                    return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+                    return BitConverter.ToString(hash).Replace("-", "").ToUpperInvariant();
                 }
             }
         }

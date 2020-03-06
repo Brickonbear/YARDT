@@ -64,7 +64,7 @@ namespace YARDT
         //CloseButton Functions
         private void CloseButton_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            Close();
+            Environment.Exit(Environment.ExitCode);
         }
 
         private void CloseButton_MouseEnter(object sender, MouseEventArgs e)
