@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,6 +12,8 @@ namespace YARDT
 {
     class ControlUtils
     {
+        static Dictionary<string, bool> isGreyed = new Dictionary<string, bool>();
+
         /// <summary>
         /// Create label with mana cost and card amount; if label already exists, just update card amount
         /// </summary>
@@ -114,6 +117,8 @@ namespace YARDT
 
                     //Finally add label to Window
                     sp.Children.Add(label);
+
+                    isGreyed.Add(label.Name, false);
                 }
                 else
                 {
@@ -125,8 +130,10 @@ namespace YARDT
                     cardsLeft.FontWeight = FontWeights.Bold;
                     cardsLeft.VerticalAlignment = VerticalAlignment.Center;
 
-                    Grid grid = sp.Children.OfType<Label>().Where(label => label.Name == StringUtils.SanitizeString(item.Value<string>("name"))).First<Label>().Content as Grid;
+                    Label label = sp.Children.OfType<Label>().Where(lbl => lbl.Name == StringUtils.SanitizeString(item.Value<string>("name"))).First<Label>();
+                    Grid grid = label.Content as Grid;
                     TextBlock cardAmount = grid.Children.OfType<TextBlock>().Last();
+                    
                     if (grid != null)
                     {
                         int column = Grid.GetColumn(cardAmount);
@@ -141,8 +148,24 @@ namespace YARDT
                         Grid.SetRowSpan(cardsLeft, rowSpan);
                     }
 
+                    if (!isGreyed[label.Name] && amount == "0")
+                    {
+                        greyOutLabel(label);
+                    }
+
                 }
             });
+        }
+
+        private static void greyOutLabel(Label label)
+        {
+            ImageBrush b = (ImageBrush)label.Background;
+            BitmapSource src = (BitmapSource)b.ImageSource;
+            System.Drawing.Bitmap bmp = ImageUtils.BitmapFromSource(src);
+            
+            bmp = ImageUtils.AddGradient(bmp, "xxxx");
+            label.Background = new ImageBrush(ImageUtils.SourceFromBitmap(bmp));
+            isGreyed[label.Name] = true;
         }
 
         /// <summary>

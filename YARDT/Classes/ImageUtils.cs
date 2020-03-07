@@ -1,8 +1,11 @@
+﻿using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
-
+using System.Windows;
+using System.Windows.Media.Imaging;
 
 namespace YARDT
 {
@@ -63,6 +66,9 @@ namespace YARDT
                 case "si":
                     gradient = new Bitmap(Properties.Resources.GradientShadowIsles);
                     break;
+                case "xx":
+                    gradient = new Bitmap(Properties.Resources.OverlayDark);
+                    break;
                 default:
                     gradient = new Bitmap(250, 30);
                     break;
@@ -72,7 +78,14 @@ namespace YARDT
             Graphics graphics = Graphics.FromImage(target);
             graphics.CompositingMode = CompositingMode.SourceOver; // this is the default, but just to be clear
 
-            graphics.DrawImage(image, 50, 0);
+            if(name != "xxxx")
+            {
+                graphics.DrawImage(image, 50, 0);
+            }
+            else //Special case for darkening image
+            {
+                graphics.DrawImage(image, 0, 0);
+            }
             graphics.DrawImage(gradient, 0, 0);
 
             return target;
