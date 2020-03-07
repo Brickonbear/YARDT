@@ -121,6 +121,7 @@
                             <RowDefinition Height="23"/>
                             <RowDefinition Height="23"/>
                             <RowDefinition Height="23"/>
+                            <RowDefinition Height="23"/>
                         </Grid.RowDefinitions>
                         <TextBlock Grid.Row="0" Grid.Column="0" Foreground="#FFEDECEC" HorizontalAlignment="Left" VerticalAlignment="Center">Port:</TextBlock>
                         <TextBox   Grid.Row="0" Grid.Column="1" x:Name="portSettingText" BorderThickness="0" Foreground="#FFEDECEC" Background="#FF3E3E3F" TextAlignment="Center" VerticalContentAlignment="Center" TextWrapping="Wrap"/>
@@ -151,10 +152,13 @@
 
                         <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Foreground="#FFEDECEC" HorizontalAlignment="Left" VerticalAlignment="Center">Show cards left in deck:</TextBlock>
                         <CheckBox  Grid.Row="2" Grid.Column="2" Background="#FF3E3E3F" Foreground="#FFEDECEC" BorderThickness="0" x:Name="showCardsInDeckCheck" VerticalAlignment="Center" HorizontalAlignment="Center" Style="{DynamicResource CheckBoxStyleDark}" Click="showCardsInDeckCheck_Click"/>
-                        
+
                         <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Foreground="#FFEDECEC" HorizontalAlignment="Left" VerticalAlignment="Center">Show cards left in hand:</TextBlock>
                         <CheckBox  Grid.Row="3" Grid.Column="2" Background="#FF3E3E3F" Foreground="#FFEDECEC" BorderThickness="0" x:Name="showCardsInHandCheck" VerticalAlignment="Center" HorizontalAlignment="Center"  Style="{DynamicResource CheckBoxStyleDark}" Click="showCardsInHandCheck_Click"/>
-                        
+
+                        <TextBlock Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Foreground="#FFEDECEC" HorizontalAlignment="Left" VerticalAlignment="Center">Auto minimize window:</TextBlock>
+                        <CheckBox  Grid.Row="4" Grid.Column="2" Background="#FF3E3E3F" Foreground="#FFEDECEC" BorderThickness="0" x:Name="autoMinimizeCheck" VerticalAlignment="Center" HorizontalAlignment="Center"  Style="{DynamicResource CheckBoxStyleDark}" Click="autoMinimizeCheck_Click" />
+
                     </Grid>
 
 

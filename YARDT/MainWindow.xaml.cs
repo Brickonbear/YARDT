@@ -86,6 +86,11 @@ namespace YARDT
                 _cardsInHandText.Visibility = Visibility.Visible;
                 showCardsInHandCheck.IsChecked = true;
             }
+
+            if (Properties.Settings.Default.AutoMinimize)
+            {
+                autoMinimizeCheck.IsChecked = true;
+            }
             #endregion
 
             //Add UpdateCardsInPlay to timer and make it run every 2 sec's
@@ -630,6 +635,20 @@ namespace YARDT
                 cardsLeftInDeckText.Visibility = Visibility.Collapsed;
                 _cardsLeftInDeckText.Visibility = Visibility.Collapsed;
                 Properties.Settings.Default.ShowCardsLeftInDeck = false;
+            }
+            Properties.Settings.Default.Save();
+        }
+
+        private void autoMinimizeCheck_Click(object sender, RoutedEventArgs e)
+        {
+            CheckBox checkBox = sender as CheckBox;
+            if ((bool)checkBox.IsChecked)
+            {
+                Properties.Settings.Default.AutoMinimize = true;
+            }
+            else
+            {
+                Properties.Settings.Default.AutoMinimize = false;
             }
             Properties.Settings.Default.Save();
         }

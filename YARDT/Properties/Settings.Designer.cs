@@ -106,5 +106,17 @@ namespace YARDT.Properties {
                 this["ShowCardsLeftInHand"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool AutoMinimize {
+            get {
+                return ((bool)(this["AutoMinimize"]));
+            }
+            set {
+                this["AutoMinimize"] = value;
+            }
+        }
     }
 }
