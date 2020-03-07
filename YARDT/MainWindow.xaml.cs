@@ -32,7 +32,6 @@ namespace YARDT
         bool isMinimized = false;
         bool labelsDrawn = false;
         bool printMenu = true;
-        double prevHeight = 0;
         int gameWindowHeight = 0;
         int cardsLeftInDeck = 0;
         int numOfCardsInHand;
@@ -504,14 +503,12 @@ namespace YARDT
             CollapseButton.Source = new BitmapImage(new Uri(@"/Resources/CollapseButtonClick.bmp", UriKind.Relative));
             if (!isMinimized)
             {
-                prevHeight = Height;
-                MaxHeight = MinHeight;
+                ControlUtils.MinimizeWindow(this, true);
                 isMinimized = true;
             }
             else
             {
-                MaxHeight = 1080;
-                Height = prevHeight;
+                ControlUtils.MinimizeWindow(this, false); 
                 isMinimized = false;
             }
         }

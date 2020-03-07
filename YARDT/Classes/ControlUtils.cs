@@ -253,5 +253,23 @@ namespace YARDT
                 cardsInHandText.Text = cardsInHand.ToString();
             });
         }
+
+        static double prevHeight = 600;
+        public static void MinimizeWindow(MainWindow window, bool minimize)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                if (minimize)
+                {
+                    prevHeight = window.Height;
+                    window.MaxHeight = window.MinHeight;
+                }
+                else
+                {
+                    window.MaxHeight = 1080;
+                    window.Height = prevHeight;
+                }
+            });
+        }
     }
 }
