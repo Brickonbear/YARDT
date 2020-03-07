@@ -211,22 +211,22 @@ namespace YARDT.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap OverlayDark {
+            get {
+                object obj = ResourceManager.GetObject("OverlayDark", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
         internal static byte[] RomanSerif {
             get {
                 object obj = ResourceManager.GetObject("RomanSerif", resourceCulture);
                 return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap RuneterraManaBackground {
-            get {
-                object obj = ResourceManager.GetObject("RuneterraManaBackground", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }
