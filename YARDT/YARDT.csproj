@@ -161,9 +161,6 @@
     <Resource Include="Resources\OptionsButtonHover.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\RuneterraManaBackground.bmp" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\GradientDemacia.png" />
   </ItemGroup>
   <ItemGroup>
