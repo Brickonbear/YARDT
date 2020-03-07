@@ -100,22 +100,27 @@ namespace YARDT
         /// </summary>
         /// <param name="jArray"></param>
         /// <returns></returns>
-        internal static JArray GetPlayerCards(JArray jArray)
+        internal static (JArray playerCards, JArray enemyCards) GetPlayerCards(JArray jArray)
         {
             JArray playerCards = new JArray();
+            JArray enemyCards = new JArray();
 
             foreach (JToken card in jArray)
             {
-                if (card.Value<bool>("LocalPlayer") == true)
+                if (card.Value<string>("CardCode") != "face")
                 {
-                    if (card.Value<string>("CardCode") != "face")
+                    if (card.Value<bool>("LocalPlayer") == true)
                     {
                         playerCards.Add(card);
+                    }
+                    else
+                    {
+                        enemyCards.Add(card);
                     }
                 }
             }
 
-            return playerCards;
+            return (playerCards, enemyCards);
         }
     }
 }

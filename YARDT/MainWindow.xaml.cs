@@ -39,7 +39,8 @@ namespace YARDT
         List<string> toDelete = new List<string>();
         List<string> manaCostOrder = new List<string>();
         JArray set = new JArray();
-        JArray cardsInPlay = new JArray();
+        JArray playerCardsInPlay = new JArray();
+        JArray enemyCardsInPlay = new JArray();
         JArray cardsInPlayCopy = new JArray();
         Dictionary<string, JObject> playerCards = new Dictionary<string, JObject>();
         Dictionary<string, JObject> purgatory = new Dictionary<string, JObject>();
@@ -221,10 +222,10 @@ namespace YARDT
                     Console.WriteLine("Sorted deck");
                 }
 
-                if (cardsInPlay is JArray && !JToken.DeepEquals(cardsInPlay, cardsInPlayCopy))
+                if (playerCardsInPlay is JArray && !JToken.DeepEquals(playerCardsInPlay, cardsInPlayCopy))
                 {
                     Console.WriteLine("Cards are different");
-                    cardsInPlayCopy = cardsInPlay;
+                    cardsInPlayCopy = playerCardsInPlay;
                     foreach (JToken card in cardsInPlayCopy)
                     {
                         if (!playerCards.ContainsKey(card.Value<string>("CardID")))
@@ -234,7 +235,7 @@ namespace YARDT
                         }
                     }
 
-                    numOfCardsInHand = Utils.GetCardsInHand(cardsInPlay, gameWindowHeight);
+                    numOfCardsInHand = Utils.GetCardsInHand(playerCardsInPlay, gameWindowHeight);
                     ControlUtils.UpdateCardsInHand(cardsInHandText, numOfCardsInHand);
 
                     if (inMulligan && playerCards.Count > 4)
@@ -472,7 +473,7 @@ namespace YARDT
                 }
                 else
                 {
-                    cardsInPlay = Utils.GetPlayerCards(responseString["Rectangles"].ToObject<JArray>());
+                    (playerCardsInPlay, enemyCardsInPlay) = Utils.GetPlayerCards(responseString["Rectangles"].ToObject<JArray>());
                     gameWindowHeight = (responseString["Screen"] as JObject)["ScreenHeight"].Value<int>();
                 }
             }
@@ -500,7 +501,8 @@ namespace YARDT
             toDelete = new List<string>();
             manaCostOrder = new List<string>();
             set = new JArray();
-            cardsInPlay = new JArray();
+            playerCardsInPlay = new JArray();
+            enemyCardsInPlay = new JArray();
             cardsInPlayCopy = new JArray();
             playerCards = new Dictionary<string, JObject>();
             purgatory = new Dictionary<string, JObject>();
