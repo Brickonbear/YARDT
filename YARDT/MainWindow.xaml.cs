@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -122,6 +122,13 @@ namespace YARDT
                             ControlUtils.ChangeMainWindowTitle(WindowTitle, "YARDT");
                             aTimer.IsEnabled = true;
 
+
+                            if (Properties.Settings.Default.AutoMinimize)
+                            {
+                                ControlUtils.MinimizeWindow(this, false);
+                                isMinimized = false;
+                            }
+
                             if (!gotDeck)
                             {
                                 gotDeck = true;
@@ -164,7 +171,7 @@ namespace YARDT
                             }
                         }
                     }
-                    catch (Exception)
+                        catch (Exception)
                     {
                         Console.WriteLine("Could not connect to game!");
                         Console.WriteLine("Trying again in 2 sec");
@@ -449,7 +456,11 @@ namespace YARDT
                 JObject responseString = JsonConvert.DeserializeObject<JObject>(await client.GetStringAsync($"http://localhost:{Properties.Settings.Default.Port}/positional-rectangles"));
                 if (responseString["GameState"].ToString() == "Menus")
                 {
-
+                    if (Properties.Settings.Default.AutoMinimize)
+                    {
+                        ControlUtils.MinimizeWindow(this, true);
+                        isMinimized = true;
+                    }
                     Console.WriteLine("Not in game, stopping timer");
                     aTimer.IsEnabled = false;
                     ResetVars();
