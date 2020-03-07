@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Linq;
@@ -109,5 +109,37 @@ namespace YARDT
             return destImage;
         }
 
+        /// <summary>
+        /// Convert BitmapSource to Bitmap
+        /// </summary>
+        /// <param name="bitmapsource"></param>
+        /// <returns></returns>
+        public static Bitmap BitmapFromSource(BitmapSource bitmapsource)
+        {
+            Bitmap bitmap;
+            using (MemoryStream outStream = new MemoryStream())
+            {
+                BitmapEncoder enc = new BmpBitmapEncoder();
+
+                enc.Frames.Add(BitmapFrame.Create(bitmapsource));
+                enc.Save(outStream);
+                bitmap = new Bitmap(outStream);
+            }
+            return bitmap;
+        }
+
+        /// <summary>
+        /// Convert Bitmap to BitmapSource
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static BitmapSource SourceFromBitmap(Bitmap source)
+        {
+            return System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
+                          source.GetHbitmap(),
+                          IntPtr.Zero,
+                          Int32Rect.Empty,
+                          BitmapSizeOptions.FromEmptyOptions());
+        }
     }
 }
