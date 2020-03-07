@@ -104,6 +104,11 @@ namespace YARDT
         public void Main()
         {
             ControlUtils.ClearControls(sp, cardDrawPercentage1, cardDrawPercentage2, cardDrawPercentage3, cardsInHandText);
+            if (Properties.Settings.Default.AutoMinimize)
+            {
+                ControlUtils.MinimizeWindow(this, true);
+                isMinimized = true;
+            }
 
             while (true)
             {
