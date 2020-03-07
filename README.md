@@ -22,6 +22,7 @@ List of features planned:
  - [ ] Darken colour of cards that can no longer be drawn (0 of that card left in deck)
  - [ ] Add shuffled cards to deck tracker
  - [ ] Deck winrate stats
+ - [ ] Auto minimize deck tracker when not in game
 
 ## Known issues
 
