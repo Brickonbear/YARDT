@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +12,7 @@ namespace YARDT
 {
     class ControlUtils
     {
-        static Dictionary<string, bool> isGreyed = new Dictionary<string, bool>();
+        public static Dictionary<string, bool> isGreyed = new Dictionary<string, bool>();
 
         /// <summary>
         /// Create label with mana cost and card amount; if label already exists, just update card amount

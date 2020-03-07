@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -488,6 +488,7 @@ namespace YARDT
             labelsDrawn = false;
             printMenu = true;
             cardsLeftInDeck = 0;
+            ControlUtils.isGreyed = new Dictionary<string, bool>();
             ControlUtils.ClearControls(sp, cardDrawPercentage1, cardDrawPercentage2, cardDrawPercentage3, cardsInHandText);
         }
 
