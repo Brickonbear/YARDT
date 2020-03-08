@@ -264,6 +264,8 @@ namespace YARDT
                                     }
                                 }
                             }
+
+                            //To-do: add card to graveyard
                         }
                         if (toDelete.Count > 0)
                         {
@@ -272,6 +274,7 @@ namespace YARDT
                             {
                                 deck["CardsInDeck"][name] = deck["CardsInDeck"].Value<int>(name) - 1;
                                 cardsLeftInDeck--;
+
                                 ControlUtils.UpdateCardsLeftInDeck(cardDrawPercentage1, cardDrawPercentage2, cardDrawPercentage3, cardsLeftInDeckText, cardsLeftInDeck);
                                 Console.Write("Decremented item: ");
                                 Console.WriteLine(name);
