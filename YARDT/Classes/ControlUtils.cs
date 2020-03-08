@@ -150,6 +150,7 @@ namespace YARDT
 
                     if (!isGreyed[label.Name] && amount == "0")
                     {
+                        label.Foreground = new SolidColorBrush(Color.FromArgb(0xFF, 0x6A, 0x6A, 0x6A));
                         greyOutLabel(label);
                     }
 
