@@ -1,0 +1,81 @@
+﻿<Window x:Class="YARDT.Graveyardt"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+        Title="Graveyardt"
+        Height="400" 
+        Width="250" 
+        Topmost="True" 
+        MaxWidth="250" 
+        MaxHeight="1080" 
+        MinWidth="250" 
+        MinHeight="20" 
+        WindowStyle="None" 
+        Background="#FF1E1E1E">
+    
+    <Grid x:Name="RootWindow">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="16"/>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <DockPanel Grid.Row="0" x:Name="TitleBar">
+            <Image x:Name="CloseButton"
+                   Source="/Resources/CloseButton.bmp" 
+                   Width="16" 
+                   Height="16"
+                   DockPanel.Dock="Right"
+                   MouseLeftButtonDown="CloseButton_MouseLeftButtonDown" 
+                   MouseEnter="CloseButton_MouseEnter" 
+                   MouseLeave="CloseButton_MouseLeave"/>
+            <Image x:Name="CollapseButton"
+                   Source="/Resources/CollapseButton.bmp" 
+                   Width="16" 
+                   Height="16"
+                   DockPanel.Dock="Right" 
+                   MouseLeftButtonDown="CollapseButton_MouseLeftButtonDown" 
+                   MouseEnter="CollapseButton_MouseEnter" 
+                   MouseLeave="CollapseButton_MouseLeave"/>
+            <TextBlock x:Name="WindowTitle" HorizontalAlignment="Center" Foreground="#FFEDECEC">Graveyardt</TextBlock>
+        </DockPanel>
+        <ScrollViewer 
+            Grid.Row="1"
+            Margin="5,5,5,5" 
+            Name="scrollViewer1" 
+            ScrollViewer.HorizontalScrollBarVisibility="Hidden" 
+            ScrollViewer.VerticalScrollBarVisibility="Hidden" >
+            <Grid>
+                <StackPanel x:Name="sp" 
+                        Grid.ZIndex="1"
+                        HorizontalAlignment="Left" 
+                        Margin="0" 
+                        VerticalAlignment="Top" 
+                        Width="250"
+                        Background="#FF1E1E1E">
+                    <!--<Label Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,3,0,0" FontFamily="/YARDT;component/Resources/#RomanSerif" Width="250" Height="30">
+                        <Label.Background>
+                            <ImageBrush ImageSource="01DE001-full.png"/>
+                        </Label.Background>
+                        <Grid Margin="-5,0,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="25"/>
+                                <ColumnDefinition Width="9"/>
+                                <ColumnDefinition Width="180"/>
+                                <ColumnDefinition Width="40"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="22" FontWeight="Bold">
+                                <Run Text="10"/>
+                            </TextBlock>
+                            <TextBlock Grid.Column="2" VerticalAlignment="Center" FontSize="16" FontWeight="Bold">
+                                <Run Text="very long name"/>
+                            </TextBlock>
+                            <TextBlock Grid.Column="3" VerticalAlignment="Center" FontSize="22" FontWeight="Bold">
+                                <Run Text="x4"/>
+                            </TextBlock>
+                        </Grid>
+                    </Label>-->
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</Window>
