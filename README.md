@@ -16,12 +16,12 @@ List of features planned:
  - [x] Expedition support
  - [x] Card stats (cards left in deck/hand, draw chances)
  - [x] Support for different languages
- - [ ] Enemy deck
- - [ ] Enemy cards in hand
+ - [ ] Enemy cards played
+ - [ ] Enemy cards in hand (Currently not possible due to API limitations)
  - [ ] Card graveyard
  - [x] Darken colour of cards that can no longer be drawn (0 of that card left in deck)
  - [ ] Add shuffled cards to deck tracker
- - [ ] Deck winrate stats
+ - [ ] Deck winrate stats (Not planned to be implemented, unless made as a seperate application)
  - [x] Auto minimize deck tracker when not in game
 
 ## Known issues
