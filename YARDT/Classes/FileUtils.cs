@@ -138,7 +138,6 @@ namespace YARDT
             }
 
             json = json.Replace("][", ",");
-            System.IO.File.WriteAllText(@"C:\Users\sebth\Desktop\WriteText.txt", json);
             return JsonConvert.DeserializeObject<JArray>(json);
         }
 
