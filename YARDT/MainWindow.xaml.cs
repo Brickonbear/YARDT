@@ -21,6 +21,8 @@ namespace YARDT
     /// </summary>
     public partial class MainWindow : Window
     {
+        static readonly int numOfSets = 2;
+
         private static readonly HttpClient client = new HttpClient();
 
         bool gameIsRunning = false;
@@ -48,15 +50,28 @@ namespace YARDT
         const string mainDirName = "YARDTData/";
         const string tempDirName = "YARDTTempData/";
 
-        readonly Dictionary<string, string> hashTable = new Dictionary<string, string>()    //MD5 hashes for different languages
+        readonly Dictionary<string, string>[] hashTable = {
+        
+        new Dictionary<string, string>()    //MD5 hashes for different languages - Set1
         {
-            {"de_de", "8BDC6EFF58D2E0B310271EF6BCE2E0FC"},
-            {"en_us", "914DF1C57944216224FE481A597D23AD"},
-            {"es_es", "837F2256DE067C891F1B33CBE40C4E78"},
-            {"fr_fr", "DCDC6A97D790AEE687B077FE764111FB"},
-            {"it_it", "34A83E2D8501662B75B22F616A51C5D0"},
-            {"ja_jp", "4224933C64C748196735F21EA1F5B5AB"},
-            { "ko_kr", "31EA29DF0D0190140A293E8C25D79392"}
+            {"de_de", "72DA629F6307182FFA46277AC093C5AD"},
+            {"en_us", "1E48225021AEAD9F87C9B2EB013CFB32"},
+            {"es_es", "711878D960D3E10EEB0A46BB9C10546F"},
+            {"fr_fr", "B02B222E73B06FFDF9754CD0641CBF69"},
+            {"it_it", "40CC82B312E9D142CEF4BF7B578F8C5B"},
+            {"ja_jp", "801AAD4778A738A1C8BB373E516FA830"},
+            {"ko_kr", "1B2B03BF22CBD5F77771C6C7D9BE7496"}
+        },
+        new Dictionary<string, string>()    //MD5 hashes for different languages - Set2
+        {
+            {"de_de", "0114E4107D9CE26EFF21CF2C005ABDF5"},
+            {"en_us", "7A102BA7E93B6BD80E26276964755A7F"},
+            {"es_es", "5AD2AC08E780718DD475D601978E9367"},
+            {"fr_fr", "9CDF85FB477F40258BF06BABAFBD5129"},
+            {"it_it", "FFC7755E68DB57CD901662663A98E9F7"},
+            {"ja_jp", "944A0D02BE41718CD1A530E5EE65C9E8"},
+            {"ko_kr", "4971A99AAE19EA1988ED5CEECBBC173F"}
+        }
         };
 
 
@@ -299,13 +314,18 @@ namespace YARDT
             ControlUtils.CreateTextBox(sp, "Verifying Data");
 
             string hash = "";
-            hashTable.TryGetValue(Properties.Settings.Default.Language, out string correctHash);
-            if (File.Exists(mainDirName + "set1-" + Properties.Settings.Default.Language + ".json"))
+            bool hashesMatch = true;
+            for (int i = 1; i <= numOfSets; i++)
             {
-                hash = StringUtils.CalculateMD5(mainDirName + "set1-" + Properties.Settings.Default.Language + ".json");
+                hashTable[i-1].TryGetValue(Properties.Settings.Default.Language, out string correctHash);
+                if (File.Exists(mainDirName + "set" + i.ToString() + "-" + Properties.Settings.Default.Language + ".json"))
+                {
+                    hash = StringUtils.CalculateMD5(mainDirName + "set" + i.ToString() + "-" + Properties.Settings.Default.Language + ".json");
+                }
+                if (hash != correctHash) hashesMatch = false;
             }
 
-            if (hash == correctHash)
+            if (hashesMatch)
             {
                 Console.WriteLine("Deleting Temp Data");
                 ControlUtils.CreateTextBox(sp, "Deleting Temp Data");
@@ -322,7 +342,7 @@ namespace YARDT
 
             if (!downloaded)
             {
-                if (hash != correctHash)
+                if (!hashesMatch)
                 {
                     Console.WriteLine("Hashes don't match");
                     ControlUtils.CreateTextBox(sp, "Hashes don't match");
@@ -346,38 +366,41 @@ namespace YARDT
                     //Unzip File
                     Console.WriteLine("Unziping DataDragon");
                     ControlUtils.CreateTextBox(sp, "Unziping DataDragon");
-                    ZipFile.ExtractToDirectory(tempDirName + "/datadragon-set1-" + Properties.Settings.Default.Language + ".zip", tempDirName + "/datadragon-set1-" + Properties.Settings.Default.Language + "");
-
-                    DirectoryInfo dir = new DirectoryInfo(tempDirName + "/datadragon-set1-" + Properties.Settings.Default.Language + "/" + Properties.Settings.Default.Language + "/img/cards");
-
-                    foreach (FileInfo file in dir.EnumerateFiles("*-alt*.png"))
-                    {
-                        file.Delete();
-                    }
 
                     Directory.CreateDirectory(mainDirName + "/full");
                     Directory.CreateDirectory(mainDirName + "/cards");
 
-                    Console.WriteLine("Moving full images to " + mainDirName + "full/");
-                    ControlUtils.CreateTextBox(sp, "Moving full images to " + mainDirName + "full/");
-                    foreach (FileInfo file in dir.EnumerateFiles("*-full.png"))
+                    for (int i = 1; i <= numOfSets; i++)
                     {
-                        string[] filename = { mainDirName + "/full/", file.Name, "_" };
-                        file.MoveTo(string.Join("", filename));
-                    }
+                        ZipFile.ExtractToDirectory(tempDirName + "/datadragon-set" + i.ToString() + "-" + Properties.Settings.Default.Language + ".zip", tempDirName + "/datadragon-set" + i.ToString() + "-" + Properties.Settings.Default.Language + "");
 
-                    Console.WriteLine("Moving cards to " + mainDirName + "cards/");
-                    ControlUtils.CreateTextBox(sp, "Moving cards to " + mainDirName + "cards/");
-                    foreach (FileInfo file in dir.EnumerateFiles())
-                    {
-                        string[] filename = { mainDirName + "/cards/", file.Name, "_" };
-                        file.MoveTo(string.Join("", filename));
-                    }
+                        DirectoryInfo dir = new DirectoryInfo(tempDirName + "/datadragon-set" + i.ToString() + "-" + Properties.Settings.Default.Language + "/" + Properties.Settings.Default.Language + "/img/cards");
 
-                    dir = new DirectoryInfo(mainDirName + "/cards");
+                        foreach (FileInfo file in dir.EnumerateFiles("*-alt*.png"))
+                        {
+                            file.Delete();
+                        }
+
+                        Console.WriteLine("Moving full images to " + mainDirName + "full/");
+                        ControlUtils.CreateTextBox(sp, "Moving full images to " + mainDirName + "full/");
+                        foreach (FileInfo file in dir.EnumerateFiles("*-full.png"))
+                        {
+                            string[] filename = { mainDirName + "/full/", file.Name, "_" };
+                            file.MoveTo(string.Join("", filename));
+                        }
+
+                        Console.WriteLine("Moving cards to " + mainDirName + "cards/");
+                        ControlUtils.CreateTextBox(sp, "Moving cards to " + mainDirName + "cards/");
+                        foreach (FileInfo file in dir.EnumerateFiles())
+                        {
+                            string[] filename = { mainDirName + "/cards/", file.Name, "_" };
+                            file.MoveTo(string.Join("", filename));
+                        }
+                    }
+                    DirectoryInfo mainDirCards = new DirectoryInfo(mainDirName + "/cards");
                     Console.WriteLine("Resizing card images");
                     ControlUtils.CreateTextBox(sp, "Resizing card images");
-                    foreach (FileInfo file in dir.EnumerateFiles("*.png_"))
+                    foreach (FileInfo file in mainDirCards.EnumerateFiles("*.png_"))
                     {
                         Bitmap image;
                         Bitmap img = new Bitmap(file.FullName);
@@ -387,10 +410,10 @@ namespace YARDT
                         file.Delete();
                     }
 
-                    dir = new DirectoryInfo(mainDirName + "/full");
+                    mainDirCards = new DirectoryInfo(mainDirName + "/full");
                     Console.WriteLine("Cropping full images and applying gradient");
                     ControlUtils.CreateTextBox(sp, "Cropping full images and applying gradient");
-                    foreach (FileInfo file in dir.EnumerateFiles("*.png_"))
+                    foreach (FileInfo file in mainDirCards.EnumerateFiles("*.png_"))
                     {
                         Bitmap image;
                         Bitmap img = new Bitmap(file.FullName);
@@ -412,8 +435,11 @@ namespace YARDT
                         file.Delete();
                     }
 
-                    FileInfo dataSetFile = new FileInfo(tempDirName + "/datadragon-set1-" + Properties.Settings.Default.Language + "/" + Properties.Settings.Default.Language + "/data/set1-" + Properties.Settings.Default.Language + ".json");
-                    dataSetFile.MoveTo(mainDirName + "/set1-" + Properties.Settings.Default.Language + ".json");
+                    for (int i = 1; i <= numOfSets; i++)
+                    {
+                        FileInfo dataSetFile = new FileInfo(tempDirName + "/datadragon-set" + i.ToString() + "-" + Properties.Settings.Default.Language + "/" + Properties.Settings.Default.Language + "/data/set" + i.ToString() + "-" + Properties.Settings.Default.Language + ".json");
+                        dataSetFile.MoveTo(mainDirName + "/set" + i.ToString() + "-" + Properties.Settings.Default.Language + ".json");
+                    }
 
                     bool verified = VerifyData(true);
                     if (!verified)
@@ -423,7 +449,7 @@ namespace YARDT
                     }
                 }
             }
-            return hash == correctHash;
+            return hashesMatch;
         }
 
         /// <summary>

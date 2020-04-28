@@ -20,6 +20,8 @@ namespace YARDT
             public TextBlock title;
         }
 
+        static int numOfSets = 2;
+
         /// <summary>
         /// Download file to specified location
         /// </summary>
@@ -29,7 +31,11 @@ namespace YARDT
         {
             Console.WriteLine("Begining Data Dragon download");
 
-            DownloadFile("https://dd.b.pvp.net/latest/set1-" + Properties.Settings.Default.Language + ".zip", directory + "/datadragon-set1-" + Properties.Settings.Default.Language + ".zip", windowTitle);
+            for (int i = 1; i <= numOfSets; i++)
+            {
+                Console.WriteLine("Downloading set " + i.ToString() + " of " + numOfSets.ToString());
+                DownloadFile("https://dd.b.pvp.net/latest/set" + i.ToString() + "-" + Properties.Settings.Default.Language + ".zip", directory + "/datadragon-set" + i.ToString() + "-" + Properties.Settings.Default.Language + ".zip", windowTitle);
+            }
 
             Console.WriteLine("Finished download");
         }
@@ -122,11 +128,18 @@ namespace YARDT
         /// <returns></returns>
         public static JArray LoadJson(string mainDirName)
         {
-            using (StreamReader r = new StreamReader(mainDirName + "set1-" + Properties.Settings.Default.Language + ".json"))
+            string json = "";
+            for(int i = 1; i <= numOfSets; i++)
             {
-                string json = r.ReadToEnd();
-                return JsonConvert.DeserializeObject<JArray>(json);
+                using (StreamReader r = new StreamReader(mainDirName + "set" + i.ToString() + "-" + Properties.Settings.Default.Language + ".json"))
+                {
+                    json += r.ReadToEnd();
+                }
             }
+
+            json = json.Replace("][", ",");
+            System.IO.File.WriteAllText(@"C:\Users\sebth\Desktop\WriteText.txt", json);
+            return JsonConvert.DeserializeObject<JArray>(json);
         }
 
     }

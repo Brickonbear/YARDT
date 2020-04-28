@@ -66,6 +66,9 @@ namespace YARDT
                 case "si":
                     gradient = new Bitmap(Properties.Resources.GradientShadowIsles);
                     break;
+                case "bw":
+                    gradient = new Bitmap(Properties.Resources.GradientBilgewater);
+                    break;
                 case "xx":
                     gradient = new Bitmap(Properties.Resources.OverlayDark);
                     break;
