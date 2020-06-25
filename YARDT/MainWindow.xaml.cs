@@ -51,27 +51,39 @@ namespace YARDT
         const string tempDirName = "YARDTTempData/";
 
         readonly Dictionary<string, string>[] hashTable = {
-        
-        new Dictionary<string, string>()    //MD5 hashes for different languages - Set1
-        {
-            {"de_de", "72DA629F6307182FFA46277AC093C5AD"},
-            {"en_us", "1E48225021AEAD9F87C9B2EB013CFB32"},
-            {"es_es", "711878D960D3E10EEB0A46BB9C10546F"},
-            {"fr_fr", "B02B222E73B06FFDF9754CD0641CBF69"},
-            {"it_it", "40CC82B312E9D142CEF4BF7B578F8C5B"},
-            {"ja_jp", "801AAD4778A738A1C8BB373E516FA830"},
-            {"ko_kr", "1B2B03BF22CBD5F77771C6C7D9BE7496"}
-        },
-        new Dictionary<string, string>()    //MD5 hashes for different languages - Set2
-        {
-            {"de_de", "0114E4107D9CE26EFF21CF2C005ABDF5"},
-            {"en_us", "7A102BA7E93B6BD80E26276964755A7F"},
-            {"es_es", "5AD2AC08E780718DD475D601978E9367"},
-            {"fr_fr", "9CDF85FB477F40258BF06BABAFBD5129"},
-            {"it_it", "FFC7755E68DB57CD901662663A98E9F7"},
-            {"ja_jp", "944A0D02BE41718CD1A530E5EE65C9E8"},
-            {"ko_kr", "4971A99AAE19EA1988ED5CEECBBC173F"}
-        }
+
+            new Dictionary<string, string>()    //MD5 hashes for different languages - Set1
+            {
+                {"de_de", "49B25E0E33427829E705C1C4D34FAA6A"},
+                {"en_us", "D3154173F963C26B77EA26D0114BB319"},
+                {"es_es", "82C5089F1DF8BADFFFD7E824DA6CCD7D"},
+                {"es_mx", "85E2947EDAB5FBA18A7937CF4CA7EDBC"},
+                {"fr_fr", "F3087E684380BA66035DDAC6DB5CAF2C"},
+                {"it_it", "FB1991604BB76C9896CB292B742DDE13"},
+                {"ja_jp", "635C0572547021ADC9CA481B427462BD"},
+                {"ko_kr", "4553DBC7340FE1854999455830584B6F"},
+                {"pl_pl", "8EF75B4D1879A12C31711642964644E4"},
+                {"pt_br", "5121447CFD5892206772D019DF067AE7"},
+                {"tr_tr", "48372284BAD20E01FB163B405EE5A3ED"},
+                {"ru_ru", "04994C867BE16E376CBD501D0BF385D7"},
+                {"zh_tw", "5283DFDFDC312A935736523F20EAE210"}
+            },
+            new Dictionary<string, string>()    //MD5 hashes for different languages - Set2
+            {
+                {"de_de", "F990C0A2862642701715B6DCD9839E4C"},
+                {"en_us", "53195D21B87B3F1290E8A1FD8FC78983"},
+                {"es_es", "43322D4F9131518C1FB5108CDB52BB97"},
+                {"es_mx", "C9A0FA3CEF29ECB7C0DEB0FE652F5DE3"},
+                {"fr_fr", "9503EF4D55540BC814D275AA6FE7B4B8"},
+                {"it_it", "2FBF6CFED7B069BE93C988CDDEEBCE48"},
+                {"ja_jp", "75F5A72186BFA78909FF4A87F6B4DFBC"},
+                {"ko_kr", "194B64B259C349D9F2B19758D234C3B2"},
+                {"pl_pl", "141A2545A598A7513994F6B59855A04F"},
+                {"pt_br", "00EFFCB12A0F3EE35E3D4938E045C09A"},
+                {"tr_tr", "83CF4AFDB5874240269815BFC0D662C3"},
+                {"ru_ru", "FEFCA99A45C9CC4900D8675269214C41"},
+                {"zh_tw", "455D7AA459A0C55A6A5218E23F01602A"}
+            }
         };
 
 
@@ -374,7 +386,7 @@ namespace YARDT
                     {
                         ZipFile.ExtractToDirectory(tempDirName + "/datadragon-set" + i.ToString() + "-" + Properties.Settings.Default.Language + ".zip", tempDirName + "/datadragon-set" + i.ToString() + "-" + Properties.Settings.Default.Language + "");
 
-                        DirectoryInfo dir = new DirectoryInfo(tempDirName + "/datadragon-set" + i.ToString() + "-" + Properties.Settings.Default.Language + "/" + Properties.Settings.Default.Language + "/img/cards");
+                        DirectoryInfo dir = new DirectoryInfo(tempDirName + "/datadragon-set" + i.ToString() + "-" + Properties.Settings.Default.Language + "/set" + i.ToString() + "-" + Properties.Settings.Default.Language  + "/" + Properties.Settings.Default.Language + "/img/cards");
 
                         foreach (FileInfo file in dir.EnumerateFiles("*-alt*.png"))
                         {
@@ -437,7 +449,7 @@ namespace YARDT
 
                     for (int i = 1; i <= numOfSets; i++)
                     {
-                        FileInfo dataSetFile = new FileInfo(tempDirName + "/datadragon-set" + i.ToString() + "-" + Properties.Settings.Default.Language + "/" + Properties.Settings.Default.Language + "/data/set" + i.ToString() + "-" + Properties.Settings.Default.Language + ".json");
+                        FileInfo dataSetFile = new FileInfo(tempDirName + "/datadragon-set" + i.ToString() + "-" + Properties.Settings.Default.Language + "/set" + i.ToString() + "-" + Properties.Settings.Default.Language + "/" + Properties.Settings.Default.Language + "/data/set" + i.ToString() + "-" + Properties.Settings.Default.Language + ".json");
                         dataSetFile.MoveTo(mainDirName + "/set" + i.ToString() + "-" + Properties.Settings.Default.Language + ".json");
                     }
 

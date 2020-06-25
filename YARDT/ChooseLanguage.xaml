@@ -107,10 +107,16 @@
                     <ComboBoxItem ToolTip="English (United States)" IsSelected="True" BorderThickness="0" Foreground="#FFEDECEC" Background="#FF3E3E3F">en_us</ComboBoxItem>
                     <ComboBoxItem ToolTip="German (Germany)"    BorderThickness="0" Foreground="#FFEDECEC" Background="#FF3E3E3F">de_de</ComboBoxItem>
                     <ComboBoxItem ToolTip="Spanish (Spain)"     BorderThickness="0" Foreground="#FFEDECEC" Background="#FF3E3E3F">es_es</ComboBoxItem>
+                    <ComboBoxItem ToolTip="Spanish (Mexico)"     BorderThickness="0" Foreground="#FFEDECEC" Background="#FF3E3E3F">es_mx</ComboBoxItem>
                     <ComboBoxItem ToolTip="French (France)"     BorderThickness="0" Foreground="#FFEDECEC" Background="#FF3E3E3F">fr_fr</ComboBoxItem>
                     <ComboBoxItem ToolTip="Italian (Italy)"     BorderThickness="0" Foreground="#FFEDECEC" Background="#FF3E3E3F">it_it</ComboBoxItem>
                     <ComboBoxItem ToolTip="Japanese (Japan)"    BorderThickness="0" Foreground="#FFEDECEC" Background="#FF3E3E3F">ja_jp</ComboBoxItem>
                     <ComboBoxItem ToolTip="Korean (Korea)"      BorderThickness="0" Foreground="#FFEDECEC" Background="#FF3E3E3F">ko_kr</ComboBoxItem>
+                    <ComboBoxItem ToolTip="Polish (Poland)"      BorderThickness="0" Foreground="#FFEDECEC" Background="#FF3E3E3F">pl_pl</ComboBoxItem>
+                    <ComboBoxItem ToolTip="Portuguese (Brazil)"      BorderThickness="0" Foreground="#FFEDECEC" Background="#FF3E3E3F">pt_br</ComboBoxItem>
+                    <ComboBoxItem ToolTip="Turkish (Turkey)"      BorderThickness="0" Foreground="#FFEDECEC" Background="#FF3E3E3F">tr_tr</ComboBoxItem>
+                    <ComboBoxItem ToolTip="Russian (Russia)"      BorderThickness="0" Foreground="#FFEDECEC" Background="#FF3E3E3F">ru_ru</ComboBoxItem>
+                    <ComboBoxItem ToolTip="Chinese (Taiwan)"      BorderThickness="0" Foreground="#FFEDECEC" Background="#FF3E3E3F">zh_tw</ComboBoxItem>
                 </ComboBox>
                 <Button x:Name="portApplyButton" Grid.Column="2" Width="50" Height="23" Content="OK" Click="portApplyButton_Click" Foreground="#FFEDECEC">
                     <Button.Style>
