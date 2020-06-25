@@ -1,4 +1,4 @@
-$languages = 'de_de', 'en_us', 'es_es', 'fr_fr', 'it_it', 'ja_jp', 'ko_kr'
+$languages = 'de_de', 'en_us', 'es_es', 'es_mx', 'fr_fr', 'it_it', 'ja_jp', 'ko_kr', 'pl_pl', 'pt_br', 'tr_tr', 'ru_ru', 'zh_tw'
 $numOfSets = 2
 
 function DownloadDataSets {
@@ -27,7 +27,7 @@ function UnzipFiles {
 function MoveFiles {
 	For ($i = 1; $i -le $numOfSets; $i++) {
 		ForEach ($language in $languages) {
-			$outDir = ".\{0}{1}\{0}\data\*.json" -f $language, $i
+			$outDir = ".\{0}{1}\set{1}-{0}\$language\data\*.json" -f $language, $i
 			Move-Item -Path $outDir -Destination .\dataSets
 		}
 	}
@@ -44,40 +44,15 @@ function DeleteFiles {
 }
 
 function PrintResult {
-	$de_de_set1 = Get-FileHash .\dataSets\set1-de_de.json -Algorithm MD5
-	$en_us_set1 = Get-FileHash .\dataSets\set1-en_us.json -Algorithm MD5
-	$es_es_set1 = Get-FileHash .\dataSets\set1-es_es.json -Algorithm MD5
-	$fr_fr_set1 = Get-FileHash .\dataSets\set1-fr_fr.json -Algorithm MD5
-	$it_it_set1 = Get-FileHash .\dataSets\set1-it_it.json -Algorithm MD5
-	$ja_jp_set1 = Get-FileHash .\dataSets\set1-ja_jp.json -Algorithm MD5
-	$ko_kr_set1 = Get-FileHash .\dataSets\set1-ko_kr.json -Algorithm MD5
-	$de_de_set2 = Get-FileHash .\dataSets\set2-de_de.json -Algorithm MD5
-	$en_us_set2 = Get-FileHash .\dataSets\set2-en_us.json -Algorithm MD5
-	$es_es_set2 = Get-FileHash .\dataSets\set2-es_es.json -Algorithm MD5
-	$fr_fr_set2 = Get-FileHash .\dataSets\set2-fr_fr.json -Algorithm MD5
-	$it_it_set2 = Get-FileHash .\dataSets\set2-it_it.json -Algorithm MD5
-	$ja_jp_set2 = Get-FileHash .\dataSets\set2-ja_jp.json -Algorithm MD5
-	$ko_kr_set2 = Get-FileHash .\dataSets\set2-ko_kr.json -Algorithm MD5
+	For ($i = 1; $i -le $numOfSets; $i++) {
+		'Set {0}' -f $i
+		ForEach ($language in $languages) {
+			$file = ".\dataSets\set{0}-{1}.json" -f $i, $language
+			$hash = Get-FileHash $file -Algorithm MD5
+			'{{"{0}", "{1}"}},' -f $language, $hash.hash
+		}
+	}
 
-	"Set 1"
-
-	'{{de_de, "{0}"}}, `
-{{en_us, "{1}"}}, `
-{{es_es, "{2}"}}, `
-{{fr_fr, "{3}"}}, `
-{{it_it, "{4}"}}, `
-{{ja_jp, "{5}"}}, `
-{{ko_kr, "{6}"}}' -f $de_de_set1.hash, $en_us_set1.hash, $es_es_set1.hash, $fr_fr_set1.hash, $it_it_set1.hash, $ja_jp_set1.hash, $ko_kr_set1.hash
-
-	"Set 2"
-
-	'{{de_de, "{0}"}}, `
-{{en_us, "{1}"}}, `
-{{es_es, "{2}"}}, `
-{{fr_fr, "{3}"}}, `
-{{it_it, "{4}"}}, `
-{{ja_jp, "{5}"}}, `
-{{ko_kr, "{6}"}}' -f $de_de_set2.hash, $en_us_set2.hash, $es_es_set2.hash, $fr_fr_set2.hash, $it_it_set2.hash, $ja_jp_set2.hash, $ko_kr_set2.hash
 }
  
 DownloadDataSets
